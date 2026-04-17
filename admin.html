@@ -166,11 +166,28 @@ tr:hover td{background:var(--s2)}
 .connecting-hint{position:absolute;top:12px;right:12px;background:rgba(6,182,212,.15);border:1px solid var(--cyan);border-radius:8px;padding:8px 14px;font-size:.78rem;color:var(--cyan);display:none}
 
 /* ── LEADS ── */
-.leads-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.leads-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .filter-btn{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--muted);cursor:pointer;font-size:.8rem;transition:all .2s}
 .filter-btn.active,.filter-btn:hover{border-color:var(--p);color:var(--pl)}
 .lead-row td:first-child{font-weight:600}
 .lead-actions{display:flex;gap:6px}
+.wa-link{color:#25d366;font-weight:600;text-decoration:none;font-size:.82rem;display:inline-flex;align-items:center;gap:4px;transition:opacity .2s}
+.wa-link:hover{opacity:.7}
+.note-chip{display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--warn);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;vertical-align:middle}
+
+/* ── GUIDE ── */
+.guide-steps{display:flex;flex-direction:column;gap:0}
+.guide-step{display:flex;gap:0;position:relative}
+.guide-step:not(:last-child) .gs-line{content:'';position:absolute;left:22px;top:46px;bottom:-1px;width:2px;background:linear-gradient(var(--p),var(--border));z-index:0}
+.gs-num{width:46px;height:46px;border-radius:50%;background:var(--pg);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;color:var(--pl);flex-shrink:0;position:relative;z-index:1}
+.gs-line{position:absolute;left:22px;top:46px;bottom:-20px;width:2px;background:linear-gradient(var(--p)40,transparent)}
+.gs-body{flex:1;padding:0 0 32px 18px}
+.gs-title{font-size:.95rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.gs-desc{font-size:.85rem;color:var(--muted);line-height:1.6}
+.gs-desc code{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.8rem;color:var(--cyan);font-family:monospace}
+.gs-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--cyan);margin-top:10px;line-height:1.5}
+.guide-section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--p);font-weight:800;margin:28px 0 16px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.gs-badge{background:rgba(16,185,129,.12);color:var(--free);border:1px solid rgba(16,185,129,.2);border-radius:4px;padding:1px 7px;font-size:.65rem;font-weight:700;margin-left:auto}
 
 /* ── LABELS ── */
 .labels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
@@ -243,6 +260,7 @@ tr:hover td{background:var(--s2)}
       <button class="nav-item" onclick="showSection('leads',this)"><span class="nav-icon">👥</span>Contactos <span class="nav-badge" id="nb-leads">0</span></button>
       <button class="nav-item" onclick="showSection('labels',this)"><span class="nav-icon">🏷️</span>Etiquetas</button>
       <button class="nav-item" onclick="showSection('settings',this)"><span class="nav-icon">⚙️</span>Configuración</button>
+      <button class="nav-item" onclick="showSection('guide',this)"><span class="nav-icon">📖</span>Guía de uso</button>
     </nav>
     <div class="sb-footer">
       <button class="btn-logout" onclick="logout()">🚪 Cerrar sesión</button>
@@ -343,15 +361,18 @@ tr:hover td{background:var(--s2)}
             <div class="sec-title">Contactos / Leads</div>
             <div class="sec-sub">Personas que iniciaron conversación en el chat</div>
           </div>
-          <div style="display:flex;gap:8px">
-            <input class="search-input" id="leads-search" placeholder="🔍 Buscar..." oninput="renderLeads()">
-            <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input class="search-input" id="leads-search" placeholder="🔍 Nombre..." oninput="renderLeads()" style="width:160px">
+            <select class="form-select" id="leads-country-filter" onchange="renderLeads()" style="width:140px;padding:9px 10px">
+              <option value="">Todos los países</option>
+            </select>
+            <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar todo</button>
           </div>
         </div>
         <div class="leads-toolbar" id="leads-filter-bar"></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Nombre</th><th>Teléfono</th><th>Intención</th><th>Etiqueta</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Fecha</th><th>Acciones</th></tr></thead>
             <tbody id="leads-body"></tbody>
           </table>
           <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún. Aparecerán cuando alguien inicie el chat.</p></div>
@@ -449,6 +470,33 @@ tr:hover td{background:var(--s2)}
         </div>
       </div>
 
+      <!-- GUIDE -->
+      <div id="sec-guide" style="display:none">
+        <div class="sec-header"><div><div class="sec-title">📖 Guía de uso paso a paso</div><div class="sec-sub">Aprende a configurar y usar cada función del sistema GOKUCELL</div></div></div>
+        <div id="guide-content"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOTE -->
+<div class="modal-overlay" id="modal-note">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2>📝 Nota del contacto</h2>
+      <button class="modal-close" onclick="closeModal('modal-note')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">Contacto: <strong id="mn-name"></strong></div>
+      <div class="form-group">
+        <label class="form-label">Nota interna</label>
+        <textarea class="form-textarea" id="mn-text" placeholder="Escribe una nota sobre este contacto..." style="min-height:120px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-note')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNote()">Guardar nota</button>
     </div>
   </div>
 </div>
@@ -483,6 +531,11 @@ tr:hover td{background:var(--s2)}
       <div class="form-group">
         <label class="form-label">URL del botón CTA</label>
         <input class="form-input" id="mt-cta-url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🎬 Video de respuesta <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+        <input class="form-input" id="mt-video-url" placeholder="URL de YouTube o enlace directo de video (mp4)">
+        <div class="form-hint">Pega un link de YouTube (se incrustará y reproducirá automáticamente) o una URL directa a un archivo de video.</div>
       </div>
       <div class="form-group">
         <label class="form-label">Tipo de flujo</label>
@@ -657,7 +710,8 @@ const SECTION_LABELS = {
   flowmap: ['Mapa de Flujos','Conecta visualmente los flujos de conversación'],
   leads: ['Contactos','Personas que iniciaron el chat'],
   labels: ['Etiquetas','Flujos por tipo de interés'],
-  settings: ['Configuración','Ajustes generales del sistema']
+  settings: ['Configuración','Ajustes generales del sistema'],
+  guide: ['Guía de uso','Instrucciones paso a paso del sistema']
 };
 
 function showSection(id, el) {
@@ -672,6 +726,7 @@ function showSection(id, el) {
   if (id === 'flowmap') initFlowMap();
   if (id === 'leads') renderLeads();
   if (id === 'labels') renderLabels();
+  if (id === 'guide') renderGuide();
 }
 
 // ── DASHBOARD ──
@@ -738,6 +793,7 @@ function openTopicModal(id = null) {
     document.getElementById('mt-response').value = t.response;
     document.getElementById('mt-cta-text').value = t.ctaText || '';
     document.getElementById('mt-cta-url').value = t.ctaUrl || '';
+    document.getElementById('mt-video-url').value = t.videoUrl || '';
     document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked = true;
     kwTags = [...t.keywords];
   } else {
@@ -745,6 +801,7 @@ function openTopicModal(id = null) {
     document.getElementById('mt-response').value = '';
     document.getElementById('mt-cta-text').value = '';
     document.getElementById('mt-cta-url').value = '';
+    document.getElementById('mt-video-url').value = '';
     document.querySelector('input[name="mt-type"][value="free"]').checked = true;
   }
   renderKwTags();
@@ -790,6 +847,7 @@ function saveTopic() {
   const response = document.getElementById('mt-response').value.trim();
   const ctaText = document.getElementById('mt-cta-text').value.trim();
   const ctaUrl = document.getElementById('mt-cta-url').value.trim();
+  const videoUrl = document.getElementById('mt-video-url').value.trim();
   const type = document.querySelector('input[name="mt-type"]:checked').value;
   const val = document.getElementById('kw-input').value.trim().replace(/,/g,'').toLowerCase();
   if (val) kwTags.push(val);
@@ -799,10 +857,10 @@ function saveTopic() {
   }
   if (editTopicId) {
     const idx = DB.topics.findIndex(t => t.id === editTopicId);
-    DB.topics[idx] = { ...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, type };
+    DB.topics[idx] = { ...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type };
     showToast('Disparador actualizado.');
   } else {
-    DB.topics.push({ id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, type });
+    DB.topics.push({ id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type });
     showToast('Disparador creado.');
   }
   saveDB(); renderTopics(); renderDashboard(); closeModal('modal-topic');
@@ -988,41 +1046,85 @@ document.addEventListener('click', e => {
 
 // ── LEADS ──
 let leadsFilterLabel = 'all';
+let editNoteId = null;
+
+function buildCountryFilter() {
+  const sel = document.getElementById('leads-country-filter');
+  if (!sel) return;
+  const countries = [...new Set(DB.leads.map(l => l.countryCode).filter(Boolean))].sort();
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Todos los países</option>';
+  countries.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    if (c === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
 
 function renderLeads() {
+  buildCountryFilter();
   const q = (document.getElementById('leads-search')?.value || '').toLowerCase();
+  const countryF = document.getElementById('leads-country-filter')?.value || '';
   let list = DB.leads.filter(l => {
-    const match = leadsFilterLabel === 'all' || l.label === leadsFilterLabel;
-    const search = !q || l.name.toLowerCase().includes(q) || l.phone.includes(q);
-    return match && search;
+    const matchLabel = leadsFilterLabel === 'all' || l.label === leadsFilterLabel;
+    const matchCountry = !countryF || l.countryCode === countryF;
+    const matchSearch = !q || l.name.toLowerCase().includes(q) || l.phone.includes(q);
+    return matchLabel && matchCountry && matchSearch;
   }).reverse();
 
   const bar = document.getElementById('leads-filter-bar');
   bar.innerHTML = `
-    <button class="filter-btn ${leadsFilterLabel==='all'?'active':''}" onclick="leadsFilter('all',this)">Todos (${DB.leads.length})</button>
-    ${DB.labels.map(lb => `<button class="filter-btn ${leadsFilterLabel===lb.name?'active':''}" onclick="leadsFilter('${lb.name}',this)" style="border-color:${lb.color}40">${lb.name} (${DB.leads.filter(l=>l.label===lb.name).length})</button>`).join('')}
+    <button class="filter-btn ${leadsFilterLabel==='all'?'active':''}" onclick="leadsFilter('all')">Todos (${DB.leads.length})</button>
+    ${DB.labels.map(lb => `<button class="filter-btn ${leadsFilterLabel===lb.name?'active':''}" onclick="leadsFilter('${lb.name}')" style="${leadsFilterLabel===lb.name?`border-color:${lb.color};color:${lb.color}`:`border-color:${lb.color}30`}">${lb.name} (${DB.leads.filter(l=>l.label===lb.name).length})</button>`).join('')}
   `;
 
   const tbody = document.getElementById('leads-body');
   const empty = document.getElementById('leads-empty');
   if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  tbody.innerHTML = list.map(l => `
+
+  tbody.innerHTML = list.map(l => {
+    const cleanPhone = (l.countryCode || '').replace(/\D/g,'') + (l.phone || '').replace(/\D/g,'');
+    const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hola ' + l.name + ', te contactamos desde GOKUCELL 👋')}`;
+    const noteHtml = l.note
+      ? `<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,30))}${l.note.length>30?'…':''}</span>`
+      : `<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.72rem;padding:3px 8px">+ Nota</button>`;
+    return `
     <tr class="lead-row">
       <td>${esc(l.name)}</td>
-      <td style="color:var(--muted)">${esc(l.countryCode)} ${esc(l.phone)}</td>
+      <td><a class="wa-link" href="${waLink}" target="_blank">📱 ${esc(l.countryCode)} ${esc(l.phone)}</a></td>
+      <td style="color:var(--muted);font-size:.8rem">${esc(l.countryCode)}</td>
       <td style="color:var(--muted);font-size:.82rem">${esc(l.intent)}</td>
       <td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label)}</span></td>
-      <td style="color:var(--muted);font-size:.78rem">${formatDate(l.ts)}</td>
+      <td>${noteHtml}</td>
+      <td style="color:var(--muted);font-size:.78rem;white-space:nowrap">${formatDate(l.ts)}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteLead('${l.id}')">🗑</button></td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
   updateBadges();
 }
 
-function leadsFilter(val, el) {
+function leadsFilter(val) {
   leadsFilterLabel = val;
   renderLeads();
+}
+
+function openNoteModal(id) {
+  editNoteId = id;
+  const l = DB.leads.find(x => x.id === id);
+  if (!l) return;
+  document.getElementById('mn-name').textContent = l.name;
+  document.getElementById('mn-text').value = l.note || '';
+  openModal('modal-note');
+}
+
+function saveNote() {
+  const idx = DB.leads.findIndex(x => x.id === editNoteId);
+  if (idx < 0) return;
+  DB.leads[idx].note = document.getElementById('mn-text').value.trim();
+  saveDB(); renderLeads(); closeModal('modal-note');
+  showToast('Nota guardada.');
 }
 
 function deleteLead(id) {
@@ -1161,6 +1263,92 @@ function formatDate(ts) {
   if (!ts) return '';
   const d = new Date(ts);
   return d.toLocaleDateString('es', {day:'2-digit',month:'short',year:'numeric'}) + ' ' + d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── GUIDE ──
+const GUIDE_STEPS = [
+  {
+    section: '🔐 Acceso al sistema',
+    steps: [
+      { n:1, title:'Ingresar al panel admin', desc:'Abre el archivo <code>admin.html</code> en tu navegador. Verás la pantalla de login con el logo GOKUCELL. Ingresa tu contraseña (por defecto: <code>5616</code>) y presiona <strong>Ingresar</strong>.', tip:'Puedes cambiar la contraseña desde Configuración → "Cambiar contraseña de acceso" en cualquier momento.' },
+      { n:2, title:'Navegar entre secciones', desc:'En el panel lateral izquierdo encontrarás el menú con todas las secciones: Dashboard, Disparadores, Mapa de Flujos, Contactos, Etiquetas, Configuración y esta Guía.', tip:'El botón "Ver Chat" en la barra superior abre el chat de cara al público en una nueva pestaña.' }
+    ]
+  },
+  {
+    section: '⚡ Disparadores del chat',
+    steps: [
+      { n:3, title:'¿Qué es un disparador?', desc:'Un disparador es un conjunto de palabras clave que, al ser escritas por el usuario en el chat, activan una respuesta específica del bot. Por ejemplo: si alguien escribe "fuente de alimentación", el bot responde con el contenido configurado para ese tema.', tip:'Cuantas más palabras clave tenga un disparador, más preciso será el reconocimiento.' },
+      { n:4, title:'Crear un nuevo disparador', desc:'Ve a <strong>Disparadores</strong> y haz clic en <strong>+ Nuevo Disparador</strong>. Completa: (1) Título del tema, (2) Palabras clave: escríbelas una por una presionando <code>Enter</code> o <code>,</code> después de cada una, (3) Respuesta que verá el usuario, (4) Botón CTA opcional con texto y enlace, (5) Video opcional con URL de YouTube o enlace directo, (6) Tipo de flujo: Gratuito, Expercenter o ReparaXcell.', tip:'Usa frases completas como keywords: "no carga el celular" es más preciso que solo "carga".' },
+      { n:5, title:'Agregar videos a las respuestas', desc:'En el modal de cada disparador encontrarás el campo <strong>Video de respuesta</strong>. Pega ahí: un link de YouTube (ej: <code>https://youtu.be/abc123</code>) y se mostrará como video embebido con reproducción automática, o una URL directa a un archivo MP4 y se reproducirá con el reproductor nativo.', tip:'El video aparece debajo del mensaje de texto en el chat, y se reproduce automáticamente cuando el usuario lo ve.' }
+    ]
+  },
+  {
+    section: '🗺️ Mapa de flujos',
+    steps: [
+      { n:6, title:'Entender el mapa de flujos', desc:'El mapa es un canvas visual donde cada disparador aparece como un nodo. Puedes arrastrarlos libremente para organizarlos y conectarlos para definir secuencias de conversación (después de tema A, el bot puede guiar hacia tema B).', tip:'Las conexiones se guardan con el botón "Guardar". Usa "Auto-organizar" si el mapa se desordena.' },
+      { n:7, title:'Crear una conexión entre nodos', desc:'Para conectar dos disparadores: (1) Haz clic en el botón <strong>▶</strong> (puerto de salida) del nodo origen, (2) Aparecerá el aviso "Haz clic en el nodo destino", (3) Haz clic en el botón <strong>◀</strong> (puerto de entrada) del nodo destino. Para eliminar una conexión, haz clic sobre la línea punteada.', tip:'Las líneas punteadas moradas indican el flujo de conversación de un tema al siguiente.' }
+    ]
+  },
+  {
+    section: '👥 Contactos y leads',
+    steps: [
+      { n:8, title:'Ver los contactos captados', desc:'En la sección <strong>Contactos</strong> se registran automáticamente todas las personas que abren el chat y completan el formulario de inicio (nombre, teléfono y tipo de consulta). Verás sus datos, etiqueta asignada y fecha.', tip:'Los contactos se guardan automáticamente, sin que tengas que hacer nada.' },
+      { n:9, title:'Enviar mensaje por WhatsApp', desc:'En la columna <strong>WhatsApp</strong> de cada contacto hay un enlace verde 📱 con su número. Al hacer clic, se abre WhatsApp Web listo para enviarle un mensaje personalizado con el saludo de GOKUCELL ya escrito.', tip:'El mensaje pre-cargado dice: "Hola [nombre], te contactamos desde GOKUCELL 👋". Puedes editarlo antes de enviar.' },
+      { n:10, title:'Filtrar contactos', desc:'Usa los filtros en la barra superior de Contactos para buscar por: <strong>nombre</strong> (caja de texto), <strong>país</strong> (desplegable con los países registrados) y <strong>etiqueta</strong> (botones de filtro GRATIS / EXPERCENTER / REPARAXCELL).', tip:'Los filtros se combinan: puedes buscar "Carlos" + Colombia + EXPERCENTER al mismo tiempo.' },
+      { n:11, title:'Agregar notas a un contacto', desc:'Haz clic en el botón <strong>+ Nota</strong> de cualquier contacto para abrirle una nota interna. Escribe lo que necesites recordar sobre esa persona (seguimiento, estado, interés, etc.) y guarda. La nota aparece como un chip visible en la tabla.', tip:'Las notas son solo visibles en el admin. El usuario del chat no las ve.' }
+    ]
+  },
+  {
+    section: '🏷️ Etiquetas',
+    steps: [
+      { n:12, title:'¿Para qué sirven las etiquetas?', desc:'Las etiquetas definen el tipo de flujo que tendrá el chat según la intención declarada por el usuario al registrarse. Cada etiqueta tiene: nombre, color, tipo de flujo (gratuito/ventas/reparación), mensaje de bienvenida personalizado y botón CTA.', tip:'Por defecto existen: GRATIS, EXPERCENTER y REPARAXCELL. Puedes editarlas o crear nuevas.' },
+      { n:13, title:'Crear o editar una etiqueta', desc:'Ve a <strong>Etiquetas</strong> y haz clic en <strong>+ Nueva Etiqueta</strong>. Define: nombre (en mayúsculas), color del badge, tipo de flujo, mensaje de bienvenida (usa <code>[nombre]</code> para insertar el nombre del usuario) y el botón CTA con su enlace.', tip:'El mensaje de bienvenida es lo primero que ve el usuario cuando abre el chat, así que hazlo cálido y personalizado.' }
+    ]
+  },
+  {
+    section: '⚙️ Configuración general',
+    steps: [
+      { n:14, title:'Cambiar la foto de perfil del bot', desc:'Ve a <strong>Configuración → Foto de perfil</strong>. Pega la URL de la imagen que quieres usar y verás una vista previa inmediata. Haz clic en <strong>Guardar foto</strong>. La nueva imagen aparecerá en el chat y en el sidebar del admin.', tip:'Usa una URL directa a una imagen (termina en .jpg, .png o .webp). La foto de Jhonatan Herrera está precargada por defecto.' },
+      { n:15, title:'Configurar el enlace de la comunidad gratuita', desc:'Ve a <strong>Configuración → Enlace Comunidad Gratuita</strong>. Pega el enlace de tu comunidad (WhatsApp, Telegram, Discord, etc.). Este enlace aparece como botón cuando el bot no encuentra coincidencia con las palabras del usuario.', tip:'Siempre ten este enlace configurado, es tu red de seguridad cuando el bot no sabe responder.' },
+      { n:16, title:'Configurar el anuncio flotante de Expercenter', desc:'Ve a <strong>Configuración → Publicidad flotante</strong>. Edita: texto del anuncio (apunta a un dolor del técnico), precio/oferta, URL de destino y texto del botón. El anuncio aparece como una tarjeta flotante discreta en el chat después de 3 segundos.', tip:'Actualiza el texto cada cierto tiempo para que no se vea estático. Mensajes como "Aprende a reparar en vivo" generan más clics.' },
+      { n:17, title:'Configurar mensaje de sin coincidencia', desc:'En <strong>Configuración → Mensaje sin coincidencia</strong>, personaliza el texto que aparece cuando el bot no entiende lo que el usuario escribió. Incluye ejemplos de cómo preguntar bien y el botón de comunidad gratuita.', tip:'Usa un tono amigable, que el usuario sienta que hay un humano detrás aunque sea el bot quien responda.' }
+    ]
+  },
+  {
+    section: '💬 Historial del chat (NUEVO)',
+    steps: [
+      { n:18, title:'Historial persistente por contacto', desc:'Cuando un usuario que ya habló antes regresa al chat y usa el mismo número de teléfono, el sistema detecta que ya es conocido y carga automáticamente todo el historial de conversación anterior. El bot lo saluda diferente: "¡Hola de nuevo, [nombre]! Qué bueno que nos consultas otra vez 😊".', tip:'El historial se guarda en el dispositivo del usuario (localStorage). Si abre el chat desde otro dispositivo, comenzará desde cero.' },
+      { n:19, title:'¿Cómo se identifica al usuario que regresa?', desc:'El sistema usa el número de teléfono limpio (sin espacios ni caracteres especiales) como identificador único. Si el número ya tiene historial guardado, se carga automáticamente. Si es nuevo, comienza el flujo normal de registro.', tip:'El historial incluye todos los mensajes del bot y del usuario de sesiones anteriores, con marcas de tiempo.' }
+    ]
+  },
+  {
+    section: '🎬 Videos en el chat (NUEVO)',
+    steps: [
+      { n:20, title:'Agregar videos de YouTube a respuestas', desc:'En cualquier disparador, ve al campo <strong>Video de respuesta</strong> y pega el link de YouTube. Acepta formatos: <code>https://youtu.be/ID</code>, <code>https://youtube.com/watch?v=ID</code> o <code>https://youtube.com/embed/ID</code>. El video se embebe automáticamente y se reproduce sin que el usuario tenga que presionar play.', tip:'Ideal para tutoriales cortos, demostraciones de reparación o presentaciones de Expercenter.' },
+      { n:21, title:'Agregar videos directos (MP4)', desc:'Si tienes el video alojado en un servidor o servicio de almacenamiento (Google Drive con enlace directo, Cloudinary, AWS S3, etc.), pega la URL directa del archivo en el campo <strong>Video de respuesta</strong>. El chat lo reproducirá con el reproductor nativo del navegador con autoplay.', tip:'Para Google Drive, cambia la URL de "/view" a "/preview" para que funcione como embed.' }
+    ]
+  }
+];
+
+function renderGuide() {
+  const container = document.getElementById('guide-content');
+  if (!container) return;
+  container.innerHTML = GUIDE_STEPS.map(section => `
+    <div class="guide-section-title">${section.section} <span class="gs-badge">✓ Activo</span></div>
+    <div class="guide-steps">
+      ${section.steps.map((s, i, arr) => `
+        <div class="guide-step">
+          ${i < arr.length - 1 ? '<div class="gs-line"></div>' : ''}
+          <div class="gs-num">${s.n}</div>
+          <div class="gs-body">
+            <div class="gs-title">${s.title}</div>
+            <div class="gs-desc">${s.desc}</div>
+            ${s.tip ? `<div class="gs-tip">💡 <strong>Tip:</strong> ${s.tip}</div>` : ''}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
 }
 
 loadDB();

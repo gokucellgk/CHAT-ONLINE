@@ -121,6 +121,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .send-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(124,58,237,.4)}
 .send-btn svg{fill:#fff;width:18px;height:18px}
 
+/* ── VIDEO MESSAGE ── */
+.video-wrap{margin-top:8px;border-radius:12px;overflow:hidden;background:#000;max-width:380px;position:relative}
+.video-wrap iframe{width:100%;aspect-ratio:16/9;border:none;display:block}
+.video-wrap video{width:100%;max-height:220px;display:block;border-radius:0}
+.video-label{font-size:.72rem;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:4px}
+
 /* ── FLOATING AD ── */
 #floating-ad{position:fixed;bottom:80px;right:16px;z-index:40;width:260px;background:linear-gradient(135deg,#1a1040,#0f1320);border:1px solid var(--p)60;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(124,58,237,.25);animation:slideIn .5s ease 3s both}
 @keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -353,6 +359,30 @@ function buildCountrySelect() {
   sel.value = '+57'; // Colombia default
 }
 
+// ── HISTORY HELPERS ──
+function historyKey(phone) {
+  return 'gokucell_hist_' + phone.replace(/\D/g, '');
+}
+
+function saveHistory(role, text, videoUrl) {
+  if (!userPhone) return;
+  const k = historyKey(userPhone);
+  const hist = JSON.parse(localStorage.getItem(k) || '[]');
+  hist.push({ role, text, videoUrl: videoUrl || null, ts: Date.now() });
+  // Keep last 120 messages max
+  if (hist.length > 120) hist.splice(0, hist.length - 120);
+  localStorage.setItem(k, JSON.stringify(hist));
+}
+
+function loadHistory() {
+  const k = historyKey(userPhone);
+  return JSON.parse(localStorage.getItem(k) || '[]');
+}
+
+function cleanPhone(phone) {
+  return phone.replace(/\D/g, '');
+}
+
 // ── START CHAT ──
 function startChat() {
   const name = document.getElementById('reg-name').value.trim();
@@ -371,40 +401,64 @@ function startChat() {
   userCountry = country;
   userIntent = intentEl.value;
 
-  // Assign label based on intent
+  // Assign label
   const intentLabelMap = { free: 'GRATIS', sales: 'EXPERCENTER', repair: 'REPARAXCELL' };
-  const defaultLabel = intentLabelMap[userIntent] || 'GRATIS';
-  // Try to find matching label in DB
   const matchLabel = DB.labels.find(l => l.flow === userIntent);
-  userLabel = matchLabel ? matchLabel.name : defaultLabel;
+  userLabel = matchLabel ? matchLabel.name : (intentLabelMap[userIntent] || 'GRATIS');
 
-  // Save lead
-  saveLead();
+  // Check for returning user
+  const history = loadHistory();
+  const isReturning = history.length > 0;
 
-  // Show chat
+  // Save lead (only if new or update existing)
+  saveLead(isReturning);
+
+  // Show chat screen
   document.getElementById('register-screen').style.display = 'none';
-  const chatScreen = document.getElementById('chat-screen');
-  chatScreen.style.display = 'flex';
+  document.getElementById('chat-screen').style.display = 'flex';
   document.getElementById('ch-user-chip').textContent = name + ' 👋';
 
-  // Send welcome bot message
-  const intentTexts = { free: 'recursos gratuitos', sales: 'capacitación completa', repair: 'cotizar una reparación' };
-  setTimeout(() => {
-    sendWelcome();
-  }, 700);
+  if (isReturning) {
+    // Show history divider
+    const divider = document.createElement('div');
+    divider.style.cssText = 'text-align:center;padding:10px 0;font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:8px;margin:4px 0';
+    divider.innerHTML = '<div style="flex:1;height:1px;background:var(--border)"></div>Conversación anterior<div style="flex:1;height:1px;background:var(--border)"></div>';
+    document.getElementById('chat-area').appendChild(divider);
+    // Restore previous messages silently
+    history.forEach(m => addMsg(m.role, m.text, { videoUrl: m.videoUrl, ts: m.ts }, true));
+    // Session separator
+    const sep = document.createElement('div');
+    sep.style.cssText = 'text-align:center;padding:10px 0;font-size:.72rem;color:var(--p);display:flex;align-items:center;gap:8px;margin:4px 0';
+    sep.innerHTML = '<div style="flex:1;height:1px;background:var(--p)30"></div>Nueva sesión · hoy<div style="flex:1;height:1px;background:var(--p)30"></div>';
+    document.getElementById('chat-area').appendChild(sep);
+    // Greet returning user
+    setTimeout(() => {
+      const returnGreet = `¡Hola de nuevo, **${userName}**! Qué bueno que nos consultas otra vez 😊 ¿En qué te puedo ayudar hoy?`;
+      addMsg('bot', returnGreet, { qr: ['Tengo una duda técnica', 'Quiero info del curso', 'Otra consulta'] });
+      botState = 'free_chat';
+    }, 800);
+  } else {
+    setTimeout(() => sendWelcome(), 700);
+  }
 }
 
-function saveLead() {
+function saveLead(isReturning) {
   DB.leads = DB.leads || [];
-  DB.leads.push({
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-    name: userName,
-    phone: userPhone,
-    countryCode: userCountry,
-    label: userLabel,
-    intent: intentLabel(userIntent),
-    ts: Date.now()
-  });
+  if (!isReturning) {
+    DB.leads.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+      name: userName,
+      phone: userPhone,
+      countryCode: userCountry,
+      label: userLabel,
+      intent: intentLabel(userIntent),
+      ts: Date.now()
+    });
+  } else {
+    // Update name/label on existing lead if phone matches
+    const existing = DB.leads.find(l => cleanPhone(l.phone) === cleanPhone(userPhone));
+    if (existing) { existing.name = userName; existing.label = userLabel; }
+  }
   localStorage.setItem(KEY, JSON.stringify(DB));
 }
 
@@ -510,6 +564,7 @@ function botReply(userText) {
       const text = humanize(topic.response, userName);
       const extras = {};
       if (topic.ctaText) extras.cta = { text: topic.ctaText, url: topic.ctaUrl || '#', type: topic.type };
+      if (topic.videoUrl) extras.videoUrl = topic.videoUrl;
 
       if (topic.type === 'sales') {
         extras.qr = ['¿Cómo me inscribo?', '¿Cuánto cuesta?', 'Tengo otra pregunta'];
@@ -556,8 +611,45 @@ function handleSalesFlow(userText) {
   }
 }
 
+// ── VIDEO HELPERS ──
+function getYoutubeId(url) {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function buildVideoElement(videoUrl) {
+  if (!videoUrl) return null;
+  const wrap = document.createElement('div');
+  wrap.className = 'video-wrap';
+  const ytId = getYoutubeId(videoUrl);
+  if (ytId) {
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1`;
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+    iframe.allowFullscreen = true;
+    wrap.appendChild(iframe);
+    const lbl = document.createElement('div');
+    lbl.className = 'video-label';
+    lbl.innerHTML = '▶ Video de YouTube · se reproduce automáticamente';
+    wrap.appendChild(lbl);
+  } else {
+    const vid = document.createElement('video');
+    vid.src = videoUrl;
+    vid.autoplay = true;
+    vid.muted = true;
+    vid.controls = true;
+    vid.playsInline = true;
+    wrap.appendChild(vid);
+    const lbl = document.createElement('div');
+    lbl.className = 'video-label';
+    lbl.innerHTML = '▶ Video adjunto';
+    wrap.appendChild(lbl);
+  }
+  return wrap;
+}
+
 // ── UI ──
-function addMsg(role, text, extras = {}) {
+function addMsg(role, text, extras = {}, skipHistory = false) {
   const area = document.getElementById('chat-area');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
@@ -583,6 +675,12 @@ function addMsg(role, text, extras = {}) {
   bubble.innerHTML = formatText(text);
   content.appendChild(bubble);
 
+  // Video embed (YouTube autoplay or direct mp4)
+  if (extras.videoUrl) {
+    const videoEl = buildVideoElement(extras.videoUrl);
+    if (videoEl) content.appendChild(videoEl);
+  }
+
   if (extras.cta) {
     const btn = document.createElement('a');
     btn.className = `cta-btn cta-${extras.cta.type || 'free'}`;
@@ -592,7 +690,8 @@ function addMsg(role, text, extras = {}) {
     content.appendChild(btn);
   }
 
-  if (extras.qr && extras.qr.length) {
+  // Quick replies only shown for fresh messages (not history replay)
+  if (!skipHistory && extras.qr && extras.qr.length) {
     const wrap = document.createElement('div');
     wrap.className = 'qr-wrap';
     extras.qr.forEach(q => {
@@ -607,12 +706,15 @@ function addMsg(role, text, extras = {}) {
 
   const time = document.createElement('div');
   time.className = 'msg-time';
-  time.textContent = getTime();
+  time.textContent = extras.ts ? new Date(extras.ts).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}) : getTime();
   content.appendChild(time);
 
   row.appendChild(content);
   area.appendChild(row);
   scrollBottom();
+
+  // Persist to history (only for fresh messages, not replays)
+  if (!skipHistory) saveHistory(role, text, extras.videoUrl || null);
 }
 
 function formatText(t) {
