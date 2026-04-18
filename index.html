@@ -40,6 +40,13 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .intent-sub{font-size:.75rem;color:var(--muted);margin-top:1px}
 .btn-start{width:100%;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;padding:15px;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:20px;transition:all .2s}
 .btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.consent-row{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:12px;background:var(--s2);border-radius:10px;border:1px solid var(--border)}
+.consent-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--p);flex-shrink:0;margin-top:2px;cursor:pointer}
+.consent-label{font-size:.78rem;color:var(--muted);line-height:1.5;cursor:pointer}
+.back-btn{background:rgba(124,58,237,.1);border:1px solid var(--p)40;border-radius:20px;padding:5px 12px;font-size:.72rem;color:var(--pl);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.back-btn:hover{background:var(--pg)}
+.admin-msg-bubble .bubble{background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(124,58,237,.1));border:1px solid rgba(6,182,212,.3);border-top-left-radius:5px}
+.admin-badge{font-size:.65rem;color:var(--cyan);font-weight:700;margin-bottom:3px}
 .reg-err{color:#ef4444;font-size:.78rem;margin-top:8px;text-align:center;min-height:18px}
 /* CHAT SCREEN */
 #chat-screen{display:none;flex-direction:column;height:100%;position:relative;z-index:1}
@@ -132,20 +139,35 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
         <input class="reg-input phone-input" id="reg-phone" placeholder="Número" type="tel" maxlength="15">
       </div>
 
-      <div class="reg-sec-title">¿En qué te podemos ayudar?</div>
-      <div class="intent-grid">
-        <label class="intent-option">
-          <input type="radio" name="intent" value="free">
-          <div class="intent-card"><div class="intent-icon">🎁</div><div><div class="intent-text">Quiero acceder a recursos gratuitos</div><div class="intent-sub">Comunidad, guías y tutoriales sin costo</div></div></div>
-        </label>
-        <label class="intent-option">
-          <input type="radio" name="intent" value="sales">
-          <div class="intent-card"><div class="intent-icon">🚀</div><div><div class="intent-text">Me interesa una capacitación completa</div><div class="intent-sub">Cursos y mentorías en Expercenter</div></div></div>
-        </label>
-        <label class="intent-option">
-          <input type="radio" name="intent" value="repair">
-          <div class="intent-card"><div class="intent-icon">🔧</div><div><div class="intent-text">Necesito cotizar una reparación</div><div class="intent-sub">Servicio técnico profesional ReparaXcell</div></div></div>
-        </label>
+      <div class="reg-sec-title">¿Cómo nos encontraste?</div>
+      <select class="reg-input" id="reg-source" style="cursor:pointer">
+        <option value="">Selecciona una opción</option>
+        <option>Instagram</option><option>TikTok</option><option>Facebook</option>
+        <option>YouTube</option><option>WhatsApp</option><option>Google</option>
+        <option>Recomendación</option><option>Otro</option>
+      </select>
+
+      <div id="intent-section">
+        <div class="reg-sec-title">¿En qué te podemos ayudar?</div>
+        <div class="intent-grid">
+          <label class="intent-option">
+            <input type="radio" name="intent" value="free">
+            <div class="intent-card"><div class="intent-icon">🎁</div><div><div class="intent-text">Quiero acceder a recursos gratuitos</div><div class="intent-sub">Comunidad, guías y tutoriales sin costo</div></div></div>
+          </label>
+          <label class="intent-option">
+            <input type="radio" name="intent" value="sales">
+            <div class="intent-card"><div class="intent-icon">🚀</div><div><div class="intent-text">Me interesa una capacitación completa</div><div class="intent-sub">Cursos y mentorías en Expercenter</div></div></div>
+          </label>
+          <label class="intent-option">
+            <input type="radio" name="intent" value="repair">
+            <div class="intent-card"><div class="intent-icon">🔧</div><div><div class="intent-text">Necesito cotizar una reparación</div><div class="intent-sub">Servicio técnico profesional ReparaXcell</div></div></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="consent-row">
+        <input type="checkbox" id="reg-consent">
+        <label class="consent-label" for="reg-consent" id="consent-label-text">Acepto recibir mensajes y recursos de GOKUCELL</label>
       </div>
       <button class="btn-start" onclick="startChat()">Iniciar consulta →</button>
       <div class="reg-err" id="reg-err"></div>
@@ -162,6 +184,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
       <p><span class="status-dot"></span><span id="ch-status-text">En línea · Reparación de celulares</span></p>
     </div>
     <div class="ch-user-chip" id="ch-user-chip">Hola 👋</div>
+    <button class="back-btn" onclick="showChangeTopicMenu()" title="Cambiar tema de consulta">↩ Cambiar tema</button>
   </div>
   <div id="chat-area"></div>
   <div class="input-wrap">
@@ -202,8 +225,8 @@ function initFirebase() {
 const KEY = 'gokucell_v2';
 let DB = { settings:{}, topics:[], labels:[], flows:[], leads:[] };
 let configUnsubscribe = null;
-let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='';
-let botState='idle', salesStepCount=0, msgCount=0;
+let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='', userSource='';
+let botState='idle', salesStepCount=0, msgCount=0, adminMsgStart=0;
 let profilePhoto='https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
 
 const COUNTRIES = [
@@ -262,18 +285,21 @@ function initAndListen() {
 function applySettings() {
   const s = DB.settings;
   profilePhoto = s.profilePhoto || profilePhoto;
-  // Update avatars
   document.getElementById('reg-avatar').src = profilePhoto;
   document.getElementById('ch-avatar').src = profilePhoto;
-  // Update description
   const desc = s.botDescription || 'by Jhonatan Herrera · Resolvemos tus dudas técnicas y te orientamos en tu camino como técnico 🔧';
   document.getElementById('reg-sub-text').textContent = desc;
   document.getElementById('ch-status-text').textContent = 'En línea · ' + (desc.split('·')[1]||'Soporte técnico').trim();
-  // Floating ad
   if (s.adText) document.getElementById('ad-text').textContent = s.adText;
   if (s.adPrice) document.getElementById('ad-price').textContent = 'por solo ' + s.adPrice;
   if (s.adUrl) document.getElementById('ad-btn').href = s.adUrl;
   if (s.adBtn) document.getElementById('ad-btn').textContent = s.adBtn;
+  // Consent text
+  const consentEl = document.getElementById('consent-label-text');
+  if (consentEl) consentEl.textContent = s.consentText || 'Acepto recibir mensajes y recursos de GOKUCELL';
+  // Intent mode
+  const intentSec = document.getElementById('intent-section');
+  if (intentSec) intentSec.style.display = (s.intentMode === 'hide') ? 'none' : 'block';
 }
 
 function loadLocalDB() {
@@ -345,13 +371,17 @@ async function saveHistory(role, text, videoUrl) {
 async function startChat() {
   const name = document.getElementById('reg-name').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
-  const countryRaw = document.getElementById('reg-country').value; // "dial|name"
+  const countryRaw = document.getElementById('reg-country').value;
+  const intentMode = DB.settings.intentMode || 'show';
   const intentEl = document.querySelector('input[name="intent"]:checked');
+  const consent = document.getElementById('reg-consent').checked;
+  const source = document.getElementById('reg-source').value || '';
   const err = document.getElementById('reg-err');
 
   if (!name) { err.textContent = 'Por favor ingresa tu nombre.'; return; }
-  if (!phone) { err.textContent = 'Por favor ingresa tu número.'; return; }
-  if (!intentEl) { err.textContent = 'Selecciona cómo podemos ayudarte.'; return; }
+  if (!phone) { err.textContent = 'Por favor ingresa tu número de WhatsApp.'; return; }
+  if (intentMode === 'show' && !intentEl) { err.textContent = 'Selecciona cómo podemos ayudarte.'; return; }
+  if (!consent) { err.textContent = 'Debes aceptar los términos para continuar.'; return; }
   err.textContent = '';
 
   const [dial, countryName] = countryRaw.split('|');
@@ -359,7 +389,8 @@ async function startChat() {
   userPhone = phone;
   userCountry = dial;
   userCountryName = countryName || dial;
-  userIntent = intentEl.value;
+  userSource = source;
+  userIntent = (intentMode === 'hide') ? 'free' : (intentMode === 'after') ? 'pending' : (intentEl?.value || 'free');
 
   // Assign label
   const intentLabelMap = {free:'GRATIS', sales:'EXPERCENTER', repair:'REPARAXCELL'};
@@ -378,21 +409,21 @@ async function startChat() {
   document.getElementById('chat-screen').style.display = 'flex';
   document.getElementById('ch-user-chip').textContent = name + ' 👋';
 
+  listenAdminMessages();
+
   if (isReturning) {
-    // History divider
     const div1 = document.createElement('div');
     div1.style.cssText = 'text-align:center;padding:8px 0;font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:8px';
     div1.innerHTML = '<div style="flex:1;height:1px;background:var(--border)"></div>Conversación anterior<div style="flex:1;height:1px;background:var(--border)"></div>';
     document.getElementById('chat-area').appendChild(div1);
-    // Replay messages silently
-    history.forEach(m => addMsg(m.role, m.text, {videoUrl:m.videoUrl,ts:m.ts}, true));
-    // New session divider
+    history.forEach(m => addMsg(m.role, m.text, {videoUrl:m.videoUrl,ts:m.ts,isAdmin:m.role==='admin'}, true));
     const div2 = document.createElement('div');
     div2.style.cssText = 'text-align:center;padding:8px 0;font-size:.72rem;color:var(--p);display:flex;align-items:center;gap:8px';
     div2.innerHTML = '<div style="flex:1;height:1px;background:var(--p)40"></div>Nueva sesión · hoy<div style="flex:1;height:1px;background:var(--p)40"></div>';
     document.getElementById('chat-area').appendChild(div2);
     setTimeout(() => {
-      addMsg('bot', `¡Hola de nuevo, **${userName}**! Qué bueno que nos consultas otra vez 😊 ¿En qué te puedo ayudar hoy?`, {qr:['Tengo una duda técnica','Quiero info del curso','Otra consulta']});
+      const retQR = DB.settings.quickRepliesReturning || ['Tengo una duda técnica','Quiero info del curso','Otra consulta'];
+      addMsg('bot', `¡Hola de nuevo, **${userName}**! Qué bueno que nos consultas otra vez 😊 ¿En qué te puedo ayudar hoy?`, {qr: retQR});
       botState = 'free_chat';
     }, 600);
   } else {
@@ -408,7 +439,8 @@ async function saveLead(isReturning) {
     countryCode: userCountry,
     countryName: userCountryName,
     label: userLabel,
-    intent: {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación'}[userIntent]||userIntent,
+    source: userSource || '',
+    intent: {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación',pending:'Por definir'}[userIntent]||userIntent,
     ts: Date.now()
   };
   if (isReturning) {
@@ -427,8 +459,16 @@ async function saveLead(isReturning) {
     if (raw) { try { const d=JSON.parse(raw); const l=d.leads&&d.leads.find(x=>cleanPhone(x.phone)===cleanPhone(userPhone)); if(l){l.name=userName;l.label=userLabel;localStorage.setItem(KEY,JSON.stringify(d));} } catch(e){} }
     return;
   }
-  // New lead: save to Firebase + localStorage
+  // New lead: save to Firebase + localStorage (verify no duplicate by phone)
   if (db) {
+    try {
+      const existing = await db.collection('gkc_leads').where('phone','==',userPhone).limit(1).get();
+      if (!existing.empty) {
+        // Update existing instead of creating duplicate
+        existing.docs[0].ref.update({name:userName,label:userLabel,countryName:userCountryName,source:userSource||'',updatedAt:Date.now()}).catch(e=>{});
+        return;
+      }
+    } catch(e) {}
     db.collection('gkc_leads').doc(lead.id).set(lead).catch(e => console.warn(e));
   }
   const raw = localStorage.getItem(KEY);
@@ -441,6 +481,18 @@ async function saveLead(isReturning) {
 
 // ── WELCOME ──
 function sendWelcome() {
+  // intentMode 'after': primero preguntar qué necesita
+  if (userIntent === 'pending') {
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      addMsg('bot', `¡Hola **${userName}**! 👋 Bienvenido. Cuéntame, ¿en qué te puedo ayudar hoy?`, {
+        qr:['🎁 Recursos gratuitos','🚀 Capacitación Expercenter','🔧 Cotizar una reparación']
+      });
+      botState = 'pending_intent';
+    }, 900);
+    return;
+  }
   const label = DB.labels.find(l => l.flow === userIntent);
   showTyping();
   setTimeout(() => {
@@ -456,7 +508,9 @@ function sendWelcome() {
     const extras = {};
     if (ctaText && ctaUrl) extras.cta = {text:ctaText, url:ctaUrl, type:userIntent};
     if (userIntent === 'repair') { addMsg('bot', welcomeText, extras); botState='repair_done'; return; }
-    extras.qr = userIntent==='sales' ? ['Soy principiante','Tengo experiencia básica','Ya trabajo reparando'] : ['Tengo una duda técnica','Quiero aprender más','¿Qué hay en la comunidad?'];
+    const qrSales = DB.settings.quickRepliesSales || ['Soy principiante','Tengo experiencia básica','Ya trabajo reparando'];
+    const qrFree = DB.settings.quickRepliesFree || ['Tengo una duda técnica','Quiero aprender más','¿Qué hay en la comunidad?'];
+    extras.qr = userIntent==='sales' ? qrSales : qrFree;
     addMsg('bot', welcomeText, extras);
     botState = userIntent==='sales' ? 'sales_q1' : 'free_chat';
   }, 1000);
@@ -497,6 +551,12 @@ function botReply(userText) {
   const delay = 800 + Math.min(userText.length*7,700) + Math.random()*400;
   setTimeout(() => {
     hideTyping();
+    // pending_intent: usuario eligió su tema desde 'after' mode
+    if (botState === 'pending_intent') {
+      const intentMap = {'🎁 Recursos gratuitos':'free','🚀 Capacitación Expercenter':'sales','🔧 Cotizar una reparación':'repair'};
+      const mapped = intentMap[userText];
+      if (mapped) { changeIntent(mapped); return; }
+    }
     if (botState === 'repair_done') {
       addMsg('bot', `Para cualquier otra duda estoy aquí, **${userName}**. 😊`, {qr:['Tengo otra consulta','Gracias']});
       return;
@@ -518,20 +578,25 @@ function botReply(userText) {
       const noMatch = (DB.settings.noMatchMsg||'').replace(/\[nombre\]/gi, userName) ||
         `Para poder ayudarte mejor, **${userName}**, intenta escribir tu consulta así:\n\n*"¿Cómo diagnostico un celular que no carga?"*\n*"¿Qué necesito para empezar en reparación?"*\n\nO si prefieres, únete a nuestra comunidad gratuita donde más de **1.200 técnicos** están activos. 👇`;
       const communityUrl = DB.settings.communityLink||'#';
-      addMsg('bot', noMatch, {cta:{text:'🎁 Unirme a la Comunidad Gratuita',url:communityUrl,type:'free'}, qr:['Tengo una duda técnica','Quiero un curso','Cotizar una reparación']});
+      const nmQR = DB.settings.quickRepliesNoMatch || ['Tengo una duda técnica','Quiero un curso','Cotizar una reparación'];
+      addMsg('bot', noMatch, {cta:{text:'🎁 Unirme a la Comunidad Gratuita',url:communityUrl,type:'free'}, qr: nmQR});
     }
   }, delay);
 }
 
 function handleSalesFlow() {
   salesStepCount++;
-  if (salesStepCount <= SALES_QUESTIONS.length) {
-    const q = SALES_QUESTIONS[Math.min(salesStepCount-1, SALES_QUESTIONS.length-1)];
-    const bridge = salesStepCount > 1 ? SALES_BRIDGES[Math.min(salesStepCount-2, SALES_BRIDGES.length-1)] + '\n\n' : '';
-    addMsg('bot', bridge + q, {qr: salesStepCount===1 ? ['Principiante','Nivel básico','Ya reparo'] : ['Sí, cuéntame más','Ver los planes','Tengo otra pregunta']});
+  const SQ = DB.settings.salesQuestions && DB.settings.salesQuestions.length ? DB.settings.salesQuestions : SALES_QUESTIONS;
+  const SB = DB.settings.salesBridges && DB.settings.salesBridges.length ? DB.settings.salesBridges : SALES_BRIDGES;
+  if (salesStepCount <= SQ.length) {
+    const q = SQ[Math.min(salesStepCount-1, SQ.length-1)];
+    const bridge = salesStepCount > 1 ? SB[Math.min(salesStepCount-2, SB.length-1)] + '\n\n' : '';
+    const qrSales = DB.settings.quickRepliesSales || ['Principiante','Nivel básico','Ya reparo'];
+    addMsg('bot', bridge + q, {qr: salesStepCount===1 ? qrSales : ['Sí, cuéntame más','Ver los planes','Tengo otra pregunta']});
   } else {
     const salesLabel = DB.labels.find(l => l.flow==='sales');
-    addMsg('bot', `Genial, **${userName}**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. Tenemos alumnos que en pocas semanas resuelven fallas que antes les costaban horas. 🚀`, {cta:{text:salesLabel?.ctaText||'🚀 Quiero unirme a Expercenter',url:salesLabel?.ctaUrl||'https://expercenter.com/',type:'sales'}, qr:['¿Cuánto cuesta?','¿Cuándo empiezan?','Tengo una duda más']});
+    const finalMsg = (DB.settings.salesFinalMsg || 'Genial, **[nombre]**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. 🚀').replace(/\[nombre\]/gi, userName);
+    addMsg('bot', finalMsg, {cta:{text:salesLabel?.ctaText||'🚀 Quiero unirme a Expercenter',url:salesLabel?.ctaUrl||'https://expercenter.com/',type:'sales'}, qr:['¿Cuánto cuesta?','¿Cuándo empiezan?','Tengo una duda más']});
     botState='sales_closed'; salesStepCount=0;
   }
 }
@@ -571,9 +636,11 @@ function buildVideoEl(videoUrl) {
 function addMsg(role, text, extras={}, skipHistory=false) {
   const area = document.getElementById('chat-area');
   const row = document.createElement('div');
-  row.className = `msg-row ${role}`;
+  const displayRole = role === 'admin' ? 'bot' : role;
+  row.className = `msg-row ${displayRole}`;
+  if (role === 'admin') row.classList.add('admin-msg-bubble');
 
-  if (role==='bot') {
+  if (role==='bot' || role==='admin') {
     const av = document.createElement('img');
     av.className='msg-av'; av.src=profilePhoto; av.alt='Bot';
     row.appendChild(av);
@@ -589,6 +656,11 @@ function addMsg(role, text, extras={}, skipHistory=false) {
 
   const bubble = document.createElement('div');
   bubble.className='bubble';
+  if (role === 'admin') {
+    const badge = document.createElement('div');
+    badge.className='admin-badge'; badge.textContent='👨‍💼 Atención personalizada';
+    content.appendChild(badge);
+  }
   bubble.innerHTML = formatText(text);
   content.appendChild(bubble);
 
@@ -646,6 +718,41 @@ function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMs
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 function scrollBottom(){const a=document.getElementById('chat-area');a.scrollTop=a.scrollHeight;}
 function getTime(){return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});}
+
+// ── CAMBIAR TEMA ──
+function showChangeTopicMenu() {
+  addMsg('bot', `¡Claro, **${userName}**! ¿Sobre qué tema quieres consultar ahora?`, {
+    qr:['🎁 Recursos gratuitos','🚀 Capacitación Expercenter','🔧 Cotizar una reparación']
+  });
+  botState = 'pending_intent';
+  scrollBottom();
+}
+
+function changeIntent(newIntent) {
+  userIntent = newIntent;
+  const intentLabelMap = {free:'GRATIS', sales:'EXPERCENTER', repair:'REPARAXCELL'};
+  const matchLabel = DB.labels.find(l => l.flow === newIntent);
+  userLabel = matchLabel ? matchLabel.name : (intentLabelMap[newIntent] || 'GRATIS');
+  botState = newIntent === 'sales' ? 'sales_q1' : newIntent === 'free' ? 'free_chat' : 'repair_done';
+  salesStepCount = 0;
+  sendWelcome();
+}
+
+// ── ADMIN → USUARIO (tiempo real) ──
+function listenAdminMessages() {
+  if (!db || !userPhone) return;
+  const ph = cleanPhone(userPhone);
+  if (!ph) return;
+  adminMsgStart = Date.now();
+  db.collection('gkc_admin').doc(ph).onSnapshot(snap => {
+    if (!snap.exists) return;
+    const msgs = snap.data().msgs || [];
+    msgs.filter(m => m.ts > adminMsgStart).forEach(m => {
+      adminMsgStart = Math.max(adminMsgStart, m.ts + 1);
+      addMsg('admin', m.text, {}, false);
+    });
+  }, e => console.warn('Admin listener:', e));
+}
 
 // ── INIT ──
 loadLocalDB();

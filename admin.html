@@ -322,12 +322,18 @@ tr:hover td{background:var(--s2)}
             <select class="form-select" id="leads-country-filter" onchange="renderLeads()" style="width:150px;padding:9px 10px">
               <option value="">Todos los países</option>
             </select>
+            <select class="form-select" id="leads-source-filter" onchange="renderLeads()" style="width:150px;padding:9px 10px">
+              <option value="">Todos los orígenes</option>
+              <option>Instagram</option><option>TikTok</option><option>Facebook</option>
+              <option>YouTube</option><option>WhatsApp</option><option>Google</option>
+              <option>Recomendación</option><option>Otro</option>
+            </select>
             <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
           </div>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
+            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Origen</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
             <tbody id="leads-body"></tbody>
           </table>
           <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún.</p></div>
@@ -390,6 +396,19 @@ tr:hover td{background:var(--s2)}
             <h3>💬 Mensaje sin coincidencia</h3>
             <div class="form-group"><label class="form-label">Texto cuando el bot no entiende</label><textarea class="form-textarea" id="s-nomatch"></textarea></div>
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
+          </div>
+
+          <div class="settings-card" style="grid-column:1/-1">
+            <h3>🎯 ¿En qué te podemos ayudar? — Modo de visualización</h3>
+            <div class="form-hint" style="margin-bottom:12px">Controla cómo y cuándo aparece la sección de intención en el chat del usuario.</div>
+            <div class="intent-mode-grid" id="intent-mode-grid">
+              <div class="im-opt" id="im-show" onclick="setIntentMode('show')"><div class="im-icon">👁</div><div class="im-title">Siempre visible</div><div class="im-desc">Aparece en el formulario inicial antes de registrarse</div></div>
+              <div class="im-opt" id="im-after" onclick="setIntentMode('after')"><div class="im-icon">🔓</div><div class="im-title">Después del registro</div><div class="im-desc">Solo nombre y WhatsApp al inicio; la pregunta aparece al entrar al chat</div></div>
+              <div class="im-opt" id="im-hide" onclick="setIntentMode('hide')"><div class="im-icon">🙈</div><div class="im-title">Ocultar completamente</div><div class="im-desc">No se muestra; todos los leads van al flujo gratuito por defecto</div></div>
+            </div>
+            <input type="hidden" id="s-intent-mode" value="show">
+            <div class="form-group" style="margin-top:14px"><label class="form-label">Texto del check de consentimiento (chat)</label><input class="form-input" id="s-consent" placeholder="Acepto recibir mensajes y recursos de GOKUCELL"><div class="form-hint">Se muestra como checkbox requerido antes de iniciar el chat.</div></div>
+            <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveSettings()">Guardar</button>
           </div>
 
           <div class="settings-card">
@@ -485,6 +504,17 @@ tr:hover td{background:var(--s2)}
       <div id="mh-messages" style="display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:14px"></div>
       <div id="mh-empty" style="text-align:center;color:var(--muted);padding:30px;display:none">Sin historial guardado aún</div>
     </div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="admin-send-wrap">
+        <div class="admin-send-title">📤 Enviar mensaje directo al chat del usuario</div>
+        <div class="admin-send-row">
+          <input class="admin-send-input" id="admin-msg-input" placeholder="Escribe el mensaje para enviar al chat..." onkeydown="if(event.key==='Enter')sendAdminMsg()">
+          <button class="btn-cyan2" onclick="sendAdminMsg()">Enviar</button>
+        </div>
+        <input type="hidden" id="admin-msg-phone">
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 El mensaje aparecerá en tiempo real en el chat del usuario si está activo.</div>
+      </div>
+    </div>
     <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-history')">Cerrar</button></div>
   </div>
 </div>
@@ -544,6 +574,47 @@ tr:hover td{background:var(--s2)}
   </div>
 </div>
 
+<!-- MODAL WA TEMPLATE CRUD -->
+<div class="modal-overlay" id="modal-wt">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header"><h2 id="wt-modal-title">Nueva Plantilla WA</h2><button class="modal-close" onclick="closeModal('modal-wt')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Nombre de la plantilla</label><input class="form-input" id="wt-name" placeholder="Ej: Seguimiento Expercenter"></div>
+      <div class="form-group"><label class="form-label">Etiqueta (opcional)</label>
+        <select class="form-select" id="wt-label"><option value="">Sin etiqueta específica</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Mensaje <span style="color:var(--muted);font-weight:400">(usa [nombre])</span></label>
+        <textarea class="form-textarea" id="wt-msg" placeholder="Hola [nombre], te contactamos desde GOKUCELL 👋..." style="min-height:100px"></textarea>
+        <div class="form-hint">La variable [nombre] se reemplaza automáticamente con el nombre del contacto.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-wt')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveWTModal()">Guardar plantilla</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ENVIAR WA -->
+<div class="modal-overlay" id="modal-wa-send">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header"><h2>📱 Enviar WhatsApp</h2><button class="modal-close" onclick="closeModal('modal-wa-send')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Para: <strong id="was-name"></strong> · <span id="was-phone-display"></span></div>
+      <div class="form-group"><label class="form-label">Seleccionar plantilla</label>
+        <select class="form-select" id="was-template" onchange="applyWATemplate()"><option value="">— Mensaje personalizado —</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Mensaje a enviar</label>
+        <textarea class="form-textarea" id="was-msg" style="min-height:100px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-wa-send')">Cancelar</button>
+      <button class="btn btn-primary" onclick="goWhatsApp()">📱 Abrir WhatsApp</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -577,9 +648,27 @@ let DB = {
     adPrice: '$17/mes',
     adUrl: 'https://expercenter.com/',
     adBtn: '¡Únete por solo $17/mes!',
-    noMatchMsg: ''
+    noMatchMsg: '',
+    intentMode: 'show',
+    consentText: 'Acepto recibir mensajes y recursos de GOKUCELL',
+    salesQuestions: [
+      '¿Cuánto tiempo llevas en el mundo de la reparación?',
+      '¿Ya estás generando ingresos con reparaciones, o buscas empezar desde cero?',
+      '¿Hay alguna marca o tipo de falla en la que te quieras especializar?'
+    ],
+    salesBridges: [
+      'Con eso en mente, el programa de Expercenter tiene exactamente el nivel que necesitas. 💪',
+      'Muchos de nuestros alumnos empezaron igual que tú y hoy resuelven fallas que antes rechazaban.',
+      'Con Expercenter dominas diagnóstico a nivel de placa, lectura de esquemáticos y técnicas de soldadura.'
+    ],
+    salesFinalMsg: 'Genial, **[nombre]**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. Tenemos alumnos que en pocas semanas resuelven fallas que antes les costaban horas. 🚀',
+    quickRepliesFree: ['Tengo una duda técnica','Quiero aprender más','¿Qué hay en la comunidad?'],
+    quickRepliesSales: ['Soy principiante','Tengo experiencia básica','Ya trabajo reparando'],
+    quickRepliesReturning: ['Tengo una duda técnica','Quiero info del curso','Otra consulta'],
+    quickRepliesNoMatch: ['Tengo una duda técnica','Quiero un curso','Cotizar una reparación']
   },
   topics: [],
+  waTemplates: [],
   labels: [
     {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! Qué bueno que estás aquí. 😊 Estoy para orientarte.',ctaText:'🎁 Unirme a la Comunidad',ctaUrl:''},
     {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que quieras capacitarte. ¿Cuál es tu nivel actual en reparación?',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
@@ -737,6 +826,8 @@ function initApp() {
   document.getElementById('s-ad-url').value = DB.settings.adUrl || 'https://expercenter.com/';
   document.getElementById('s-ad-btn').value = DB.settings.adBtn || '¡Únete!';
   document.getElementById('s-nomatch').value = DB.settings.noMatchMsg || '';
+  document.getElementById('s-consent').value = DB.settings.consentText || 'Acepto recibir mensajes y recursos de GOKUCELL';
+  setIntentMode(DB.settings.intentMode || 'show', false);
   renderDashboard(); updateBadges();
 }
 
@@ -752,6 +843,8 @@ const SEC_META = {
   flowmap:['Mapa de Flujos','Conecta los flujos de conversación'],
   leads:['Contactos','Leads en tiempo real desde Firebase'],
   labels:['Etiquetas','Flujos por tipo de interés'],
+  autoflow:['Flujo Automático','Mensajes y botones del bot'],
+  watemplates:['Plantillas WhatsApp','Mensajes para contactar leads'],
   settings:['Configuración','Ajustes generales'],
   guide:['Guía de uso','Instrucciones paso a paso']
 };
@@ -768,6 +861,8 @@ function showSection(id, el) {
   if (id === 'flowmap') initFlowMap();
   if (id === 'leads') { buildLeadsFilters(); renderLeads(); }
   if (id === 'labels') renderLabels();
+  if (id === 'autoflow') renderAutoflow();
+  if (id === 'watemplates') renderWATemplates();
   if (id === 'guide') renderGuide();
 }
 
@@ -916,7 +1011,7 @@ function createFlowNode(t, pos) {
   const node = document.createElement('div');
   node.className = 'flow-node'; node.dataset.id = t.id;
   node.style.left = pos.x+'px'; node.style.top = pos.y+'px';
-  node.innerHTML = `<div class="fn-header"><div class="fn-title" title="${esc(t.title)}">${esc(t.title)}</div><div class="fn-badge" style="background:${cm[t.type]}22;color:${cm[t.type]}">${typeLabel(t.type)}</div></div><div class="fn-body">${esc(t.keywords.slice(0,3).join(', '))}${t.keywords.length>3?'…':''}</div><div class="fn-ports"><div class="fn-port" title="Entrada" onclick="connectTo('${t.id}')">◀</div><div class="fn-port" title="Conectar" onclick="startConnect('${t.id}')">▶</div></div>`;
+  node.innerHTML = `<div class="fn-header"><div class="fn-title" title="${esc(t.title)}">${esc(t.title)}</div><div style="display:flex;align-items:center;gap:4px"><div class="fn-badge" style="background:${cm[t.type]}22;color:${cm[t.type]}">${typeLabel(t.type)}</div><button class="fn-edit" title="Editar" onclick="openTopicModal('${t.id}');event.stopPropagation()">✏️</button></div></div><div class="fn-body">${esc((t.response||'').substring(0,60))}…</div><div class="fn-ports"><div class="fn-port" title="Entrada" onclick="connectTo('${t.id}')">◀</div><div class="fn-port" title="Conectar" onclick="startConnect('${t.id}')">▶</div></div>`;
   layer.appendChild(node);
   let sx,sy,ox,oy;
   node.addEventListener('mousedown', e => { if(e.target.classList.contains('fn-port')||connectingFrom)return; flowDragging=t.id;sx=e.clientX;sy=e.clientY;ox=parseInt(node.style.left);oy=parseInt(node.style.top);e.preventDefault(); });
@@ -976,37 +1071,40 @@ function buildLeadsFilters() {
   });
 }
 
+const SOURCE_ICONS = {Instagram:'📸',TikTok:'🎵',Facebook:'👥',YouTube:'▶️',WhatsApp:'💬',Google:'🔍',Recomendación:'🤝',Otro:'📌'};
+
 function renderLeads() {
   buildLeadsFilters();
   const q = (document.getElementById('leads-search')?.value || '').toLowerCase();
   const lblF = document.getElementById('leads-label-filter')?.value || '';
   const ctF = document.getElementById('leads-country-filter')?.value || '';
+  const srcF = document.getElementById('leads-source-filter')?.value || '';
   let list = DB.leads.filter(l => {
     const matchLbl = !lblF || l.label === lblF;
     const matchCt = !ctF || (l.countryName || l.countryCode) === ctF;
-    const matchQ = !q || l.name.toLowerCase().includes(q) || (l.phone||'').includes(q);
-    return matchLbl && matchCt && matchQ;
+    const matchSrc = !srcF || l.source === srcF;
+    const matchQ = !q || (l.name||'').toLowerCase().includes(q) || (l.phone||'').includes(q);
+    return matchLbl && matchCt && matchSrc && matchQ;
   }).sort((a,b) => (b.ts||0) - (a.ts||0));
 
   const tbody = document.getElementById('leads-body');
   const empty = document.getElementById('leads-empty');
   if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  const cleanPh = ph => (ph||'').replace(/\D/g,'');
   tbody.innerHTML = list.map(l => {
-    const ph = cleanPh((l.countryCode||'').replace(/\D/g,'')) + cleanPh(l.phone||'');
-    const waLink = `https://wa.me/${ph}?text=${encodeURIComponent('Hola ' + l.name + ', te contactamos desde GOKUCELL 👋')}`;
+    const srcIcon = l.source ? `<span title="${esc(l.source)}">${SOURCE_ICONS[l.source]||'📌'} ${esc(l.source)}</span>` : `<span style="color:var(--muted)">—</span>`;
     const noteHtml = l.note
       ? `<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,25))}${l.note.length>25?'…':''}</span>`
       : `<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.72rem;padding:3px 8px">+ Nota</button>`;
     return `<tr>
       <td style="font-weight:600">${esc(l.name)}</td>
-      <td><a class="wa-link" href="${waLink}" target="_blank">📱 ${esc(l.countryCode||'')} ${esc(l.phone||'')}</a></td>
+      <td><button class="wa-link" style="background:none;border:none;cursor:pointer" onclick="openWASend('${l.id}')">📱 ${esc(l.countryCode||'')} ${esc(l.phone||'')}</button></td>
       <td style="color:var(--muted);font-size:.82rem">${esc(l.countryName||l.countryCode||'')}</td>
+      <td style="font-size:.8rem">${srcIcon}</td>
       <td style="color:var(--muted);font-size:.82rem">${esc(l.intent||'')}</td>
       <td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label||'')}</span></td>
       <td>${noteHtml}</td>
-      <td><button class="btn btn-cyan btn-sm" onclick="viewHistory('${l.id}','${l.name}','${l.countryCode||''}${l.phone||''}')">💬 Chat</button></td>
+      <td><button class="btn btn-cyan btn-sm" onclick="viewHistory('${l.id}','${esc(l.name)}','${esc(l.phone||'')}')">💬 Chat</button></td>
       <td style="color:var(--muted);font-size:.75rem;white-space:nowrap">${formatDate(l.ts)}</td>
     </tr>`;
   }).join('');
@@ -1037,6 +1135,8 @@ function saveNote() {
 async function viewHistory(leadId, name, cleanPhone) {
   document.getElementById('mh-name').textContent = name;
   document.getElementById('mh-phone').textContent = cleanPhone;
+  document.getElementById('admin-msg-phone').value = cleanPhone;
+  document.getElementById('admin-msg-input').value = '';
   const container = document.getElementById('mh-messages');
   const empty = document.getElementById('mh-empty');
   container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">Cargando...</div>';
@@ -1162,6 +1262,8 @@ function saveSettings() {
   DB.settings.adUrl = document.getElementById('s-ad-url').value.trim();
   DB.settings.adBtn = document.getElementById('s-ad-btn').value.trim();
   DB.settings.noMatchMsg = document.getElementById('s-nomatch').value.trim();
+  DB.settings.intentMode = document.getElementById('s-intent-mode').value || 'show';
+  DB.settings.consentText = document.getElementById('s-consent').value.trim() || 'Acepto recibir mensajes y recursos de GOKUCELL';
   saveDB();
   document.getElementById('sb-avatar').src = DB.settings.profilePhoto;
   showToast('Configuración guardada y sincronizada.');
@@ -1234,6 +1336,131 @@ function showToast(msg, type='ok') {
   t.textContent = (type==='ok'?'✅ ':'⚠️ ') + msg;
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INTENT MODE ──
+function setIntentMode(mode, save=true) {
+  document.getElementById('s-intent-mode').value = mode;
+  ['show','after','hide'].forEach(m => {
+    const el = document.getElementById('im-'+m);
+    if (el) el.classList.toggle('active', m === mode);
+  });
+  if (save) { DB.settings.intentMode = mode; saveDB(); showToast('Modo guardado.'); }
+}
+
+// ── ADMIN → CHAT MESSAGE ──
+async function sendAdminMsg() {
+  const text = document.getElementById('admin-msg-input').value.trim();
+  const phone = document.getElementById('admin-msg-phone').value.trim();
+  if (!text) { showToast('Escribe un mensaje primero.', 'err'); return; }
+  const ph = phone.replace(/\D/g,'');
+  if (!ph) { showToast('Sin número de teléfono.', 'err'); return; }
+  const msg = {id: uid(), text, ts: Date.now()};
+  if (db) {
+    try {
+      await db.collection('gkc_admin').doc(ph).set({msgs: firebase.firestore.FieldValue.arrayUnion(msg)}, {merge: true});
+      const snap = await db.collection('gkc_hist').doc(ph).get();
+      const hist = snap.exists ? (snap.data().messages||[]) : [];
+      hist.push({role:'admin', text, ts: msg.ts});
+      db.collection('gkc_hist').doc(ph).set({messages: hist, updatedAt: Date.now()}, {merge: true});
+      document.getElementById('admin-msg-input').value = '';
+      showToast('✅ Mensaje enviado al chat del usuario.');
+      setTimeout(() => viewHistory(null, document.getElementById('mh-name').textContent, phone), 500);
+    } catch(e) { showToast('Error al enviar.', 'err'); console.warn(e); }
+  } else { showToast('Firebase no conectado.', 'err'); }
+}
+
+// ── AUTOFLOW ──
+const QR_SETS = {free:[],sales:[],ret:[],nomatch:[]};
+function renderAutoflow() {
+  const s = DB.settings;
+  document.getElementById('af-sq1').value = (s.salesQuestions||[])[0]||'';
+  document.getElementById('af-sq2').value = (s.salesQuestions||[])[1]||'';
+  document.getElementById('af-sq3').value = (s.salesQuestions||[])[2]||'';
+  document.getElementById('af-sb1').value = (s.salesBridges||[])[0]||'';
+  document.getElementById('af-sb2').value = (s.salesBridges||[])[1]||'';
+  document.getElementById('af-sb3').value = (s.salesBridges||[])[2]||'';
+  document.getElementById('af-sfinal').value = s.salesFinalMsg||'';
+  QR_SETS.free=[...(s.quickRepliesFree||[])]; QR_SETS.sales=[...(s.quickRepliesSales||[])];
+  QR_SETS.ret=[...(s.quickRepliesReturning||[])]; QR_SETS.nomatch=[...(s.quickRepliesNoMatch||[])];
+  renderQRSet('qr-free','free'); renderQRSet('qr-sales','sales');
+  renderQRSet('qr-return','ret'); renderQRSet('qr-nomatch','nomatch');
+}
+function renderQRSet(wrId, key) {
+  const wr=document.getElementById(wrId); if(!wr) return; wr.innerHTML='';
+  QR_SETS[key].forEach((tag,i)=>{
+    const sp=document.createElement('div'); sp.className='qr-tag';
+    sp.innerHTML=`${esc(tag)}<button onclick="removeQRTag('${key}',${i})">×</button>`; wr.appendChild(sp);
+  });
+  const inp=document.createElement('input'); inp.className='qr-input'; inp.placeholder='Agregar...';
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();const v=inp.value.trim().replace(/,/g,'');if(v&&!QR_SETS[key].includes(v)){QR_SETS[key].push(v);renderQRSet(wrId,key);}else inp.value='';}
+    if(e.key==='Backspace'&&!inp.value&&QR_SETS[key].length){QR_SETS[key].pop();renderQRSet(wrId,key);}
+  }); wr.appendChild(inp);
+}
+function focusQR(wrId){const i=document.querySelector(`#${wrId} .qr-input`);if(i)i.focus();}
+function removeQRTag(key,i){const m={free:'qr-free',sales:'qr-sales',ret:'qr-return',nomatch:'qr-nomatch'};QR_SETS[key].splice(i,1);renderQRSet(m[key],key);}
+function saveAutoflow(){
+  DB.settings.salesQuestions=[document.getElementById('af-sq1').value.trim(),document.getElementById('af-sq2').value.trim(),document.getElementById('af-sq3').value.trim()].filter(Boolean);
+  DB.settings.salesBridges=[document.getElementById('af-sb1').value.trim(),document.getElementById('af-sb2').value.trim(),document.getElementById('af-sb3').value.trim()].filter(Boolean);
+  DB.settings.salesFinalMsg=document.getElementById('af-sfinal').value.trim();
+  DB.settings.quickRepliesFree=[...QR_SETS.free]; DB.settings.quickRepliesSales=[...QR_SETS.sales];
+  DB.settings.quickRepliesReturning=[...QR_SETS.ret]; DB.settings.quickRepliesNoMatch=[...QR_SETS.nomatch];
+  saveDB(); showToast('Flujo automático guardado y sincronizado.');
+}
+
+// ── WA TEMPLATES ──
+let editWTId=null, waCurrentLead=null;
+function renderWATemplates(){
+  const list=document.getElementById('wt-list'),empty=document.getElementById('wt-empty');
+  const wts=DB.waTemplates||[];
+  if(!wts.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=wts.map(wt=>`<div class="wt-card"><div class="wt-body">${wt.label?`<div class="wt-lbl">${esc(wt.label)}</div>`:''}<div class="wt-name">${esc(wt.name)}</div><div class="wt-msg">${esc(wt.message)}</div></div><div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0"><button class="btn btn-secondary btn-sm" onclick="openWTModal('${wt.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteWT('${wt.id}')">🗑</button></div></div>`).join('');
+}
+function openWTModal(id=null){
+  editWTId=id;
+  document.getElementById('wt-modal-title').textContent=id?'Editar Plantilla WA':'Nueva Plantilla WA';
+  const sl=document.getElementById('wt-label');
+  sl.innerHTML='<option value="">Sin etiqueta específica</option>';
+  DB.labels.forEach(lb=>{const o=document.createElement('option');o.value=lb.name;o.textContent=lb.name;sl.appendChild(o);});
+  if(id){const wt=(DB.waTemplates||[]).find(x=>x.id===id);if(wt){document.getElementById('wt-name').value=wt.name;document.getElementById('wt-label').value=wt.label||'';document.getElementById('wt-msg').value=wt.message;}}
+  else{document.getElementById('wt-name').value='';document.getElementById('wt-label').value='';document.getElementById('wt-msg').value='';}
+  openModal('modal-wt');
+}
+function saveWTModal(){
+  const name=document.getElementById('wt-name').value.trim(),msg=document.getElementById('wt-msg').value.trim();
+  if(!name||!msg){showToast('Nombre y mensaje requeridos.','err');return;}
+  const data={name,label:document.getElementById('wt-label').value,message:msg};
+  DB.waTemplates=DB.waTemplates||[];
+  if(editWTId){const idx=DB.waTemplates.findIndex(x=>x.id===editWTId);if(idx>=0)DB.waTemplates[idx]={...DB.waTemplates[idx],...data};showToast('Plantilla actualizada.');}
+  else{DB.waTemplates.push({id:uid(),...data});showToast('Plantilla creada.');}
+  saveDB();renderWATemplates();closeModal('modal-wt');
+}
+function deleteWT(id){if(!confirm('¿Eliminar plantilla?'))return;DB.waTemplates=(DB.waTemplates||[]).filter(x=>x.id!==id);saveDB();renderWATemplates();showToast('Plantilla eliminada.');}
+function openWASend(leadId){
+  const l=DB.leads.find(x=>x.id===leadId);if(!l)return;waCurrentLead=l;
+  document.getElementById('was-name').textContent=l.name;
+  document.getElementById('was-phone-display').textContent=(l.countryCode||'')+' '+(l.phone||'');
+  const sl=document.getElementById('was-template');
+  sl.innerHTML='<option value="">— Mensaje personalizado —</option>';
+  (DB.waTemplates||[]).forEach(wt=>{const o=document.createElement('option');o.value=wt.id;o.textContent=wt.name+(wt.label?' ['+wt.label+']':'');sl.appendChild(o);});
+  document.getElementById('was-msg').value=`Hola ${l.name}, te contactamos desde GOKUCELL 👋`;
+  openModal('modal-wa-send');
+}
+function applyWATemplate(){
+  if(!waCurrentLead)return;
+  const sel=document.getElementById('was-template').value;
+  if(!sel){document.getElementById('was-msg').value=`Hola ${waCurrentLead.name}, te contactamos desde GOKUCELL 👋`;return;}
+  const wt=(DB.waTemplates||[]).find(x=>x.id===sel);
+  if(wt)document.getElementById('was-msg').value=wt.message.replace(/\[nombre\]/gi,waCurrentLead.name);
+}
+function goWhatsApp(){
+  if(!waCurrentLead)return;
+  const msg=document.getElementById('was-msg').value.trim();
+  const ph=((waCurrentLead.countryCode||'').replace(/\D/g,'')+(waCurrentLead.phone||'').replace(/\D/g,''));
+  window.open(`https://wa.me/${ph}?text=${encodeURIComponent(msg)}`,'_blank');
+  closeModal('modal-wa-send');
 }
 
 loadLocalDB();
