@@ -92,6 +92,18 @@ tr:hover td{background:var(--s2)}
 .modal-close:hover{color:var(--text)}
 .modal-body{padding:22px;flex:1;overflow-y:auto}
 .modal-footer{padding:0 22px 22px;display:flex;gap:10px;justify-content:flex-end;flex-shrink:0}
+/* TYPE CARDS */
+.type-radio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.type-option input{display:none}
+.type-card{border:2px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s}
+.type-option input:checked+.type-card{border-color:var(--p);background:var(--pg)}
+.tc-icon{font-size:1.3rem;margin-bottom:4px}.tc-name{font-size:.8rem;font-weight:700}.tc-desc{font-size:.68rem;color:var(--muted);margin-top:2px}
+/* KW BUILDER */
+.kw-builder{display:flex;flex-wrap:wrap;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px;min-height:44px;align-items:center;cursor:text}
+.kw-builder:focus-within{border-color:var(--p)}
+.kw-tag{background:var(--p);color:#fff;border-radius:6px;padding:3px 8px;font-size:.78rem;display:flex;align-items:center;gap:5px}
+.kw-tag button{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.85rem;padding:0;line-height:1}
+.kw-input{background:none;border:none;outline:none;color:var(--text);font-size:.88rem;min-width:100px;flex:1}
 /* FLOW MAP */
 #flow-workspace{position:relative;width:100%;height:calc(100vh - 200px);background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 #flow-bg{position:absolute;inset:0;pointer-events:none}
@@ -102,8 +114,6 @@ tr:hover td{background:var(--s2)}
 .fn-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:6px}
 .fn-title{font-size:.82rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fn-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
-.fn-edit{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.72rem;padding:2px 4px;border-radius:4px;line-height:1;flex-shrink:0}
-.fn-edit:hover{background:var(--pg);color:var(--pl)}
 .fn-body{padding:8px 12px;font-size:.75rem;color:var(--muted);line-height:1.4;min-height:40px}
 .fn-ports{padding:6px 12px;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
 .fn-port{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--s1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;transition:all .2s}
@@ -112,12 +122,27 @@ tr:hover td{background:var(--s2)}
 .flow-legend-item{display:flex;align-items:center;gap:6px;color:var(--muted)}
 .flow-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .connecting-hint{position:absolute;top:12px;right:12px;background:rgba(6,182,212,.15);border:1px solid var(--cyan);border-radius:8px;padding:8px 14px;font-size:.78rem;color:var(--cyan);display:none}
-/* LEADS & SOCIAL */
+/* LEADS */
 .leads-filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.wa-link{color:#25d366;font-weight:600;text-decoration:none;font-size:.82rem;display:inline-flex;align-items:center;gap:4px;transition:opacity .2s;cursor:pointer;background:none;border:none;padding:0}
+.filter-btn{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--muted);cursor:pointer;font-size:.8rem;transition:all .2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--p);color:var(--pl)}
+.wa-link{color:#25d366;font-weight:600;text-decoration:none;font-size:.82rem;display:inline-flex;align-items:center;gap:4px;transition:opacity .2s}
 .wa-link:hover{opacity:.7}
 .note-chip{display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--warn);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;vertical-align:middle}
-.source-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:2px 6px;font-size:.68rem;color:var(--muted);text-transform:capitalize}
+/* LABELS */
+.labels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.label-card{background:var(--s1);border:2px solid var(--border);border-radius:14px;padding:18px}
+.label-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.label-color-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.label-name-large{font-size:1rem;font-weight:800;letter-spacing:.5px}
+.label-info{color:var(--muted);font-size:.8rem;line-height:1.5}
+.label-actions{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.settings-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:22px}
+.settings-card h3{font-size:.9rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.profile-preview{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:14px;background:var(--s2);border-radius:10px}
+.profile-img-preview{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--p)}
 /* HISTORY CHAT VIEW */
 .hist-msg-row{display:flex;gap:8px;margin-bottom:10px}
 .hist-msg-row.user{flex-direction:row-reverse}
@@ -128,17 +153,18 @@ tr:hover td{background:var(--s2)}
 .hist-bubble.user{background:var(--p);color:#fff;border-top-right-radius:4px}
 .hist-time{font-size:.65rem;color:var(--muted);margin-top:3px;padding:0 2px}
 .hist-msg-row.user .hist-time{text-align:right}
-.admin-send-wrap{border-top:1px solid var(--border);padding:14px 0 0;margin-top:12px}
-.admin-send-title{font-size:.75rem;color:var(--cyan);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.admin-send-row{display:flex;gap:8px}
-.admin-send-input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:.85rem;outline:none}
-.admin-send-input:focus{border-color:var(--cyan)}
-/* SETTINGS & OTHER */
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.settings-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:22px}
-.settings-card h3{font-size:.9rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.profile-preview{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:14px;background:var(--s2);border-radius:10px}
-.profile-img-preview{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--p)}
+/* GUIDE */
+.guide-steps{display:flex;flex-direction:column;gap:0}
+.guide-step{display:flex;gap:0;position:relative}
+.gs-line{position:absolute;left:22px;top:46px;bottom:-20px;width:2px;background:linear-gradient(var(--p)40,transparent)}
+.gs-num{width:46px;height:46px;border-radius:50%;background:var(--pg);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;color:var(--pl);flex-shrink:0;position:relative;z-index:1}
+.gs-body{flex:1;padding:0 0 28px 18px}
+.gs-title{font-size:.95rem;font-weight:700;margin-bottom:6px}
+.gs-desc{font-size:.85rem;color:var(--muted);line-height:1.6}
+.gs-desc code{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.8rem;color:var(--cyan);font-family:monospace}
+.gs-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--cyan);margin-top:8px;line-height:1.5}
+.guide-section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--p);font-weight:800;margin:28px 0 16px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+/* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:13px 18px;font-size:.88rem;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;max-width:340px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.ok{border-left:3px solid var(--free)}.toast.err{border-left:3px solid var(--danger)}
@@ -148,6 +174,10 @@ tr:hover td{background:var(--s2)}
 .search-input:focus{border-color:var(--p)}
 .empty{text-align:center;padding:50px 20px;color:var(--muted)}
 .empty-icon{font-size:2rem;margin-bottom:8px}
+@media(max-width:768px){#sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.settings-grid{grid-template-columns:1fr}}
+/* NUEVOS */
+.fn-edit{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.72rem;padding:2px 4px;border-radius:4px;line-height:1;flex-shrink:0}
+.fn-edit:hover{background:var(--pg);color:var(--pl)}
 .autoflow-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
 .autoflow-card h3{font-size:.88rem;font-weight:700;margin-bottom:14px;color:var(--pl);display:flex;align-items:center;gap:8px}
 .af-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
@@ -157,22 +187,24 @@ tr:hover td{background:var(--s2)}
 .qr-tag button{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.8rem;padding:0;line-height:1}
 .qr-input{background:none;border:none;outline:none;color:var(--text);font-size:.82rem;min-width:80px;flex:1}
 .wt-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.wt-body{flex:1}
 .wt-name{font-weight:700;font-size:.9rem;margin-bottom:4px}
 .wt-msg{font-size:.8rem;color:var(--muted);line-height:1.4}
 .wt-lbl{display:inline-block;background:var(--pg);border:1px solid var(--p)30;border-radius:6px;padding:1px 8px;font-size:.7rem;color:var(--pl);margin-bottom:4px}
+.source-badge{display:inline-flex;align-items:center;gap:3px;font-size:.78rem;color:var(--muted)}
 .intent-mode-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.im-opt{border:2px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .2s;position:relative}
-.im-opt input{display:none}
-.im-opt input:checked + div{color:var(--p)}
+.im-opt{border:2px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .2s}
 .im-opt.active{border-color:var(--p);background:var(--pg)}
 .im-icon{font-size:1.4rem;margin-bottom:4px}
 .im-title{font-size:.82rem;font-weight:700}
 .im-desc{font-size:.7rem;color:var(--muted);margin-top:2px}
-/* RADIO CARD FIX */
-.type-radio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.type-option input{display:none}
-.type-card{border:2px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s}
-.type-option input:checked+.type-card{border-color:var(--p);background:var(--pg)}
+.admin-send-wrap{border-top:1px solid var(--border);padding:14px 0 0;margin-top:12px}
+.admin-send-title{font-size:.75rem;color:var(--cyan);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.admin-send-row{display:flex;gap:8px}
+.admin-send-input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:.85rem;outline:none}
+.admin-send-input:focus{border-color:var(--cyan)}
+.btn-cyan2{background:rgba(6,182,212,.15);color:var(--cyan);border:1px solid rgba(6,182,212,.3);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.82rem;font-weight:700;transition:all .2s;white-space:nowrap}
+.btn-cyan2:hover{background:rgba(6,182,212,.25)}
 </style>
 </head>
 <body>
@@ -257,7 +289,7 @@ tr:hover td{background:var(--s2)}
       <!-- FLOW MAP -->
       <div id="sec-flowmap" style="display:none">
         <div class="sec-header">
-          <div><div class="sec-title">Mapa Visual de Flujos</div><div class="sec-sub">Arrastra y conecta los nodos. Clic en ✏️ para editar el mensaje.</div></div>
+          <div><div class="sec-title">Mapa Visual de Flujos</div><div class="sec-sub">Arrastra y conecta los nodos</div></div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-secondary btn-sm" onclick="flowAutoLayout()">🔄 Auto-organizar</button>
             <button class="btn btn-danger btn-sm" onclick="clearConnections()">🗑 Limpiar</button>
@@ -287,12 +319,15 @@ tr:hover td{background:var(--s2)}
             <select class="form-select" id="leads-label-filter" onchange="renderLeads()" style="width:140px;padding:9px 10px">
               <option value="">Todas las etiquetas</option>
             </select>
+            <select class="form-select" id="leads-country-filter" onchange="renderLeads()" style="width:150px;padding:9px 10px">
+              <option value="">Todos los países</option>
+            </select>
             <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
           </div>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Origen</th><th>Nombre</th><th>WhatsApp</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
+            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
             <tbody id="leads-body"></tbody>
           </table>
           <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún.</p></div>
@@ -308,76 +343,10 @@ tr:hover td{background:var(--s2)}
         <div class="labels-grid" id="labels-grid"></div>
       </div>
 
-      <!-- AUTOFLOW -->
-      <div id="sec-autoflow" style="display:none">
-        <div class="sec-header">
-          <div><div class="sec-title">Flujo Automático del Chat</div><div class="sec-sub">Mensajes de venta y botones integrados del bot</div></div>
-          <button class="btn btn-primary" onclick="saveAutoflow()">💾 Guardar cambios</button>
-        </div>
-        <div class="autoflow-card">
-          <h3>🔄 Preguntas del flujo de ventas (Expercenter)</h3>
-          <div class="form-hint" style="margin-bottom:12px">Estas 3 preguntas se envían secuencialmente para perfilar al alumno.</div>
-          <div class="af-row">
-            <div class="form-group"><label class="form-label">Pregunta 1</label><textarea class="form-textarea" id="af-sq1" style="min-height:70px"></textarea></div>
-            <div class="form-group"><label class="form-label">Pregunta 2</label><textarea class="form-textarea" id="af-sq2" style="min-height:70px"></textarea></div>
-            <div class="form-group"><label class="form-label">Pregunta 3</label><textarea class="form-textarea" id="af-sq3" style="min-height:70px"></textarea></div>
-          </div>
-        </div>
-        <div class="autoflow-card">
-          <h3>🌉 Transiciones / Puentes (Expercenter)</h3>
-          <div class="form-hint" style="margin-bottom:12px">Se envían antes de la pregunta siguiente para conectar la charla.</div>
-          <div class="af-row">
-            <div class="form-group"><label class="form-label">Puente 1→2</label><textarea class="form-textarea" id="af-sb1" style="min-height:70px"></textarea></div>
-            <div class="form-group"><label class="form-label">Puente 2→3</label><textarea class="form-textarea" id="af-sb2" style="min-height:70px"></textarea></div>
-            <div class="form-group"><label class="form-label">Cierre Final</label><textarea class="form-textarea" id="af-sfinal" style="min-height:70px"></textarea></div>
-          </div>
-        </div>
-        <div class="autoflow-card">
-          <h3>🔘 Botones Rápidos (Quick Replies)</h3>
-          <div class="form-hint" style="margin-bottom:12px">Opciones que aparecen debajo de los mensajes del bot. Presiona <strong>Enter</strong> o <strong>,</strong> para agregar.</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-            <div class="form-group"><label class="form-label">Inicio - Flujo Gratuito</label><div class="qr-edit-wrap" id="qr-free-wrap" onclick="document.getElementById('qr-free-input').focus()"></div></div>
-            <div class="form-group"><label class="form-label">Inicio - Flujo Ventas (Expercenter)</label><div class="qr-edit-wrap" id="qr-sales-wrap" onclick="document.getElementById('qr-sales-input').focus()"></div></div>
-            <div class="form-group"><label class="form-label">Usuario que regresa</label><div class="qr-edit-wrap" id="qr-return-wrap" onclick="document.getElementById('qr-return-input').focus()"></div></div>
-            <div class="form-group"><label class="form-label">Botón "Reinicio" del menú superior</label><div class="qr-edit-wrap" id="qr-menu-wrap" onclick="document.getElementById('qr-menu-input').focus()"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- WATEMPLATES -->
-      <div id="sec-watemplates" style="display:none">
-        <div class="sec-header">
-          <div><div class="sec-title">Plantillas de WhatsApp</div><div class="sec-sub">Mensajes predefinidos para un clic rápido — usa [nombre]</div></div>
-          <button class="btn btn-primary" onclick="openWTModal()">+ Nueva Plantilla</button>
-        </div>
-        <div id="wt-list"></div>
-        <div class="empty" id="wt-empty" style="display:none"><div class="empty-icon">💬</div><p>Sin plantillas. Crea la primera.</p></div>
-      </div>
-
       <!-- SETTINGS -->
       <div id="sec-settings" style="display:none">
         <div class="sec-header"><div><div class="sec-title">Configuración General</div></div></div>
         <div class="settings-grid">
-          
-          <div class="settings-card" style="grid-column:1/-1">
-            <h3>🎛️ ¿En qué te podemos ayudar? (Registro)</h3>
-            <div class="form-hint" style="margin-bottom:12px">Controla cómo y cuándo el usuario elige la intención del chat.</div>
-            <div class="intent-mode-grid">
-              <label class="im-opt" id="im-opt-normal" onclick="setRegMode('normal')">
-                <input type="radio" name="regMode" value="normal">
-                <div class="im-icon">📋</div><div class="im-title">Normal (Panel inicial)</div><div class="im-desc">Pide la opción antes de empezar.</div>
-              </label>
-              <label class="im-opt" id="im-opt-chat" onclick="setRegMode('chat')">
-                <input type="radio" name="regMode" value="chat">
-                <div class="im-icon">💬</div><div class="im-title">Dentro del chat</div><div class="im-desc">Solo pide nombre/WA, la opción se pregunta adentro.</div>
-              </label>
-              <label class="im-opt" id="im-opt-hide" onclick="setRegMode('hide')">
-                <input type="radio" name="regMode" value="hide">
-                <div class="im-icon">👁️‍🗨️</div><div class="im-title">Ocultar completamente</div><div class="im-desc">Asigna "Gratuito" por defecto.</div>
-              </label>
-            </div>
-          </div>
-
           <div class="settings-card">
             <h3>🖼 Foto de perfil del bot</h3>
             <div class="profile-preview">
@@ -390,7 +359,17 @@ tr:hover td{background:var(--s2)}
 
           <div class="settings-card">
             <h3>💬 Descripción del chat</h3>
-            <div class="form-group"><label class="form-label">Subtítulo visible en el chat</label><input class="form-input" id="s-desc" placeholder="by Jhonatan Herrera..."></div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo visible en el chat</label>
+              <input class="form-input" id="s-desc" placeholder="by Jhonatan Herrera · Resolvemos tus dudas...">
+              <div class="form-hint">Aparece debajo de GOKUCELL en la pantalla de inicio y en el encabezado del chat.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar descripción</button>
+          </div>
+
+          <div class="settings-card">
+            <h3>🔗 Enlace Comunidad Gratuita</h3>
+            <div class="form-group"><label class="form-label">URL de la comunidad</label><input class="form-input" id="s-community" placeholder="https://..."><div class="form-hint">Botón cuando no hay coincidencia de keywords</div></div>
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
           </div>
 
@@ -400,69 +379,88 @@ tr:hover td{background:var(--s2)}
               <div class="form-group"><label class="form-label">Texto del anuncio</label><textarea class="form-textarea" id="s-ad-text" style="min-height:70px"></textarea></div>
               <div>
                 <div class="form-group"><label class="form-label">Precio / oferta</label><input class="form-input" id="s-ad-price" placeholder="$17/mes"></div>
-                <div class="form-group"><label class="form-label">URL del anuncio</label><input class="form-input" id="s-ad-url"></div>
+                <div class="form-group"><label class="form-label">URL del anuncio</label><input class="form-input" id="s-ad-url" placeholder="https://expercenter.com/"></div>
+                <div class="form-group"><label class="form-label">Texto del botón</label><input class="form-input" id="s-ad-btn" placeholder="¡Únete ahora!"></div>
               </div>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar anuncio</button>
           </div>
 
           <div class="settings-card">
+            <h3>💬 Mensaje sin coincidencia</h3>
+            <div class="form-group"><label class="form-label">Texto cuando el bot no entiende</label><textarea class="form-textarea" id="s-nomatch"></textarea></div>
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
+          </div>
+
+          <div class="settings-card">
             <h3>🔐 Cambiar contraseña</h3>
-            <div class="form-group"><label class="form-label">Contraseña actual</label><input class="form-input" id="s-pwd-old" type="password"></div>
-            <div class="form-group"><label class="form-label">Nueva contraseña</label><input class="form-input" id="s-pwd-new" type="password"></div>
+            <div class="form-group"><label class="form-label">Contraseña actual</label><input class="form-input" id="s-pwd-old" type="password" placeholder="••••"></div>
+            <div class="form-group"><label class="form-label">Nueva contraseña</label><input class="form-input" id="s-pwd-new" type="password" placeholder="Nueva contraseña"></div>
             <button class="btn btn-primary btn-sm" onclick="changePwd()">Cambiar</button>
           </div>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
-
-<!-- MODAL HISTORY (LIVE) -->
-<div class="modal-overlay" id="modal-history">
-  <div class="modal" style="max-width:600px; height:85vh">
-    <div class="modal-header"><h2>💬 Intervención de Chat (En Vivo)</h2><button class="modal-close" onclick="closeHistoryModal()">×</button></div>
-    <div class="modal-body" style="display:flex;flex-direction:column;overflow:hidden;padding:15px">
-      <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px;flex-shrink:0">Contacto: <strong id="mh-name"></strong> · <span id="mh-phone"></span></div>
-      <div id="mh-messages" style="flex:1;overflow-y:auto;background:var(--bg);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:5px"></div>
-      <div id="mh-empty" style="text-align:center;color:var(--muted);padding:30px;display:none">Sin historial guardado aún</div>
-      <div class="admin-send-wrap">
-        <div class="admin-send-title">⚡ Escribir al usuario en tiempo real</div>
-        <div class="admin-send-row">
-          <input class="admin-send-input" id="admin-live-msg" placeholder="Escribe un mensaje para el usuario..." onkeydown="if(event.key==='Enter') sendAdminMsg()">
-          <button class="btn-primary" style="border-radius:8px;padding:0 15px;border:none;cursor:pointer" onclick="sendAdminMsg()">Enviar</button>
+      <!-- AUTOFLOW -->
+      <div id="sec-autoflow" style="display:none">
+        <div class="sec-header">
+          <div><div class="sec-title">Flujo Automático del Chat</div><div class="sec-sub">Mensajes y botones integrados del bot — edítalos aquí</div></div>
+          <button class="btn btn-primary" onclick="saveAutoflow()">💾 Guardar cambios</button>
+        </div>
+        <div class="autoflow-card">
+          <h3>🔄 Preguntas del flujo de ventas</h3>
+          <div class="form-hint" style="margin-bottom:12px">Estas 3 preguntas se envían secuencialmente cuando el usuario elige "Capacitación Expercenter".</div>
+          <div class="af-row">
+            <div class="form-group"><label class="form-label">Pregunta 1</label><textarea class="form-textarea" id="af-sq1" style="min-height:70px"></textarea></div>
+            <div class="form-group"><label class="form-label">Pregunta 2</label><textarea class="form-textarea" id="af-sq2" style="min-height:70px"></textarea></div>
+            <div class="form-group"><label class="form-label">Pregunta 3</label><textarea class="form-textarea" id="af-sq3" style="min-height:70px"></textarea></div>
+          </div>
+        </div>
+        <div class="autoflow-card">
+          <h3>🌉 Transiciones / puentes entre preguntas</h3>
+          <div class="form-hint" style="margin-bottom:12px">Se envían antes de la pregunta siguiente para hacer la conversación más natural.</div>
+          <div class="af-row">
+            <div class="form-group"><label class="form-label">Puente 1→2</label><textarea class="form-textarea" id="af-sb1" style="min-height:70px"></textarea></div>
+            <div class="form-group"><label class="form-label">Puente 2→3</label><textarea class="form-textarea" id="af-sb2" style="min-height:70px"></textarea></div>
+            <div class="form-group"><label class="form-label">Puente 3→Cierre</label><textarea class="form-textarea" id="af-sb3" style="min-height:70px"></textarea></div>
+          </div>
+        </div>
+        <div class="autoflow-card">
+          <h3>✅ Mensaje de cierre de ventas</h3>
+          <div class="form-group"><label class="form-label">Después de las 3 preguntas, el bot envía este mensaje final con el botón CTA de Expercenter.</label><textarea class="form-textarea" id="af-sfinal" style="min-height:80px"></textarea></div>
+        </div>
+        <div class="autoflow-card">
+          <h3>🔘 Botones rápidos (Quick Replies)</h3>
+          <div class="form-hint" style="margin-bottom:12px">Presiona <strong>Enter</strong> o <strong>,</strong> para agregar. Clic en × para eliminar.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group"><label class="form-label">Bienvenida — Flujo gratuito</label><div class="qr-edit-wrap" id="qr-free" onclick="focusQR('qr-free')"></div></div>
+            <div class="form-group"><label class="form-label">Bienvenida — Flujo ventas</label><div class="qr-edit-wrap" id="qr-sales" onclick="focusQR('qr-sales')"></div></div>
+            <div class="form-group"><label class="form-label">Usuario que regresa</label><div class="qr-edit-wrap" id="qr-return" onclick="focusQR('qr-return')"></div></div>
+            <div class="form-group"><label class="form-label">Sin coincidencia de keywords</label><div class="qr-edit-wrap" id="qr-nomatch" onclick="focusQR('qr-nomatch')"></div></div>
+          </div>
         </div>
       </div>
+
+      <!-- WATEMPLATES -->
+      <div id="sec-watemplates" style="display:none">
+        <div class="sec-header">
+          <div><div class="sec-title">Plantillas de WhatsApp</div><div class="sec-sub">Mensajes predefinidos para contactar leads — usa [nombre] como variable</div></div>
+          <button class="btn btn-primary" onclick="openWTModal()">+ Nueva Plantilla</button>
+        </div>
+        <div id="wt-list"></div>
+        <div class="empty" id="wt-empty" style="display:none"><div class="empty-icon">💬</div><p>Sin plantillas. Crea la primera para enviar WA con un clic.</p></div>
+      </div>
+
+      <!-- GUIDE -->
+      <div id="sec-guide" style="display:none">
+        <div class="sec-header"><div><div class="sec-title">📖 Guía de uso paso a paso</div></div></div>
+        <div id="guide-content"></div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- MODAL WA TEMPLATE SELECTOR -->
-<div class="modal-overlay" id="modal-wa-select">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-header"><h2>📱 Enviar WhatsApp</h2><button class="modal-close" onclick="closeModal('modal-wa-select')">×</button></div>
-    <div class="modal-body">
-      <p style="font-size:.82rem;color:var(--muted);margin-bottom:15px">Selecciona una plantilla para <strong id="wa-sel-name"></strong>:</p>
-      <div id="wa-sel-list" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL WA TEMPLATE CREATE -->
-<div class="modal-overlay" id="modal-wt">
-  <div class="modal">
-    <div class="modal-header"><h2 id="mwt-title">Nueva Plantilla</h2><button class="modal-close" onclick="closeModal('modal-wt')">×</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Nombre (Interno)</label><input class="form-input" id="mwt-name" placeholder="Ej: Seguimiento ventas"></div>
-      <div class="form-group"><label class="form-label">Asociar a Etiqueta</label><select class="form-select" id="mwt-label"><option value="Todas">Para cualquier contacto</option></select></div>
-      <div class="form-group"><label class="form-label">Mensaje <span style="font-weight:400;color:var(--muted)">(Usa [nombre])</span></label><textarea class="form-textarea" id="mwt-text" placeholder="Hola [nombre], te contacto porque..."></textarea></div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-wt')">Cancelar</button><button class="btn btn-primary" onclick="saveWT()">Guardar</button></div>
-  </div>
-</div>
-
-<!-- OTHER MODALS (Note, Topic, Label) -->
 <!-- MODAL NOTE -->
 <div class="modal-overlay" id="modal-note">
   <div class="modal" style="max-width:420px">
@@ -471,7 +469,23 @@ tr:hover td{background:var(--s2)}
       <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">Contacto: <strong id="mn-name"></strong></div>
       <div class="form-group"><label class="form-label">Nota interna</label><textarea class="form-textarea" id="mn-text" style="min-height:120px" placeholder="Escribe una nota..."></textarea></div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-note')">Cancelar</button><button class="btn btn-primary" onclick="saveNote()">Guardar nota</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-note')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNote()">Guardar nota</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL HISTORY -->
+<div class="modal-overlay" id="modal-history">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><h2>💬 Historial de conversación</h2><button class="modal-close" onclick="closeModal('modal-history')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Contacto: <strong id="mh-name"></strong> · <span id="mh-phone"></span></div>
+      <div id="mh-messages" style="display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:14px"></div>
+      <div id="mh-empty" style="text-align:center;color:var(--muted);padding:30px;display:none">Sin historial guardado aún</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-history')">Cerrar</button></div>
   </div>
 </div>
 
@@ -488,18 +502,26 @@ tr:hover td{background:var(--s2)}
         </div>
       </div>
       <div class="form-group"><label class="form-label">Respuesta del bot</label><textarea class="form-textarea" id="mt-response" placeholder="Respuesta que verá el usuario..."></textarea></div>
-      <div class="form-group"><label class="form-label">Texto del botón CTA</label><input class="form-input" id="mt-cta-text" placeholder="Ej: Ver contenido"></div>
+      <div class="form-group"><label class="form-label">Texto del botón CTA</label><input class="form-input" id="mt-cta-text" placeholder="Ej: Ver contenido gratuito"></div>
       <div class="form-group"><label class="form-label">URL del botón CTA</label><input class="form-input" id="mt-cta-url" placeholder="https://..."></div>
+      <div class="form-group">
+        <label class="form-label">🎬 Video de respuesta <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+        <input class="form-input" id="mt-video-url" placeholder="URL de YouTube o enlace directo MP4">
+        <div class="form-hint">YouTube se incrusta con autoplay. URL directa de video se reproduce con el reproductor nativo.</div>
+      </div>
       <div class="form-group">
         <label class="form-label">Tipo de flujo</label>
         <div class="type-radio">
-          <label class="type-option"><input type="radio" name="mt-type" value="free" checked><div class="type-card"><div class="tc-icon">🎁</div><div class="tc-name">Gratuito</div></div></label>
-          <label class="type-option"><input type="radio" name="mt-type" value="sales"><div class="type-card"><div class="tc-icon">🚀</div><div class="tc-name">Expercenter</div></div></label>
-          <label class="type-option"><input type="radio" name="mt-type" value="repair"><div class="type-card"><div class="tc-icon">🔧</div><div class="tc-name">ReparaXcell</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="free" checked><div class="type-card"><div class="tc-icon">🎁</div><div class="tc-name">Gratuito</div><div class="tc-desc">Comunidad libre</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="sales"><div class="type-card"><div class="tc-icon">🚀</div><div class="tc-name">Expercenter</div><div class="tc-desc">Cursos/Mentorías</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="repair"><div class="type-card"><div class="tc-icon">🔧</div><div class="tc-name">ReparaXcell</div><div class="tc-desc">Reparaciones</div></div></label>
         </div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-topic')">Cancelar</button><button class="btn btn-primary" onclick="saveTopic()">Guardar Disparador</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-topic')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTopic()">Guardar Disparador</button>
+    </div>
   </div>
 </div>
 
@@ -508,12 +530,17 @@ tr:hover td{background:var(--s2)}
   <div class="modal">
     <div class="modal-header"><h2 id="ml-title">Nueva Etiqueta</h2><button class="modal-close" onclick="closeModal('modal-label')">×</button></div>
     <div class="modal-body">
-      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ml-name"></div>
-      <div class="form-group"><label class="form-label">Color</label><input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none"></div>
-      <div class="form-group"><label class="form-label">Tipo de flujo</label><select class="form-select" id="ml-flow"><option value="free">Gratuito</option><option value="sales">Ventas</option><option value="repair">Reparación</option></select></div>
-      <div class="form-group"><label class="form-label">Mensaje bienvenida</label><textarea class="form-textarea" id="ml-welcome"></textarea></div>
+      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ml-name" placeholder="GRATIS, EXPERCENTER, REPARAXCELL"></div>
+      <div class="form-group"><label class="form-label">Color</label><div style="display:flex;gap:10px;align-items:center"><input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none;border-radius:6px;cursor:pointer"><span style="font-size:.82rem;color:var(--muted)">Color del badge</span></div></div>
+      <div class="form-group"><label class="form-label">Tipo de flujo</label><select class="form-select" id="ml-flow"><option value="free">Gratuito</option><option value="sales">Ventas — Expercenter</option><option value="repair">Reparación — ReparaXcell</option></select></div>
+      <div class="form-group"><label class="form-label">Mensaje de bienvenida <span style="color:var(--muted);font-weight:400">(usa [nombre])</span></label><textarea class="form-textarea" id="ml-welcome" placeholder="¡Hola [nombre]! ..."></textarea></div>
+      <div class="form-group"><label class="form-label">Texto botón CTA</label><input class="form-input" id="ml-cta-text" placeholder="Ej: Unirse a la comunidad"></div>
+      <div class="form-group"><label class="form-label">URL botón CTA</label><input class="form-input" id="ml-cta-url" placeholder="https://..."></div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-label')">Cancelar</button><button class="btn btn-primary" onclick="saveLabel()">Guardar Etiqueta</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-label')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveLabel()">Guardar Etiqueta</button>
+    </div>
   </div>
 </div>
 
@@ -531,46 +558,57 @@ const firebaseConfig = {
 };
 let firebaseApp, db;
 function initFirebase() {
-  try { firebaseApp = firebase.initializeApp(firebaseConfig); db = firebase.firestore(); return true; } 
-  catch(e) { console.warn(e); return false; }
+  try {
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    return true;
+  } catch(e) { console.warn('Firebase init error:', e); return false; }
 }
 
-// ── DATA & DEFAULTS ──
+// ── DATA ──
 const KEY = 'gokucell_v2';
 let DB = {
   settings: {
-    regMode: 'normal', // normal, chat, hide
     profilePhoto: 'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg',
-    botDescription: 'by Jhonatan Herrera · Resolvemos tus dudas técnicas',
+    botDescription: 'by Jhonatan Herrera · Resolvemos tus dudas técnicas y te orientamos en tu camino como técnico 🔧',
+    communityLink: '',
     password: '5616',
     adText: '¿Has visto cursos pero no los entiendes del todo? Lo mejor es estar en VIVO con el instructor.',
-    adPrice: '$17/mes', adUrl: 'https://expercenter.com/', adBtn: '¡Únete!'
+    adPrice: '$17/mes',
+    adUrl: 'https://expercenter.com/',
+    adBtn: '¡Únete por solo $17/mes!',
+    noMatchMsg: ''
   },
-  autoflow: {
-    sq1: '¿Cuánto tiempo llevas en el mundo de la reparación?',
-    sq2: '¿Ya estás generando ingresos, o buscas empezar desde cero?',
-    sq3: '¿Hay alguna falla en la que te quieras especializar?',
-    sb1: 'Con eso en mente, el programa tiene exactamente el nivel que necesitas. 💪',
-    sb2: 'Muchos de nuestros alumnos empezaron igual que tú y hoy resuelven fallas complejas.',
-    sfinal: 'Genial. Con lo que me cuentas, Expercenter te ayudará a avanzar rápido. 🚀',
-    qrFree: ['Tengo una duda técnica','Quiero info del curso'],
-    qrSales: ['Soy principiante','Ya trabajo reparando'],
-    qrReturn: ['Tengo otra duda','Cotizar reparación'],
-    qrMenu: ['Recursos Gratuitos','Cursos / Capacitación','Reparaciones']
-  },
-  waTemplates: [
-    {id:'wt1', name:'Seguimiento curso', label:'Todas', text:'Hola [nombre], soy Jhonatan Herrera. Vi que preguntaste por Expercenter, ¿qué dudas tienes?'}
+  topics: [],
+  labels: [
+    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! Qué bueno que estás aquí. 😊 Estoy para orientarte.',ctaText:'🎁 Unirme a la Comunidad',ctaUrl:''},
+    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que quieras capacitarte. ¿Cuál es tu nivel actual en reparación?',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
+    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Gracias por preferirnos. Aquí te dejo el contacto directo con ReparaXcell. 🔧',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:''}
   ],
-  topics: [], labels: [], flows: [], flowPositions: {}, leads: []
+  flows: [],
+  flowPositions: {},
+  leads: []
 };
+
+const DEFAULT_TOPICS = [
+  {id:'t1',title:'Fuente de alimentación',keywords:['fuente de alimentación','fuente','power supply','voltaje','amperaje'],response:'¡Claro! La fuente es clave en el diagnóstico. En la comunidad gratuita tenemos guías completas sobre lecturas de voltaje y amperaje.',ctaText:'🎁 Ver guías',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t2',title:'No carga / No enciende',keywords:['no carga','no enciende','pantalla negra','muerto','sin imagen','no prende'],response:'Ese diagnóstico tiene un protocolo: primero el conector, luego la línea de carga, el PMIC y circuitos de arranque. Tenemos el protocolo completo en la comunidad.',ctaText:'🎁 Ver protocolo',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t3',title:'Curso completo / Capacitación',keywords:['curso','capacitación','capacitar','formación','aprender completo','certificado'],response:'¡Excelente decisión! En Expercenter tienes el programa más completo: diagnóstico a nivel de placa, microfusión avanzada y casos reales. ¿Cuál es tu nivel actual?',ctaText:'🚀 Ver Expercenter',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t4',title:'Mentoría personalizada',keywords:['mentoría','mentor','asesoría','acompañamiento','uno a uno'],response:'Las mentorías son sesiones uno a uno donde trabajamos tus casos específicos. Es la forma más rápida de avanzar. ¿En qué área te quieres enfocar?',ctaText:'🚀 Solicitar Mentoría',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t5',title:'Precio del curso',keywords:['precio','costo','cuánto cuesta','inversión','pago','cuotas','mensualidad'],response:'La inversión en Expercenter está diseñada para recuperarla rápido. Desde $17/mes con acceso completo. ¿Te cuento los detalles?',ctaText:'🚀 Ver planes',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t6',title:'Cotizar reparación',keywords:['cotizar','reparar','reparación','cuánto cuesta reparar','servicio técnico','pantalla rota','dañado'],response:'¡Con gusto! En ReparaXcell somos expertos en reparación. Contáctanos y en minutos te damos presupuesto.',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:'',videoUrl:'',type:'repair'},
+  {id:'t7',title:'Soldadura y BGA',keywords:['soldar','soldadura','bga','microfusión','flux','hot air','aire caliente','reballing'],response:'Soldadura y BGA es tema avanzado. En la comunidad hay contenido introductorio, y en Expercenter el módulo completo con práctica real.',ctaText:'🎁 Ver contenido',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t8',title:'Multímetro y medición',keywords:['multímetro','medir','continuidad','resistencia','capacitor','condensador'],response:'El multímetro es tu mejor aliado. En la comunidad tenemos tutoriales sobre cómo medir componentes y qué valores buscar.',ctaText:'🎁 Ver tutoriales',ctaUrl:'',videoUrl:'',type:'free'}
+];
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function typeLabel(t){return{free:'Gratuito',sales:'Expercenter',repair:'ReparaXcell'}[t]||t}
 function labelColor(name){const lb=DB.labels.find(x=>x.name===name);return lb?lb.color:'#64748b'}
-function formatDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString('es',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}
+function formatDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}
 function setSyncInd(state){const el=document.getElementById('sync-ind');if(!el)return;const map={ok:'🟢 Sincronizado',saving:'🟡 Guardando...',err:'🔴 Sin conexión'};el.textContent=map[state]||'';el.className='sync-indicator '+(state==='err'?'err':state==='saving'?'saving':'')}
 
+// ── FIREBASE LOAD/SAVE ──
 async function loadConfigFromFirebase() {
   if (!db) return;
   try {
@@ -578,26 +616,40 @@ async function loadConfigFromFirebase() {
     if (snap.exists) {
       const data = snap.data();
       if (data.settings) DB.settings = {...DB.settings, ...data.settings};
-      if (data.autoflow) DB.autoflow = {...DB.autoflow, ...data.autoflow};
-      if (data.waTemplates) DB.waTemplates = data.waTemplates;
-      if (data.topics) DB.topics = data.topics;
-      if (data.labels) DB.labels = data.labels;
+      if (data.topics && data.topics.length) DB.topics = data.topics;
+      if (data.labels && data.labels.length) DB.labels = data.labels;
       if (data.flows) DB.flows = data.flows;
       if (data.flowPositions) DB.flowPositions = data.flowPositions;
       localStorage.setItem(KEY, JSON.stringify(DB));
-    } else pushConfigToFirebase();
-  } catch(e) { setSyncInd('err'); }
+    } else {
+      // First time — push defaults to Firebase
+      await pushConfigToFirebase();
+    }
+  } catch(e) { console.warn('Firebase load error:', e); setSyncInd('err'); }
 }
-async function pushConfigToFirebase() {
-  if (!db) return; setSyncInd('saving');
-  try {
-    await db.collection('gkc').doc('config').set({settings: DB.settings, autoflow: DB.autoflow, waTemplates: DB.waTemplates, topics: DB.topics, labels: DB.labels, flows: DB.flows, flowPositions: DB.flowPositions, updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
-    setSyncInd('ok');
-  } catch(e) { setSyncInd('err'); }
-}
-function saveDB() { localStorage.setItem(KEY, JSON.stringify(DB)); pushConfigToFirebase(); }
 
-// ── LEADS REAL-TIME ──
+async function pushConfigToFirebase() {
+  if (!db) return;
+  setSyncInd('saving');
+  try {
+    await db.collection('gkc').doc('config').set({
+      settings: DB.settings,
+      topics: DB.topics,
+      labels: DB.labels,
+      flows: DB.flows,
+      flowPositions: DB.flowPositions,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    setSyncInd('ok');
+  } catch(e) { console.warn('Firebase save error:', e); setSyncInd('err'); }
+}
+
+function saveDB() {
+  localStorage.setItem(KEY, JSON.stringify(DB));
+  pushConfigToFirebase();
+}
+
+// Real-time leads listener
 let leadsUnsubscribe = null;
 function subscribeLeads() {
   if (!db) return;
@@ -605,269 +657,586 @@ function subscribeLeads() {
   leadsUnsubscribe = db.collection('gkc_leads').orderBy('ts','desc').onSnapshot(snap => {
     DB.leads = snap.docs.map(d => ({id: d.id, ...d.data()}));
     localStorage.setItem(KEY, JSON.stringify(DB));
-    renderLeads(); renderDashboard();
+    renderLeads();
+    renderDashboard();
+    updateBadges();
     document.getElementById('leads-count-sub').textContent = DB.leads.length + ' contactos';
-  });
+  }, err => console.warn('Leads listener error:', err));
 }
 
-// ── AUTH & INIT ──
+function saveLeadToFirebase(lead) {
+  if (!db) return;
+  db.collection('gkc_leads').doc(lead.id).set(lead).catch(e => console.warn(e));
+}
+
+function updateLeadInFirebase(id, data) {
+  if (!db) return;
+  db.collection('gkc_leads').doc(id).update(data).catch(e => console.warn(e));
+}
+
+// ── AUTH ──
 async function doLogin() {
   const pwd = document.getElementById('login-pwd').value;
   const localRaw = localStorage.getItem(KEY);
   let localPwd = '5616';
   if (localRaw) { try { const d = JSON.parse(localRaw); localPwd = d.settings?.password || '5616'; } catch(e){} }
-  if (pwd !== localPwd) { const err = document.getElementById('login-err'); err.textContent = '❌ Contraseña incorrecta'; setTimeout(()=>err.textContent='',2500); return; }
+  if (pwd !== localPwd) {
+    const err = document.getElementById('login-err');
+    err.textContent = '❌ Contraseña incorrecta';
+    setTimeout(() => err.textContent = '', 2500);
+    document.getElementById('login-pwd').value = '';
+    return;
+  }
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
-  loadLocalDB(); initApp();
-  if (initFirebase()) { await loadConfigFromFirebase(); initApp(); subscribeLeads(); }
+  // Load local first for speed
+  loadLocalDB();
+  initApp();
+  // Then sync from Firebase
+  if (initFirebase()) {
+    await loadConfigFromFirebase();
+    initApp(); // Re-render with Firebase data
+    subscribeLeads();
+  }
 }
-function logout() { if(leadsUnsubscribe) leadsUnsubscribe(); document.getElementById('app').style.display='none'; document.getElementById('login-screen').style.display='flex'; }
+
+function logout() {
+  if (leadsUnsubscribe) leadsUnsubscribe();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pwd').value = '';
+}
+
 function loadLocalDB() {
   const raw = localStorage.getItem(KEY);
-  if (raw) { try { const saved=JSON.parse(raw); DB={...DB, ...saved}; DB.settings={...DB.settings, ...(saved.settings||{})}; DB.autoflow={...DB.autoflow, ...(saved.autoflow||{})}; } catch(e){} }
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      DB = {...DB, ...saved};
+      DB.settings = {...DB.settings, ...(saved.settings||{})};
+    } catch(e) {}
+  }
+  if (!DB.topics || !DB.topics.length) DB.topics = DEFAULT_TOPICS.map(t => ({...t}));
+  if (!DB.labels || !DB.labels.length) DB.labels = [
+    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! 😊 Estoy para orientarte.',ctaText:'🎁 Unirme',ctaUrl:''},
+    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que quieras capacitarte.',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
+    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Gracias por preferirnos. 🔧',ctaText:'🔧 ReparaXcell',ctaUrl:''}
+  ];
 }
+
+// ── INIT ──
 function initApp() {
-  document.getElementById('s-photo').value = DB.settings.profilePhoto;
-  document.getElementById('s-desc').value = DB.settings.botDescription;
-  document.getElementById('s-ad-text').value = DB.settings.adText;
-  document.getElementById('s-ad-price').value = DB.settings.adPrice;
-  document.getElementById('s-ad-url').value = DB.settings.adUrl;
-  previewPhoto(); setRegMode(DB.settings.regMode || 'normal');
-  renderDashboard(); document.getElementById('nb-topics').textContent=DB.topics.length; document.getElementById('nb-leads').textContent=DB.leads.length;
+  const photo = DB.settings.profilePhoto || '';
+  document.getElementById('sb-avatar').src = photo;
+  document.getElementById('profile-preview-img').src = photo;
+  document.getElementById('s-photo').value = photo;
+  document.getElementById('s-desc').value = DB.settings.botDescription || '';
+  document.getElementById('s-community').value = DB.settings.communityLink || '';
+  document.getElementById('s-ad-text').value = DB.settings.adText || '';
+  document.getElementById('s-ad-price').value = DB.settings.adPrice || '$17/mes';
+  document.getElementById('s-ad-url').value = DB.settings.adUrl || 'https://expercenter.com/';
+  document.getElementById('s-ad-btn').value = DB.settings.adBtn || '¡Únete!';
+  document.getElementById('s-nomatch').value = DB.settings.noMatchMsg || '';
+  renderDashboard(); updateBadges();
 }
+
+function updateBadges() {
+  document.getElementById('nb-topics').textContent = DB.topics.length;
+  document.getElementById('nb-leads').textContent = DB.leads.length;
+}
+
+// ── NAV ──
+const SEC_META = {
+  dashboard:['Dashboard','Resumen general'],
+  topics:['Disparadores','Configura palabras clave y respuestas'],
+  flowmap:['Mapa de Flujos','Conecta los flujos de conversación'],
+  leads:['Contactos','Leads en tiempo real desde Firebase'],
+  labels:['Etiquetas','Flujos por tipo de interés'],
+  settings:['Configuración','Ajustes generales'],
+  guide:['Guía de uso','Instrucciones paso a paso']
+};
+
 function showSection(id, el) {
-  document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display='none');
-  document.getElementById('sec-'+id).style.display='block';
+  document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display = 'none');
+  document.getElementById('sec-' + id).style.display = 'block';
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  if (id==='topics') renderTopics();
-  if (id==='flowmap') initFlowMap();
-  if (id==='leads') { buildLeadsFilters(); renderLeads(); }
-  if (id==='labels') renderLabels();
-  if (id==='autoflow') renderAutoflow();
-  if (id==='watemplates') renderWT();
+  const [t, s] = SEC_META[id];
+  document.getElementById('topbar-title').textContent = t;
+  document.getElementById('topbar-sub').textContent = s;
+  if (id === 'topics') renderTopics();
+  if (id === 'flowmap') initFlowMap();
+  if (id === 'leads') { buildLeadsFilters(); renderLeads(); }
+  if (id === 'labels') renderLabels();
+  if (id === 'guide') renderGuide();
 }
 
-// ── REG MODE SETTINGS ──
-function setRegMode(mode) {
-  DB.settings.regMode = mode;
-  document.querySelectorAll('.im-opt').forEach(el=>el.classList.remove('active'));
-  document.getElementById('im-opt-'+mode).classList.add('active');
-  document.querySelector(`input[name="regMode"][value="${mode}"]`).checked = true;
-  saveDB();
-}
-
-// ── DASHBOARD & TOPICS (Omitted identical parts for brevity, keeping modified map flow) ──
+// ── DASHBOARD ──
 function renderDashboard() {
-  const dt = document.getElementById('dash-topics'); dt.innerHTML = DB.topics.slice(0,6).map(t=>`<tr><td><strong>${esc(t.title)}</strong></td><td><div class="kw-wrap">${t.keywords.slice(0,3).map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div></td><td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td></tr>`).join('');
-  const dl = document.getElementById('dash-leads'); dl.innerHTML = DB.leads.slice(0,6).map(l=>`<tr><td>${esc(l.name)}</td><td>${esc(l.countryName||'')}</td><td><span class="badge" style="color:${labelColor(l.label)}">${esc(l.label)}</span></td><td style="color:var(--muted);font-size:.75rem">${formatDate(l.ts)}</td></tr>`).join('');
+  const free = DB.topics.filter(t => t.type === 'free').length;
+  const sales = DB.topics.filter(t => t.type === 'sales').length;
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card purple"><div class="stat-num purple">${DB.topics.length}</div><div class="stat-label">Total Disparadores</div></div>
+    <div class="stat-card green"><div class="stat-num green">${free}</div><div class="stat-label">Flujo Gratuito</div></div>
+    <div class="stat-card cyan"><div class="stat-num cyan">${sales}</div><div class="stat-label">Flujo Expercenter</div></div>
+    <div class="stat-card blue"><div class="stat-num blue">${DB.leads.length}</div><div class="stat-label">Contactos captados</div></div>`;
+  const dl = document.getElementById('dash-leads');
+  const recent = [...DB.leads].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,6);
+  dl.innerHTML = recent.length ? recent.map(l=>`<tr><td>${esc(l.name)}</td><td style="color:var(--muted);font-size:.8rem">${esc(l.countryName||l.countryCode||'')}</td><td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label)}</span></td><td style="color:var(--muted);font-size:.75rem">${formatDate(l.ts)}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Sin contactos aún</td></tr>';
+  const dt = document.getElementById('dash-topics');
+  dt.innerHTML = DB.topics.slice(0,6).map(t=>`<tr><td><strong>${esc(t.title)}</strong></td><td><div class="kw-wrap">${t.keywords.slice(0,3).map(k=>`<span class="kw">${esc(k)}</span>`).join('')}${t.keywords.length>3?`<span class="kw">+${t.keywords.length-3}</span>`:''}</div></td><td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td></tr>`).join('');
 }
-let editTopicId=null, kwTags=[];
+
+// ── TOPICS ──
+let editTopicId = null, kwTags = [];
+
 function renderTopics() {
+  const q = (document.getElementById('topics-search')?.value || '').toLowerCase();
+  const flt = document.getElementById('topics-filter')?.value || 'all';
+  let list = DB.topics.filter(t => (flt === 'all' || t.type === flt) && (!q || t.title.toLowerCase().includes(q) || t.keywords.some(k => k.includes(q))));
   const tbody = document.getElementById('topics-body');
-  if (!DB.topics.length) { tbody.innerHTML=''; document.getElementById('topics-empty').style.display='block'; return; }
-  document.getElementById('topics-empty').style.display='none';
-  tbody.innerHTML = DB.topics.map((t,i) => `<tr><td style="color:var(--muted)">${i+1}</td><td><strong>${esc(t.title)}</strong></td><td><div class="kw-wrap">${t.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div></td><td style="font-size:.82rem">${esc((t.response||'').substring(0,50))}…</td><td>${t.videoUrl?'🎬':'—'}</td><td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td><td><button class="btn btn-secondary btn-sm" onclick="openTopicModal('${t.id}')">✏️</button> <button class="btn btn-danger btn-sm" onclick="deleteTopic('${t.id}')">🗑</button></td></tr>`).join('');
+  const empty = document.getElementById('topics-empty');
+  if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = list.map((t, i) => `<tr>
+    <td style="color:var(--muted)">${i+1}</td>
+    <td><strong>${esc(t.title)}</strong></td>
+    <td><div class="kw-wrap">${t.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div></td>
+    <td style="max-width:220px;color:var(--muted);font-size:.82rem">${esc((t.response||'').substring(0,60))}…</td>
+    <td>${t.videoUrl?`<span style="color:var(--cyan);font-size:.75rem">🎬 Sí</span>`:`<span style="color:var(--muted);font-size:.75rem">—</span>`}</td>
+    <td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td>
+    <td><div style="display:flex;gap:5px"><button class="btn btn-secondary btn-sm" onclick="openTopicModal('${t.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteTopic('${t.id}')">🗑</button></div></td>
+  </tr>`).join('');
+  updateBadges();
 }
-function openTopicModal(id=null) {
-  editTopicId=id; kwTags=[]; document.getElementById('mt-title').textContent=id?'Editar Disparador':'Nuevo Disparador';
-  if (id) { const t=DB.topics.find(x=>x.id===id); document.getElementById('mt-name').value=t.title; document.getElementById('mt-response').value=t.response; document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked=true; kwTags=[...t.keywords]; }
-  else { document.getElementById('mt-name').value=''; document.getElementById('mt-response').value=''; document.querySelector('input[name="mt-type"][value="free"]').checked=true; }
+
+function openTopicModal(id = null) {
+  editTopicId = id; kwTags = [];
+  document.getElementById('mt-title').textContent = id ? 'Editar Disparador' : 'Nuevo Disparador';
+  if (id) {
+    const t = DB.topics.find(x => x.id === id);
+    document.getElementById('mt-name').value = t.title;
+    document.getElementById('mt-response').value = t.response;
+    document.getElementById('mt-cta-text').value = t.ctaText || '';
+    document.getElementById('mt-cta-url').value = t.ctaUrl || '';
+    document.getElementById('mt-video-url').value = t.videoUrl || '';
+    document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked = true;
+    kwTags = [...t.keywords];
+  } else {
+    ['mt-name','mt-response','mt-cta-text','mt-cta-url','mt-video-url'].forEach(id => document.getElementById(id).value = '');
+    document.querySelector('input[name="mt-type"][value="free"]').checked = true;
+  }
   renderKwTags(); openModal('modal-topic');
 }
-function renderKwTags() {
-  const kbb = document.getElementById('kw-builder'), input = document.getElementById('kw-input');
-  kbb.innerHTML=''; kwTags.forEach((k,i)=>{const t=document.createElement('div');t.className='kw-tag';t.innerHTML=`${esc(k)}<button onclick="removeKw(${i})">×</button>`;kbb.appendChild(t);});
-  kbb.appendChild(input);
-}
-function removeKw(i){kwTags.splice(i,1);renderKwTags();}
-document.getElementById('kw-input').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().toLowerCase();if(v&&!kwTags.includes(v))kwTags.push(v);e.target.value='';renderKwTags();}});
-function saveTopic() {
-  const t={title:document.getElementById('mt-name').value, response:document.getElementById('mt-response').value, type:document.querySelector('input[name="mt-type"]:checked').value, keywords:kwTags};
-  if(editTopicId){ Object.assign(DB.topics.find(x=>x.id===editTopicId), t); showToast('Actualizado'); } else { t.id=uid(); DB.topics.push(t); showToast('Creado'); }
-  saveDB(); renderTopics(); closeModal('modal-topic'); if(document.getElementById('sec-flowmap').style.display==='block') initFlowMap();
-}
-function deleteTopic(id){if(confirm('¿Eliminar?')){DB.topics=DB.topics.filter(t=>t.id!==id);saveDB();renderTopics();if(document.getElementById('sec-flowmap').style.display==='block') initFlowMap();}}
 
-// ── FLOW MAP (With Edit feature A1) ──
-let flowDragging=null, connectingFrom=null;
+function renderKwTags() {
+  const kbb = document.getElementById('kw-builder');
+  const input = document.getElementById('kw-input');
+  kbb.innerHTML = '';
+  kwTags.forEach((k, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'kw-tag';
+    tag.innerHTML = `${esc(k)}<button onclick="removeKw(${i})">×</button>`;
+    kbb.appendChild(tag);
+  });
+  kbb.appendChild(input); input.focus();
+}
+function removeKw(i) { kwTags.splice(i, 1); renderKwTags(); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const kwInput = document.getElementById('kw-input');
+  if (kwInput) {
+    kwInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = kwInput.value.trim().replace(/,/g,'').toLowerCase();
+        if (val && !kwTags.includes(val)) { kwTags.push(val); renderKwTags(); } else kwInput.value = '';
+      }
+      if (e.key === 'Backspace' && !kwInput.value && kwTags.length) { kwTags.pop(); renderKwTags(); }
+    });
+  }
+  document.getElementById('login-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+});
+
+function saveTopic() {
+  const title = document.getElementById('mt-name').value.trim();
+  const response = document.getElementById('mt-response').value.trim();
+  const ctaText = document.getElementById('mt-cta-text').value.trim();
+  const ctaUrl = document.getElementById('mt-cta-url').value.trim();
+  const videoUrl = document.getElementById('mt-video-url').value.trim();
+  const type = document.querySelector('input[name="mt-type"]:checked').value;
+  const val = document.getElementById('kw-input').value.trim().replace(/,/g,'').toLowerCase();
+  if (val) kwTags.push(val);
+  if (!title || !response || kwTags.length === 0) { showToast('Completa título, keywords y respuesta.', 'err'); return; }
+  if (editTopicId) {
+    const idx = DB.topics.findIndex(t => t.id === editTopicId);
+    DB.topics[idx] = {...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type};
+    showToast('Disparador actualizado.');
+  } else {
+    DB.topics.push({id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type});
+    showToast('Disparador creado.');
+  }
+  saveDB(); renderTopics(); renderDashboard(); closeModal('modal-topic');
+}
+
+function deleteTopic(id) {
+  if (!confirm('¿Eliminar este disparador?')) return;
+  DB.topics = DB.topics.filter(t => t.id !== id);
+  DB.flows = DB.flows.filter(f => f.from !== id && f.to !== id);
+  saveDB(); renderTopics(); renderDashboard(); showToast('Disparador eliminado.');
+}
+
+// ── FLOW MAP ──
+let flowDragging = null, connectingFrom = null;
 function initFlowMap() {
-  const ws = document.getElementById('flow-workspace'), layer = document.getElementById('flow-nodes-layer'), svg = document.getElementById('flow-svg');
-  svg.setAttribute('width',ws.offsetWidth); svg.setAttribute('height',ws.offsetHeight); layer.innerHTML=''; svg.innerHTML='';
-  DB.topics.forEach((t,i) => {
-    const pos = DB.flowPositions[t.id] || {x: 40+(i%4)*230, y: 40+Math.floor(i/4)*160}; DB.flowPositions[t.id]=pos;
-    const node = document.createElement('div'); node.className='flow-node'; node.dataset.id=t.id; node.style.left=pos.x+'px'; node.style.top=pos.y+'px';
-    const c={free:'#10b981',sales:'#a78bfa',repair:'#3b82f6'}[t.type];
-    // ADDED: Edit button in header
-    node.innerHTML=`<div class="fn-header"><div class="fn-title">${esc(t.title)}</div><button class="fn-edit" onclick="openTopicModal('${t.id}')">✏️</button></div><div class="fn-body" style="border-top:1px solid ${c}30">${esc(t.response.substring(0,40))}...</div><div class="fn-ports"><div class="fn-port" onclick="connectTo('${t.id}')">◀</div><div class="fn-port" onclick="startConnect('${t.id}')">▶</div></div>`;
-    layer.appendChild(node);
-    let sx,sy,ox,oy;
-    node.addEventListener('mousedown',e=>{if(e.target.closest('.fn-port')||e.target.closest('.fn-edit'))return; flowDragging=t.id; sx=e.clientX; sy=e.clientY; ox=parseInt(node.style.left); oy=parseInt(node.style.top); e.preventDefault();});
-    document.addEventListener('mousemove',e=>{if(flowDragging!==t.id)return; node.style.left=(ox+e.clientX-sx)+'px'; node.style.top=(oy+e.clientY-sy)+'px'; drawConnections();});
-    document.addEventListener('mouseup',()=>{if(flowDragging===t.id){DB.flowPositions[t.id]={x:parseInt(node.style.left),y:parseInt(node.style.top)};flowDragging=null;}});
+  const ws = document.getElementById('flow-workspace');
+  const layer = document.getElementById('flow-nodes-layer');
+  const svg = document.getElementById('flow-svg');
+  svg.setAttribute('width', ws.offsetWidth); svg.setAttribute('height', ws.offsetHeight);
+  drawFlowBg(); layer.innerHTML = ''; svg.innerHTML = '';
+  DB.topics.forEach((t, i) => {
+    const pos = DB.flowPositions[t.id] || {x: 40+(i%4)*230, y: 40+Math.floor(i/4)*160};
+    DB.flowPositions[t.id] = pos;
+    createFlowNode(t, pos);
   });
   drawConnections();
 }
-function startConnect(fid){connectingFrom=fid;document.getElementById('connecting-hint').style.display='block';}
-function connectTo(tid){if(connectingFrom&&connectingFrom!==tid){DB.flows.push({id:uid(),from:connectingFrom,to:tid});saveDB();drawConnections();}connectingFrom=null;document.getElementById('connecting-hint').style.display='none';}
-function drawConnections(){ /* Same SVG drawing logic */ }
-function saveFlowLayout(){saveDB();showToast('Mapa guardado');} function flowAutoLayout(){initFlowMap();}
-
-// ── LEADS & SOCIAL (A7) ──
-function buildLeadsFilters() {
-  const sel = document.getElementById('leads-label-filter'); sel.innerHTML='<option value="">Todas las etiquetas</option>';
-  DB.labels.forEach(lb=>{sel.innerHTML+=`<option value="${lb.name}">${lb.name}</option>`});
+function drawFlowBg() {
+  const canvas = document.getElementById('flow-bg');
+  const ws = document.getElementById('flow-workspace');
+  canvas.width = ws.offsetWidth; canvas.height = ws.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = 'rgba(124,58,237,.08)'; ctx.lineWidth = 1;
+  for (let x=0;x<canvas.width;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}
+  for (let y=0;y<canvas.height;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}
 }
+function createFlowNode(t, pos) {
+  const layer = document.getElementById('flow-nodes-layer');
+  const cm = {free:'#10b981',sales:'#a78bfa',repair:'#3b82f6'};
+  const node = document.createElement('div');
+  node.className = 'flow-node'; node.dataset.id = t.id;
+  node.style.left = pos.x+'px'; node.style.top = pos.y+'px';
+  node.innerHTML = `<div class="fn-header"><div class="fn-title" title="${esc(t.title)}">${esc(t.title)}</div><div class="fn-badge" style="background:${cm[t.type]}22;color:${cm[t.type]}">${typeLabel(t.type)}</div></div><div class="fn-body">${esc(t.keywords.slice(0,3).join(', '))}${t.keywords.length>3?'…':''}</div><div class="fn-ports"><div class="fn-port" title="Entrada" onclick="connectTo('${t.id}')">◀</div><div class="fn-port" title="Conectar" onclick="startConnect('${t.id}')">▶</div></div>`;
+  layer.appendChild(node);
+  let sx,sy,ox,oy;
+  node.addEventListener('mousedown', e => { if(e.target.classList.contains('fn-port')||connectingFrom)return; flowDragging=t.id;sx=e.clientX;sy=e.clientY;ox=parseInt(node.style.left);oy=parseInt(node.style.top);e.preventDefault(); });
+  document.addEventListener('mousemove', e => { if(flowDragging!==t.id)return;node.style.left=(ox+e.clientX-sx)+'px';node.style.top=(oy+e.clientY-sy)+'px';drawConnections(); });
+  document.addEventListener('mouseup', () => { if(flowDragging===t.id){DB.flowPositions[t.id]={x:parseInt(node.style.left),y:parseInt(node.style.top)};flowDragging=null;} });
+}
+function startConnect(fid){connectingFrom=fid;document.getElementById('connecting-hint').style.display='block';document.querySelectorAll('.flow-node').forEach(n=>{if(n.dataset.id===fid)n.classList.add('connect-source')});}
+function connectTo(tid){if(!connectingFrom)return;if(connectingFrom!==tid&&!DB.flows.some(f=>f.from===connectingFrom&&f.to===tid)){DB.flows.push({id:uid(),from:connectingFrom,to:tid});saveDB();drawConnections();showToast('Conexión creada.');}cancelConnect();}
+function cancelConnect(){connectingFrom=null;document.getElementById('connecting-hint').style.display='none';document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('connect-source'));}
+function drawConnections(){
+  const svg=document.getElementById('flow-svg');const ws=document.getElementById('flow-workspace');
+  svg.setAttribute('width',ws.offsetWidth);svg.setAttribute('height',ws.offsetHeight);svg.innerHTML='';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML='<marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7c3aed"/></marker>';
+  svg.appendChild(defs);
+  DB.flows.forEach(f=>{
+    const fn=document.querySelector(`.flow-node[data-id="${f.from}"]`);const tn=document.querySelector(`.flow-node[data-id="${f.to}"]`);
+    if(!fn||!tn)return;
+    const fr=fn.getBoundingClientRect();const tr=tn.getBoundingClientRect();const wr=ws.getBoundingClientRect();
+    const x1=fr.right-wr.left,y1=fr.top+fr.height/2-wr.top,x2=tr.left-wr.left,y2=tr.top+tr.height/2-wr.top,cp=Math.abs(x2-x1)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${x1},${y1} C${x1+cp},${y1} ${x2-cp},${y2} ${x2},${y2}`);
+    path.setAttribute('fill','none');path.setAttribute('stroke','#7c3aed');path.setAttribute('stroke-width','2');path.setAttribute('stroke-dasharray','5,3');path.setAttribute('marker-end','url(#arrow)');
+    path.style.cursor='pointer';path.onclick=()=>{if(confirm('¿Eliminar conexión?')){DB.flows=DB.flows.filter(x=>x.id!==f.id);saveDB();drawConnections();}};
+    svg.appendChild(path);
+  });
+}
+function clearConnections(){if(!confirm('¿Eliminar todas las conexiones?'))return;DB.flows=[];saveDB();drawConnections();showToast('Conexiones eliminadas.');}
+function saveFlowLayout(){saveDB();showToast('Mapa guardado.');}
+function flowAutoLayout(){DB.topics.forEach((t,i)=>{DB.flowPositions[t.id]={x:40+(i%4)*230,y:40+Math.floor(i/4)*160}});initFlowMap();showToast('Mapa reorganizado.');}
+document.addEventListener('click',e=>{if(connectingFrom&&!e.target.classList.contains('fn-port'))cancelConnect();});
+
+// ── LEADS ──
+let editNoteId = null;
+
+function buildLeadsFilters() {
+  // Label filter
+  const lblSel = document.getElementById('leads-label-filter');
+  const prevLbl = lblSel.value;
+  lblSel.innerHTML = '<option value="">Todas las etiquetas</option>';
+  DB.labels.forEach(lb => {
+    const opt = document.createElement('option');
+    opt.value = lb.name; opt.textContent = lb.name;
+    if (lb.name === prevLbl) opt.selected = true;
+    lblSel.appendChild(opt);
+  });
+  // Country filter — by name
+  const ctSel = document.getElementById('leads-country-filter');
+  const prevCt = ctSel.value;
+  const countries = [...new Set(DB.leads.map(l => l.countryName || l.countryCode).filter(Boolean))].sort();
+  ctSel.innerHTML = '<option value="">Todos los países</option>';
+  countries.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    if (c === prevCt) opt.selected = true;
+    ctSel.appendChild(opt);
+  });
+}
+
 function renderLeads() {
-  const q=document.getElementById('leads-search').value.toLowerCase(), lblF=document.getElementById('leads-label-filter').value;
-  const list = DB.leads.filter(l=>(!lblF||l.label===lblF)&&(!q||l.name.toLowerCase().includes(q))).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  buildLeadsFilters();
+  const q = (document.getElementById('leads-search')?.value || '').toLowerCase();
+  const lblF = document.getElementById('leads-label-filter')?.value || '';
+  const ctF = document.getElementById('leads-country-filter')?.value || '';
+  let list = DB.leads.filter(l => {
+    const matchLbl = !lblF || l.label === lblF;
+    const matchCt = !ctF || (l.countryName || l.countryCode) === ctF;
+    const matchQ = !q || l.name.toLowerCase().includes(q) || (l.phone||'').includes(q);
+    return matchLbl && matchCt && matchQ;
+  }).sort((a,b) => (b.ts||0) - (a.ts||0));
+
   const tbody = document.getElementById('leads-body');
-  if(!list.length){tbody.innerHTML='';document.getElementById('leads-empty').style.display='block';return;}
-  document.getElementById('leads-empty').style.display='none';
-  tbody.innerHTML = list.map(l=>{
-    const srcBadge = l.source ? `<span class="source-badge">🌐 ${esc(l.source)}</span>` : '<span class="source-badge" style="opacity:0.5">Orgánico</span>';
+  const empty = document.getElementById('leads-empty');
+  if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  const cleanPh = ph => (ph||'').replace(/\D/g,'');
+  tbody.innerHTML = list.map(l => {
+    const ph = cleanPh((l.countryCode||'').replace(/\D/g,'')) + cleanPh(l.phone||'');
+    const waLink = `https://wa.me/${ph}?text=${encodeURIComponent('Hola ' + l.name + ', te contactamos desde GOKUCELL 👋')}`;
+    const noteHtml = l.note
+      ? `<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,25))}${l.note.length>25?'…':''}</span>`
+      : `<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.72rem;padding:3px 8px">+ Nota</button>`;
     return `<tr>
-      <td>${srcBadge}</td>
       <td style="font-weight:600">${esc(l.name)}</td>
-      <td><button class="wa-link" onclick="openWaModal('${esc(l.countryCode||'')}${esc(l.phone||'')}','${esc(l.name)}','${esc(l.label)}')">📱 ${esc(l.countryCode||'')} ${esc(l.phone||'')}</button></td>
-      <td style="font-size:.8rem;color:var(--muted)">${esc(l.intent)}</td>
-      <td><span class="badge" style="color:${labelColor(l.label)}">${esc(l.label)}</span></td>
-      <td><button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')">+ Nota</button></td>
-      <td><button class="btn btn-cyan btn-sm" onclick="viewHistory('${l.id}','${l.name}','${esc(l.countryCode||'')}${esc(l.phone||'')}')">💬 En Vivo</button></td>
-      <td style="font-size:.75rem;color:var(--muted)">${formatDate(l.ts)}</td>
+      <td><a class="wa-link" href="${waLink}" target="_blank">📱 ${esc(l.countryCode||'')} ${esc(l.phone||'')}</a></td>
+      <td style="color:var(--muted);font-size:.82rem">${esc(l.countryName||l.countryCode||'')}</td>
+      <td style="color:var(--muted);font-size:.82rem">${esc(l.intent||'')}</td>
+      <td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label||'')}</span></td>
+      <td>${noteHtml}</td>
+      <td><button class="btn btn-cyan btn-sm" onclick="viewHistory('${l.id}','${l.name}','${l.countryCode||''}${l.phone||''}')">💬 Chat</button></td>
+      <td style="color:var(--muted);font-size:.75rem;white-space:nowrap">${formatDate(l.ts)}</td>
     </tr>`;
+  }).join('');
+  updateBadges();
+}
+
+function openNoteModal(id) {
+  editNoteId = id;
+  const l = DB.leads.find(x => x.id === id);
+  if (!l) return;
+  document.getElementById('mn-name').textContent = l.name;
+  document.getElementById('mn-text').value = l.note || '';
+  openModal('modal-note');
+}
+
+function saveNote() {
+  const idx = DB.leads.findIndex(x => x.id === editNoteId);
+  const note = document.getElementById('mn-text').value.trim();
+  if (idx >= 0) {
+    DB.leads[idx].note = note;
+    updateLeadInFirebase(editNoteId, {note});
+    localStorage.setItem(KEY, JSON.stringify(DB));
+    renderLeads();
+  }
+  closeModal('modal-note'); showToast('Nota guardada.');
+}
+
+async function viewHistory(leadId, name, cleanPhone) {
+  document.getElementById('mh-name').textContent = name;
+  document.getElementById('mh-phone').textContent = cleanPhone;
+  const container = document.getElementById('mh-messages');
+  const empty = document.getElementById('mh-empty');
+  container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">Cargando...</div>';
+  empty.style.display = 'none';
+  openModal('modal-history');
+
+  let messages = [];
+  // Try Firebase first
+  if (db) {
+    try {
+      const ph = cleanPhone.replace(/\D/g,'');
+      const snap = await db.collection('gkc_hist').doc(ph).get();
+      if (snap.exists) messages = snap.data().messages || [];
+    } catch(e) { console.warn(e); }
+  }
+  // Fallback: localStorage
+  if (!messages.length) {
+    const ph = cleanPhone.replace(/\D/g,'');
+    const raw = localStorage.getItem('gokucell_hist_' + ph);
+    if (raw) { try { messages = JSON.parse(raw); } catch(e){} }
+  }
+
+  if (!messages.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  container.innerHTML = messages.map(m => {
+    const isBot = m.role === 'bot';
+    const timeStr = m.ts ? new Date(m.ts).toLocaleString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+    const safeText = esc(m.text||'').replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
+    const videoHtml = m.videoUrl ? `<div style="font-size:.72rem;color:var(--cyan);margin-top:4px">🎬 ${esc(m.videoUrl)}</div>` : '';
+    return `<div class="hist-msg-row ${isBot?'':'user'}">
+      <div class="hist-av ${isBot?'':'user'}">${isBot?'🔧':'👤'}</div>
+      <div>
+        <div class="hist-bubble ${m.role}">${safeText}${videoHtml}</div>
+        <div class="hist-time">${timeStr}</div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ── WA TEMPLATES (A8) ──
-function renderWT() {
-  const lst = document.getElementById('wt-list');
-  if(!DB.waTemplates.length) {lst.innerHTML=''; document.getElementById('wt-empty').style.display='block'; return;}
-  document.getElementById('wt-empty').style.display='none';
-  lst.innerHTML = DB.waTemplates.map(w=>`<div class="wt-card"><div class="wt-body"><div class="wt-name">${esc(w.name)}</div><div class="wt-lbl">Etiqueta: ${esc(w.label)}</div><div class="wt-msg">${esc(w.text)}</div></div><button class="btn btn-danger btn-sm" onclick="deleteWT('${w.id}')">🗑</button></div>`).join('');
-}
-function openWTModal() {
-  const sel = document.getElementById('mwt-label'); sel.innerHTML='<option value="Todas">Para cualquier contacto</option>';
-  DB.labels.forEach(lb=>{sel.innerHTML+=`<option value="${lb.name}">${lb.name}</option>`});
-  document.getElementById('mwt-name').value=''; document.getElementById('mwt-text').value=''; openModal('modal-wt');
-}
-function saveWT() {
-  const t={id:uid(), name:document.getElementById('mwt-name').value, label:document.getElementById('mwt-label').value, text:document.getElementById('mwt-text').value};
-  if(!t.name||!t.text) return showToast('Completa los campos','err');
-  DB.waTemplates.push(t); saveDB(); renderWT(); closeModal('modal-wt'); showToast('Plantilla WA guardada');
-}
-function deleteWT(id) { DB.waTemplates=DB.waTemplates.filter(w=>w.id!==id); saveDB(); renderWT(); }
-
-let activeWaPhone='', activeWaName='';
-function openWaModal(phone, name, label) {
-  activeWaPhone=phone.replace(/\D/g,''); activeWaName=name;
-  document.getElementById('wa-sel-name').textContent = name;
-  const lst = document.getElementById('wa-sel-list');
-  const validTpls = DB.waTemplates.filter(w => w.label==='Todas' || w.label===label);
-  
-  let html = `<button class="btn btn-secondary" style="justify-content:flex-start" onclick="sendWA('')">📄 Mensaje en blanco</button>`;
-  validTpls.forEach(w => {
-    html += `<button class="btn btn-secondary" style="justify-content:flex-start;text-align:left;height:auto" onclick="sendWA('${esc(w.text)}')"><div style="font-size:.8rem;font-weight:700">${esc(w.name)}</div><div style="font-size:.7rem;color:var(--muted);margin-top:3px">${esc(w.text.substring(0,50))}...</div></button>`;
-  });
-  lst.innerHTML = html; openModal('modal-wa-select');
-}
-function sendWA(textTemplate) {
-  const msg = textTemplate.replace(/\[nombre\]/gi, activeWaName);
-  window.open(`https://wa.me/${activeWaPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-  closeModal('modal-wa-select');
+function deleteLead(id) {
+  if (!confirm('¿Eliminar este contacto?')) return;
+  if (db) db.collection('gkc_leads').doc(id).delete().catch(e => console.warn(e));
+  DB.leads = DB.leads.filter(l => l.id !== id);
+  localStorage.setItem(KEY, JSON.stringify(DB));
+  renderLeads(); renderDashboard();
 }
 
-// ── LIVE HISTORY CHAT (A2, A3) ──
-let liveHistUnsubscribe = null;
-let activeHistPhone = '';
-
-function viewHistory(leadId, name, cleanPhone) {
-  document.getElementById('mh-name').textContent = name;
-  document.getElementById('mh-phone').textContent = cleanPhone;
-  activeHistPhone = cleanPhone.replace(/\D/g,'');
-  document.getElementById('admin-live-msg').value = '';
-  const container = document.getElementById('mh-messages');
-  container.innerHTML = '<div style="text-align:center;color:var(--muted)">Conectando en vivo...</div>';
-  openModal('modal-history');
-
-  if(liveHistUnsubscribe) liveHistUnsubscribe();
-  if(!db) return container.innerHTML = 'Sin conexión a Firebase.';
-
-  liveHistUnsubscribe = db.collection('gkc_hist').doc(activeHistPhone).onSnapshot(snap => {
-    if(!snap.exists) { container.innerHTML=''; document.getElementById('mh-empty').style.display='block'; return; }
-    document.getElementById('mh-empty').style.display='none';
-    const msgs = snap.data().messages || [];
-    container.innerHTML = msgs.map(m => {
-      const isBot = m.role === 'bot';
-      const timeStr = m.ts ? new Date(m.ts).toLocaleString('es',{hour:'2-digit',minute:'2-digit'}) : '';
-      const badge = m.isAdmin ? `<span style="font-size:.6rem;color:var(--cyan);margin-left:4px">(Tú)</span>` : '';
-      return `<div class="hist-msg-row ${isBot?'':'user'}">
-        <div class="hist-av ${isBot?'':'user'}">${isBot?'🤖':'👤'}</div>
-        <div>
-          <div class="hist-bubble ${m.role}" style="${m.isAdmin?'border-color:var(--cyan)':''}">${esc(m.text).replace(/\n/g,'<br>')} ${badge}</div>
-          <div class="hist-time">${timeStr}</div>
-        </div>
-      </div>`;
-    }).join('');
-    container.scrollTop = container.scrollHeight;
-  });
-}
-function closeHistoryModal() { if(liveHistUnsubscribe) liveHistUnsubscribe(); closeModal('modal-history'); }
-
-async function sendAdminMsg() {
-  const input = document.getElementById('admin-live-msg');
-  const text = input.value.trim();
-  if(!text || !db || !activeHistPhone) return;
-  
-  const newMsg = {role:'bot', text:text, ts:Date.now(), isAdmin:true};
-  const docRef = db.collection('gkc_hist').doc(activeHistPhone);
-  try {
-    const snap = await docRef.get();
-    let msgs = snap.exists ? snap.data().messages : [];
-    msgs.push(newMsg);
-    await docRef.set({messages: msgs, updatedAt: Date.now()}, {merge:true});
-    input.value = '';
-    showToast('Mensaje enviado al chat');
-  } catch(e) { showToast('Error al enviar','err'); }
+function clearLeads() {
+  if (!confirm('¿Eliminar TODOS los contactos?')) return;
+  if (db) { DB.leads.forEach(l => db.collection('gkc_leads').doc(l.id).delete().catch(e=>{})); }
+  DB.leads = [];
+  localStorage.setItem(KEY, JSON.stringify(DB));
+  renderLeads(); renderDashboard(); showToast('Contactos eliminados.');
 }
 
-// ── AUTOFLOW & QR (A4, A5) ──
-let activeQRs = {qrFree:[], qrSales:[], qrReturn:[], qrMenu:[]};
-function renderAutoflow() {
-  const af = DB.autoflow;
-  ['sq1','sq2','sq3','sb1','sb2','sfinal'].forEach(id => document.getElementById('af-'+id).value = af[id]||'');
-  activeQRs.qrFree = af.qrFree||[]; activeQRs.qrSales = af.qrSales||[]; activeQRs.qrReturn = af.qrReturn||[]; activeQRs.qrMenu = af.qrMenu||[];
-  renderQR('qrFree', 'qr-free-wrap'); renderQR('qrSales', 'qr-sales-wrap'); renderQR('qrReturn', 'qr-return-wrap'); renderQR('qrMenu', 'qr-menu-wrap');
-}
-function renderQR(key, wrapId) {
-  const w = document.getElementById(wrapId); w.innerHTML='';
-  activeQRs[key].forEach((q,i) => {
-    const tg = document.createElement('div'); tg.className='qr-tag'; tg.innerHTML=`${esc(q)} <button onclick="removeQR('${key}','${wrapId}',${i},event)">×</button>`; w.appendChild(tg);
-  });
-  const inp = document.createElement('input'); inp.className='qr-input'; inp.id=key+'-input'; inp.placeholder='Agregar...';
-  inp.onkeydown = e => { if(e.key==='Enter'||e.key===',') {e.preventDefault(); const v=inp.value.trim().replace(/,/g,''); if(v){activeQRs[key].push(v); renderQR(key,wrapId);}} };
-  w.appendChild(inp);
-}
-function removeQR(key,wrapId,i,e) { e.stopPropagation(); activeQRs[key].splice(i,1); renderQR(key,wrapId); }
-function saveAutoflow() {
-  ['sq1','sq2','sq3','sb1','sb2','sfinal'].forEach(id => DB.autoflow[id] = document.getElementById('af-'+id).value);
-  DB.autoflow.qrFree = activeQRs.qrFree; DB.autoflow.qrSales = activeQRs.qrSales; DB.autoflow.qrReturn = activeQRs.qrReturn; DB.autoflow.qrMenu = activeQRs.qrMenu;
-  saveDB(); showToast('Flujo automático guardado');
+// ── LABELS ──
+let editLabelId = null;
+function renderLabels() {
+  const grid = document.getElementById('labels-grid');
+  if (!DB.labels.length) { grid.innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><p>Sin etiquetas.</p></div>'; return; }
+  grid.innerHTML = DB.labels.map(lb => `<div class="label-card" style="border-color:${lb.color}40">
+    <div class="label-card-top">
+      <div><div class="label-name-large" style="color:${lb.color}">${esc(lb.name)}</div><div class="label-info" style="margin-top:6px">Flujo: <strong>${typeLabel(lb.flow)}</strong><br>${lb.ctaUrl?`<a href="${esc(lb.ctaUrl)}" target="_blank" style="color:var(--p);font-size:.75rem">🔗 Ver enlace</a>`:'<span style="font-size:.75rem;color:var(--muted)">Sin enlace</span>'}</div></div>
+      <div class="label-color-dot" style="background:${lb.color}"></div>
+    </div>
+    ${lb.welcome?`<div style="background:var(--s2);border-radius:8px;padding:8px 10px;font-size:.78rem;color:var(--muted);margin-bottom:8px">"${esc(lb.welcome.substring(0,80))}…"</div>`:''}
+    <div class="label-actions"><button class="btn btn-secondary btn-sm" onclick="openLabelModal('${lb.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="deleteLabel('${lb.id}')">🗑</button></div>
+  </div>`).join('');
 }
 
-// ── OTHERS ──
-function previewPhoto() { document.getElementById('profile-preview-img').src=document.getElementById('s-photo').value; document.getElementById('sb-avatar').src=document.getElementById('s-photo').value; }
+function openLabelModal(id = null) {
+  editLabelId = id;
+  document.getElementById('ml-title').textContent = id ? 'Editar Etiqueta' : 'Nueva Etiqueta';
+  if (id) {
+    const lb = DB.labels.find(x => x.id === id);
+    document.getElementById('ml-name').value = lb.name;
+    document.getElementById('ml-color').value = lb.color;
+    document.getElementById('ml-flow').value = lb.flow;
+    document.getElementById('ml-welcome').value = lb.welcome || '';
+    document.getElementById('ml-cta-text').value = lb.ctaText || '';
+    document.getElementById('ml-cta-url').value = lb.ctaUrl || '';
+  } else {
+    document.getElementById('ml-name').value = '';
+    document.getElementById('ml-color').value = '#10b981';
+    document.getElementById('ml-flow').value = 'free';
+    ['ml-welcome','ml-cta-text','ml-cta-url'].forEach(id => document.getElementById(id).value = '');
+  }
+  openModal('modal-label');
+}
+
+function saveLabel() {
+  const name = document.getElementById('ml-name').value.trim().toUpperCase();
+  if (!name) { showToast('El nombre es requerido.','err'); return; }
+  const data = {name, color: document.getElementById('ml-color').value, flow: document.getElementById('ml-flow').value, welcome: document.getElementById('ml-welcome').value.trim(), ctaText: document.getElementById('ml-cta-text').value.trim(), ctaUrl: document.getElementById('ml-cta-url').value.trim()};
+  if (editLabelId) { const idx = DB.labels.findIndex(x => x.id === editLabelId); DB.labels[idx] = {...DB.labels[idx], ...data}; showToast('Etiqueta actualizada.'); }
+  else { DB.labels.push({id: uid(), ...data}); showToast('Etiqueta creada.'); }
+  saveDB(); renderLabels(); closeModal('modal-label');
+}
+
+function deleteLabel(id) {
+  if (!confirm('¿Eliminar esta etiqueta?')) return;
+  DB.labels = DB.labels.filter(x => x.id !== id);
+  saveDB(); renderLabels(); showToast('Etiqueta eliminada.');
+}
+
+// ── SETTINGS ──
+function previewPhoto() {
+  const url = document.getElementById('s-photo').value.trim();
+  document.getElementById('profile-preview-img').src = url;
+  document.getElementById('sb-avatar').src = url;
+}
+
 function saveSettings() {
-  DB.settings.profilePhoto=document.getElementById('s-photo').value; DB.settings.botDescription=document.getElementById('s-desc').value;
-  DB.settings.adText=document.getElementById('s-ad-text').value; DB.settings.adPrice=document.getElementById('s-ad-price').value; DB.settings.adUrl=document.getElementById('s-ad-url').value;
-  saveDB(); showToast('Configuración general guardada');
+  DB.settings.profilePhoto = document.getElementById('s-photo').value.trim();
+  DB.settings.botDescription = document.getElementById('s-desc').value.trim();
+  DB.settings.communityLink = document.getElementById('s-community').value.trim();
+  DB.settings.adText = document.getElementById('s-ad-text').value.trim();
+  DB.settings.adPrice = document.getElementById('s-ad-price').value.trim();
+  DB.settings.adUrl = document.getElementById('s-ad-url').value.trim();
+  DB.settings.adBtn = document.getElementById('s-ad-btn').value.trim();
+  DB.settings.noMatchMsg = document.getElementById('s-nomatch').value.trim();
+  saveDB();
+  document.getElementById('sb-avatar').src = DB.settings.profilePhoto;
+  showToast('Configuración guardada y sincronizada.');
 }
-function changePwd() { const o=document.getElementById('s-pwd-old').value, n=document.getElementById('s-pwd-new').value; if(o!==DB.settings.password) return showToast('Contraseña actual incorrecta','err'); DB.settings.password=n; saveDB(); showToast('Contraseña cambiada'); }
 
-// Basic labels / notes omitted details for brevity, use standard handlers
-function openLabelModal(id=null){} // Same as previous version
-function openNoteModal(id){} // Same as previous version
+function changePwd() {
+  const old = document.getElementById('s-pwd-old').value;
+  const nw = document.getElementById('s-pwd-new').value.trim();
+  if (old !== DB.settings.password) { showToast('Contraseña actual incorrecta.','err'); return; }
+  if (!nw) { showToast('La nueva contraseña no puede estar vacía.','err'); return; }
+  DB.settings.password = nw; saveDB();
+  document.getElementById('s-pwd-old').value = ''; document.getElementById('s-pwd-new').value = '';
+  showToast('Contraseña actualizada.');
+}
+
+// ── GUIDE ──
+const GUIDE_STEPS = [
+  {section:'🔐 Acceso',steps:[
+    {n:1,title:'Ingresar al admin',desc:'Abre <code>admin.html</code> en tu navegador. Ingresa tu contraseña (por defecto: <code>5616</code>) y presiona Ingresar.',tip:'Cambia la contraseña desde Configuración en cualquier momento.'},
+    {n:2,title:'Navegación',desc:'El sidebar izquierdo tiene todas las secciones. Los cambios que hagas se sincronizan automáticamente en tiempo real vía Firebase a todos los dispositivos.',tip:'El indicador 🟢 Sincronizado en la barra superior confirma que Firebase está activo.'}
+  ]},
+  {section:'⚡ Disparadores',steps:[
+    {n:3,title:'¿Qué es un disparador?',desc:'Es un conjunto de palabras clave que al ser escritas por el usuario activan una respuesta específica del bot. Puedes agregar tantas keywords como quieras presionando <code>Enter</code> o <code>,</code>.',tip:'Frases completas son más precisas: "no carga el celular" es mejor que solo "carga".'},
+    {n:4,title:'Agregar video a una respuesta',desc:'En el campo <strong>Video de respuesta</strong> del disparador pega un link de YouTube (autoplay automático) o una URL directa a un MP4. Se reproduce sin que el usuario presione play.',tip:'Ideal para tutoriales o demostraciones de reparación.'}
+  ]},
+  {section:'🗺️ Mapa de Flujos',steps:[
+    {n:5,title:'Conectar nodos',desc:'Clic en <strong>▶</strong> del nodo origen → clic en <strong>◀</strong> del nodo destino. Las conexiones se guardan con el botón Guardar. Clic sobre una línea punteada para eliminarla.',tip:'Usa Auto-organizar si el mapa se desordena.'}
+  ]},
+  {section:'👥 Contactos',steps:[
+    {n:6,title:'Leads en tiempo real',desc:'Los contactos aparecen automáticamente cuando alguien llena el formulario en el chat. Se sincronizan desde Firebase en tiempo real, visibles desde cualquier dispositivo.',tip:'Filtra por etiqueta, país o nombre usando los controles de la barra superior.'},
+    {n:7,title:'Enviar WhatsApp',desc:'El número de cada contacto es un enlace 📱 directo a WhatsApp Web con el saludo pre-cargado: <em>"Hola [nombre], te contactamos desde GOKUCELL 👋"</em>. Puedes editar antes de enviar.',tip:'El filtro de país muestra el nombre del país (Colombia, Venezuela, etc.), útil para estrategia de ads.'},
+    {n:8,title:'Ver historial de chat',desc:'Clic en el botón <strong>💬 Chat</strong> de cualquier contacto para ver toda la conversación que tuvo en el chat, con timestamps. Ideal para planear el seguimiento por WhatsApp.',tip:'El historial se guarda en Firebase y está disponible desde cualquier dispositivo.'},
+    {n:9,title:'Agregar notas',desc:'Clic en <strong>+ Nota</strong> para escribir una nota interna sobre el contacto (seguimiento, estado, interés). La nota es solo visible en el admin.',tip:'Usa las notas para recordar el contexto de cada lead antes de contactarlo.'}
+  ]},
+  {section:'🏷️ Etiquetas',steps:[
+    {n:10,title:'Configurar etiquetas',desc:'Cada etiqueta define el flujo del chat según la intención del usuario. Configura: nombre, color, tipo de flujo, mensaje de bienvenida con <code>[nombre]</code> y botón CTA.',tip:'GRATIS → recursos gratuitos · EXPERCENTER → ventas · REPARAXCELL → cotizaciones.'}
+  ]},
+  {section:'⚙️ Configuración',steps:[
+    {n:11,title:'Descripción del chat',desc:'En Configuración → <strong>Descripción del chat</strong> puedes cambiar el subtítulo que aparece debajo de GOKUCELL en la pantalla de inicio y en el header del chat. Por defecto: "by Jhonatan Herrera · Resolvemos tus dudas...".',tip:'Una descripción clara genera más confianza antes de que el usuario inicie el chat.'},
+    {n:12,title:'Foto de perfil',desc:'Pega la URL de cualquier imagen para cambiar la foto del bot en el chat y en el sidebar del admin. Se aplica en tiempo real.',tip:'Usa una URL directa a una imagen (.jpg, .png, .webp).'},
+    {n:13,title:'Anuncio flotante',desc:'Configura el texto del anuncio de Expercenter que aparece discretamente en el chat. Puedes cambiar el texto, precio, URL y botón. Actualiza el mensaje periódicamente para mantenerlo fresco.',tip:'Mensajes que apuntan a un dolor específico del técnico convierten mejor.'}
+  ]}
+];
+
+function renderGuide() {
+  const container = document.getElementById('guide-content');
+  if (!container) return;
+  container.innerHTML = GUIDE_STEPS.map(section => `
+    <div class="guide-section-title">${section.section}</div>
+    <div class="guide-steps">
+      ${section.steps.map((s, i, arr) => `
+        <div class="guide-step">
+          ${i < arr.length-1 ? '<div class="gs-line"></div>' : ''}
+          <div class="gs-num">${s.n}</div>
+          <div class="gs-body">
+            <div class="gs-title">${s.title}</div>
+            <div class="gs-desc">${s.desc}</div>
+            ${s.tip ? `<div class="gs-tip">💡 <strong>Tip:</strong> ${s.tip}</div>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+// ── HELPERS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='ok'?'✅ ':'⚠️ ') + msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+loadLocalDB();
 </script>
 </body>
 </html>
