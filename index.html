@@ -3,48 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOKUCELL — Chat de Soporte</title>
+<title>GOKUCELL — Chat</title>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-:root {
-  --bg: #080b14;
-  --s1: #0f1320;
-  --s2: #161b2e;
-  --s3: #1e2540;
-  --border: #252d4a;
-  --p: #7c3aed;
-  --pl: #a78bfa;
-  --pg: rgba(124,58,237,.15);
-  --cyan: #06b6d4;
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --free: #10b981;
-  --sales: #a78bfa;
-  --repair: #3b82f6;
-  --user-bubble: #7c3aed;
-}
+:root{--bg:#080b14;--s1:#0f1320;--s2:#161b2e;--s3:#1e2540;--border:#252d4a;--p:#7c3aed;--pl:#a78bfa;--pg:rgba(124,58,237,.15);--cyan:#06b6d4;--text:#e2e8f0;--muted:#64748b;--free:#10b981;--sales:#a78bfa;--repair:#3b82f6;--user-bubble:#7c3aed}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;display:flex;flex-direction:column;position:relative}
-
-/* ── CIRCUIT BACKGROUND ── */
-#circuit-bg{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5}
-
-/* ── REGISTER SCREEN ── */
-#register-screen{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,rgba(8,11,20,.97) 0%,rgba(15,19,32,.97) 100%)}
-.reg-card{background:var(--s1);border:1px solid var(--border);border-radius:22px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 0 60px rgba(124,58,237,.15)}
-.reg-header{background:linear-gradient(135deg,#0f1320 0%,#1a1040 100%);padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
-.reg-header::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:160px;height:160px;background:radial-gradient(circle,rgba(124,58,237,.3) 0%,transparent 70%);border-radius:50%}
+#circuit-bg{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.45}
+/* REGISTER */
+#register-screen{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,rgba(8,11,20,.97),rgba(15,19,32,.97));overflow-y:auto}
+.reg-card{background:var(--s1);border:1px solid var(--border);border-radius:22px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 0 60px rgba(124,58,237,.15);my-margin:auto}
+.reg-header{background:linear-gradient(135deg,#0f1320,#1a1040);padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.reg-header::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:160px;height:160px;background:radial-gradient(circle,rgba(124,58,237,.3),transparent 70%);border-radius:50%}
 .reg-avatar{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--p);margin:0 auto 12px;display:block;position:relative;z-index:1;box-shadow:0 0 20px rgba(124,58,237,.4)}
-.reg-name{font-size:1.2rem;font-weight:800;position:relative;z-index:1}
-.reg-name span{color:var(--pl)}
-.reg-sub{font-size:.8rem;color:var(--muted);margin-top:4px;position:relative;z-index:1}
+.reg-brand{font-size:1.2rem;font-weight:800;position:relative;z-index:1}
+.reg-brand span{color:var(--pl)}
+.reg-sub{font-size:.8rem;color:var(--muted);margin-top:4px;position:relative;z-index:1;line-height:1.5}
 .reg-body{padding:24px}
-.reg-section-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:10px;margin-top:18px}
-.reg-section-title:first-child{margin-top:0}
+.reg-sec-title{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:10px;margin-top:18px}
+.reg-sec-title:first-child{margin-top:0}
 .reg-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:.92rem;outline:none;transition:border-color .2s;font-family:inherit}
 .reg-input:focus{border-color:var(--p)}
 .phone-row{display:flex;gap:8px}
-.country-select{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 10px;color:var(--text);font-size:.85rem;outline:none;cursor:pointer;flex-shrink:0;width:130px;transition:border-color .2s}
+.country-select{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 10px;color:var(--text);font-size:.82rem;outline:none;cursor:pointer;flex-shrink:0;width:148px;transition:border-color .2s}
 .country-select:focus{border-color:var(--p)}
 .phone-input{flex:1}
 .intent-grid{display:flex;flex-direction:column;gap:8px}
@@ -54,29 +38,23 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .intent-icon{font-size:1.3rem;flex-shrink:0}
 .intent-text{font-size:.88rem;font-weight:600}
 .intent-sub{font-size:.75rem;color:var(--muted);margin-top:1px}
-.btn-start{width:100%;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;padding:15px;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:20px;transition:all .2s;letter-spacing:.3px}
+.btn-start{width:100%;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;padding:15px;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:20px;transition:all .2s}
 .btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
-.btn-start:active{transform:translateY(0)}
 .reg-err{color:#ef4444;font-size:.78rem;margin-top:8px;text-align:center;min-height:18px}
-
-/* ── CHAT LAYOUT ── */
+/* CHAT SCREEN */
 #chat-screen{display:none;flex-direction:column;height:100%;position:relative;z-index:1}
-
-/* HEADER */
-.chat-header{background:rgba(15,19,32,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;overflow:hidden}
+.chat-header{background:rgba(15,19,32,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative}
 .chat-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--p),transparent)}
 .ch-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0;box-shadow:0 0 12px rgba(124,58,237,.4)}
 .ch-info h1{font-size:.92rem;font-weight:700}
 .ch-info p{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:1px}
 .status-dot{width:7px;height:7px;background:var(--free);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .ch-user-chip{margin-left:auto;background:var(--pg);border:1px solid var(--p)40;border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--pl);flex-shrink:0}
-
 /* MESSAGES */
 #chat-area{flex:1;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
 #chat-area::-webkit-scrollbar{width:4px}
 #chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
 .msg-row{display:flex;gap:8px;max-width:720px;width:100%;animation:fadeUp .3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .msg-row.bot{align-self:flex-start}
@@ -85,52 +63,43 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .msg-av-user{width:30px;height:30px;border-radius:50%;background:var(--s3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:2px}
 .msg-content{display:flex;flex-direction:column;gap:5px;max-width:calc(100% - 40px)}
 .bubble{padding:11px 15px;border-radius:18px;font-size:.9rem;line-height:1.6}
-.msg-row.bot .bubble{background:var(--s2);border:1px solid var(--border);border-top-left-radius:5px;color:var(--text)}
+.msg-row.bot .bubble{background:var(--s2);border:1px solid var(--border);border-top-left-radius:5px}
 .msg-row.user .bubble{background:var(--user-bubble);color:#fff;border-top-right-radius:5px}
 .msg-time{font-size:.68rem;color:var(--muted);padding:0 3px}
 .msg-row.user .msg-time{text-align:right}
 .bubble strong{color:var(--pl)}
 .bubble em{color:var(--cyan);font-style:normal}
-
-/* CTA */
 .cta-btn{display:inline-block;margin-top:6px;padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;cursor:pointer;border:none}
 .cta-btn:hover{transform:translateY(-1px)}
 .cta-free{background:rgba(16,185,129,.12);color:var(--free);border:1px solid rgba(16,185,129,.25)}
 .cta-sales{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3)}
 .cta-repair{background:rgba(59,130,246,.12);color:var(--repair);border:1px solid rgba(59,130,246,.25)}
-
-/* QUICK REPLIES */
 .qr-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
 .qr-btn{background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:.78rem;color:var(--text);cursor:pointer;transition:all .2s;white-space:nowrap}
 .qr-btn:hover{border-color:var(--p);color:var(--pl);background:var(--pg)}
-
 /* TYPING */
 .typing-row{display:flex;gap:8px;align-self:flex-start;animation:fadeUp .3s ease}
 .typing-bubble{background:var(--s2);border:1px solid var(--border);border-radius:18px;border-top-left-radius:5px;padding:13px 17px;display:flex;gap:5px;align-items:center}
 .dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-
+/* VIDEO */
+.video-wrap{margin-top:8px;border-radius:12px;overflow:hidden;background:#000;max-width:380px}
+.video-wrap iframe{width:100%;aspect-ratio:16/9;border:none;display:block}
+.video-wrap video{width:100%;max-height:220px;display:block}
+.video-label{font-size:.72rem;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:4px}
 /* INPUT */
 .input-wrap{background:rgba(15,19,32,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px;display:flex;gap:9px;align-items:flex-end;flex-shrink:0}
 #user-input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-size:.9rem;outline:none;resize:none;min-height:44px;max-height:110px;font-family:inherit;line-height:1.4;transition:border-color .2s}
 #user-input:focus{border-color:var(--p)}
 #user-input::placeholder{color:var(--muted)}
 .send-btn{background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;width:44px;height:44px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;box-shadow:0 4px 12px rgba(124,58,237,.3)}
-.send-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(124,58,237,.4)}
+.send-btn:hover{transform:translateY(-1px)}
 .send-btn svg{fill:#fff;width:18px;height:18px}
-
-/* ── VIDEO MESSAGE ── */
-.video-wrap{margin-top:8px;border-radius:12px;overflow:hidden;background:#000;max-width:380px;position:relative}
-.video-wrap iframe{width:100%;aspect-ratio:16/9;border:none;display:block}
-.video-wrap video{width:100%;max-height:220px;display:block;border-radius:0}
-.video-label{font-size:.72rem;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:4px}
-
-/* ── FLOATING AD ── */
-#floating-ad{position:fixed;bottom:80px;right:16px;z-index:40;width:260px;background:linear-gradient(135deg,#1a1040,#0f1320);border:1px solid var(--p)60;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(124,58,237,.25);animation:slideIn .5s ease 3s both}
+/* FLOATING AD */
+#floating-ad{position:fixed;bottom:80px;right:16px;z-index:40;width:260px;background:linear-gradient(135deg,#1a1040,#0f1320);border:1px solid var(--p)60;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(124,58,237,.25);animation:slideIn .5s ease 4s both}
 @keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.ad-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1}
+.ad-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
 .ad-close:hover{color:var(--text)}
 .ad-badge{font-size:.65rem;font-weight:800;color:var(--pl);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .ad-text{font-size:.78rem;color:var(--text);line-height:1.5;margin-bottom:10px}
@@ -138,58 +107,44 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 .ad-btn{display:block;width:100%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:9px;padding:9px;font-size:.78rem;font-weight:700;text-align:center;cursor:pointer;text-decoration:none;transition:opacity .2s}
 .ad-btn:hover{opacity:.85}
 #floating-ad.hidden{display:none}
-
-@media(max-width:480px){
-  #floating-ad{width:calc(100vw - 32px);right:16px}
-  .reg-card{border-radius:16px}
-}
+@media(max-width:480px){#floating-ad{width:calc(100vw - 32px);right:16px}.reg-card{border-radius:16px}}
 </style>
 </head>
 <body>
 
-<!-- CIRCUIT BACKGROUND -->
 <canvas id="circuit-bg"></canvas>
 
 <!-- REGISTER SCREEN -->
 <div id="register-screen">
   <div class="reg-card">
     <div class="reg-header">
-      <img class="reg-avatar" id="reg-avatar" src="https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg" alt="Jhonatan Herrera">
-      <div class="reg-name">GOKU<span>CELL</span></div>
-      <div class="reg-sub">by Jhonatan Herrera · Soporte técnico</div>
+      <img class="reg-avatar" id="reg-avatar" src="https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg" alt="">
+      <div class="reg-brand">GOKU<span>CELL</span></div>
+      <div class="reg-sub" id="reg-sub-text">by Jhonatan Herrera · Resolvemos tus dudas técnicas y te orientamos en tu camino como técnico 🔧</div>
     </div>
     <div class="reg-body">
-      <div class="reg-section-title">¿Cómo te llamas?</div>
+      <div class="reg-sec-title">¿Cómo te llamas?</div>
       <input class="reg-input" id="reg-name" placeholder="Tu nombre completo" maxlength="60">
 
-      <div class="reg-section-title">Tu número de WhatsApp</div>
+      <div class="reg-sec-title">Tu número de WhatsApp</div>
       <div class="phone-row">
         <select class="country-select" id="reg-country"></select>
         <input class="reg-input phone-input" id="reg-phone" placeholder="Número" type="tel" maxlength="15">
       </div>
 
-      <div class="reg-section-title">¿En qué te podemos ayudar?</div>
+      <div class="reg-sec-title">¿En qué te podemos ayudar?</div>
       <div class="intent-grid">
         <label class="intent-option">
           <input type="radio" name="intent" value="free">
-          <div class="intent-card">
-            <div class="intent-icon">🎁</div>
-            <div><div class="intent-text">Quiero acceder a recursos gratuitos</div><div class="intent-sub">Comunidad, guías y tutoriales sin costo</div></div>
-          </div>
+          <div class="intent-card"><div class="intent-icon">🎁</div><div><div class="intent-text">Quiero acceder a recursos gratuitos</div><div class="intent-sub">Comunidad, guías y tutoriales sin costo</div></div></div>
         </label>
         <label class="intent-option">
           <input type="radio" name="intent" value="sales">
-          <div class="intent-card">
-            <div class="intent-icon">🚀</div>
-            <div><div class="intent-text">Me interesa una capacitación completa</div><div class="intent-sub">Cursos y mentorías en Expercenter</div></div>
-          </div>
+          <div class="intent-card"><div class="intent-icon">🚀</div><div><div class="intent-text">Me interesa una capacitación completa</div><div class="intent-sub">Cursos y mentorías en Expercenter</div></div></div>
         </label>
         <label class="intent-option">
           <input type="radio" name="intent" value="repair">
-          <div class="intent-card">
-            <div class="intent-icon">🔧</div>
-            <div><div class="intent-text">Necesito cotizar una reparación</div><div class="intent-sub">Servicio técnico profesional ReparaXcell</div></div>
-          </div>
+          <div class="intent-card"><div class="intent-icon">🔧</div><div><div class="intent-text">Necesito cotizar una reparación</div><div class="intent-sub">Servicio técnico profesional ReparaXcell</div></div></div>
         </label>
       </div>
       <button class="btn-start" onclick="startChat()">Iniciar consulta →</button>
@@ -204,147 +159,138 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
     <img class="ch-avatar" id="ch-avatar" src="https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg" alt="">
     <div class="ch-info">
       <h1>GOKUCELL <span style="font-weight:400;color:var(--muted);font-size:.78rem">by Jhonatan Herrera</span></h1>
-      <p><span class="status-dot"></span>En línea · Reparación de celulares</p>
+      <p><span class="status-dot"></span><span id="ch-status-text">En línea · Reparación de celulares</span></p>
     </div>
     <div class="ch-user-chip" id="ch-user-chip">Hola 👋</div>
   </div>
   <div id="chat-area"></div>
   <div class="input-wrap">
-    <textarea id="user-input" placeholder="Escribe tu consulta aquí..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-    <button class="send-btn" onclick="sendMsg()" title="Enviar">
-      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    </button>
+    <textarea id="user-input" placeholder="Escribe tu consulta..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
   </div>
 </div>
 
 <!-- FLOATING AD -->
 <div id="floating-ad">
-  <button class="ad-close" onclick="document.getElementById('floating-ad').classList.add('hidden')" title="Cerrar">×</button>
+  <button class="ad-close" onclick="document.getElementById('floating-ad').classList.add('hidden')">×</button>
   <div class="ad-badge">💡 Expercenter</div>
-  <div class="ad-text" id="ad-text">¿Has visto cursos pero no los entiendes del todo? Lo mejor es estar en VIVO con el instructor en las consultorías directas.</div>
+  <div class="ad-text" id="ad-text">¿Has visto cursos pero no los entiendes? Lo mejor es estar en VIVO con el instructor en las consultorías directas.</div>
   <div class="ad-price" id="ad-price">por solo $17/mes</div>
   <a class="ad-btn" id="ad-btn" href="https://expercenter.com/" target="_blank">¡Únete ahora!</a>
 </div>
 
 <script>
+// ── FIREBASE ──
+const firebaseConfig = {
+  apiKey: "AIzaSyC_i8CM3AF38KLMVsAsh_Hmrokzk_9luNU",
+  authDomain: "expercenter.firebaseapp.com",
+  projectId: "expercenter",
+  storageBucket: "expercenter.firebasestorage.app",
+  messagingSenderId: "141103944194",
+  appId: "1:141103944194:web:da7f28c28b3118c6044d1b"
+};
+let firebaseApp, db;
+function initFirebase() {
+  try {
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    return true;
+  } catch(e) { return false; }
+}
+
 // ── DATA ──
 const KEY = 'gokucell_v2';
 let DB = { settings:{}, topics:[], labels:[], flows:[], leads:[] };
-let userName = '', userPhone = '', userCountry = '', userIntent = '', userLabel = '';
-let botState = 'idle';
-let salesStep = 0;
-let msgCount = 0;
-let profilePhoto = 'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
+let configUnsubscribe = null;
+let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='';
+let botState='idle', salesStepCount=0, msgCount=0;
+let profilePhoto='https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
 
 const COUNTRIES = [
-  {name:'Colombia',code:'CO',dial:'+57'},{name:'México',code:'MX',dial:'+52'},
-  {name:'Venezuela',code:'VE',dial:'+58'},{name:'Argentina',code:'AR',dial:'+54'},
-  {name:'Perú',code:'PE',dial:'+51'},{name:'Chile',code:'CL',dial:'+56'},
-  {name:'Ecuador',code:'EC',dial:'+593'},{name:'Bolivia',code:'BO',dial:'+591'},
-  {name:'Paraguay',code:'PY',dial:'+595'},{name:'Uruguay',code:'UY',dial:'+598'},
-  {name:'Costa Rica',code:'CR',dial:'+506'},{name:'Panamá',code:'PA',dial:'+507'},
-  {name:'Guatemala',code:'GT',dial:'+502'},{name:'Honduras',code:'HN',dial:'+504'},
-  {name:'El Salvador',code:'SV',dial:'+503'},{name:'Nicaragua',code:'NI',dial:'+505'},
-  {name:'Rep. Dominicana',code:'DO',dial:'+1809'},{name:'Cuba',code:'CU',dial:'+53'},
-  {name:'Puerto Rico',code:'PR',dial:'+1787'},{name:'España',code:'ES',dial:'+34'},
-  {name:'Brasil',code:'BR',dial:'+55'},{name:'Estados Unidos',code:'US',dial:'+1'},
-  {name:'Canadá',code:'CA',dial:'+1 CA'},{name:'Reino Unido',code:'GB',dial:'+44'},
-  {name:'Alemania',code:'DE',dial:'+49'},{name:'Francia',code:'FR',dial:'+33'},
-  {name:'Italia',code:'IT',dial:'+39'},{name:'Portugal',code:'PT',dial:'+351'},
-  {name:'Países Bajos',code:'NL',dial:'+31'},{name:'Bélgica',code:'BE',dial:'+32'},
-  {name:'Suiza',code:'CH',dial:'+41'},{name:'Austria',code:'AT',dial:'+43'},
-  {name:'Suecia',code:'SE',dial:'+46'},{name:'Noruega',code:'NO',dial:'+47'},
-  {name:'Dinamarca',code:'DK',dial:'+45'},{name:'Finlandia',code:'FI',dial:'+358'},
-  {name:'Polonia',code:'PL',dial:'+48'},{name:'Rumanía',code:'RO',dial:'+40'},
-  {name:'México (alt)',code:'MX2',dial:'+52'},{name:'China',code:'CN',dial:'+86'},
-  {name:'Japón',code:'JP',dial:'+81'},{name:'Corea del Sur',code:'KR',dial:'+82'},
-  {name:'India',code:'IN',dial:'+91'},{name:'Australia',code:'AU',dial:'+61'},
-  {name:'Nueva Zelanda',code:'NZ',dial:'+64'},{name:'Sudáfrica',code:'ZA',dial:'+27'},
-  {name:'Nigeria',code:'NG',dial:'+234'},{name:'Kenia',code:'KE',dial:'+254'},
-  {name:'Turquía',code:'TR',dial:'+90'},{name:'Israel',code:'IL',dial:'+972'},
-  {name:'Arabia Saudita',code:'SA',dial:'+966'},{name:'Emiratos Árabes',code:'AE',dial:'+971'}
+  {n:'Colombia',d:'+57'},{n:'México',d:'+52'},{n:'Venezuela',d:'+58'},{n:'Argentina',d:'+54'},
+  {n:'Perú',d:'+51'},{n:'Chile',d:'+56'},{n:'Ecuador',d:'+593'},{n:'Bolivia',d:'+591'},
+  {n:'Paraguay',d:'+595'},{n:'Uruguay',d:'+598'},{n:'Costa Rica',d:'+506'},{n:'Panamá',d:'+507'},
+  {n:'Guatemala',d:'+502'},{n:'Honduras',d:'+504'},{n:'El Salvador',d:'+503'},{n:'Nicaragua',d:'+505'},
+  {n:'Rep. Dominicana',d:'+1809'},{n:'Cuba',d:'+53'},{n:'Puerto Rico',d:'+1787'},
+  {n:'España',d:'+34'},{n:'Brasil',d:'+55'},{n:'Estados Unidos',d:'+1'},{n:'Canadá',d:'+1 CA'},
+  {n:'Reino Unido',d:'+44'},{n:'Alemania',d:'+49'},{n:'Francia',d:'+33'},{n:'Italia',d:'+39'},
+  {n:'Portugal',d:'+351'},{n:'Países Bajos',d:'+31'},{n:'Bélgica',d:'+32'},{n:'Suiza',d:'+41'},
+  {n:'Austria',d:'+43'},{n:'Suecia',d:'+46'},{n:'Noruega',d:'+47'},{n:'Polonia',d:'+48'},
+  {n:'China',d:'+86'},{n:'Japón',d:'+81'},{n:'Corea del Sur',d:'+82'},{n:'India',d:'+91'},
+  {n:'Australia',d:'+61'},{n:'Nueva Zelanda',d:'+64'},{n:'Sudáfrica',d:'+27'},{n:'Nigeria',d:'+234'},
+  {n:'Turquía',d:'+90'},{n:'Israel',d:'+972'},{n:'Arabia Saudita',d:'+966'},{n:'Emiratos Árabes',d:'+971'}
 ];
 
 // ── CIRCUIT BACKGROUND ──
 function drawCircuit() {
   const canvas = document.getElementById('circuit-bg');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const lines = [];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   const nodes = [];
-  const cols = Math.ceil(canvas.width / 60);
-  const rows = Math.ceil(canvas.height / 60);
-
-  // Grid points
-  for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < rows; r++) {
-      if (Math.random() > 0.7) {
-        nodes.push({ x: c * 60 + Math.random() * 20 - 10, y: r * 60 + Math.random() * 20 - 10 });
-      }
-    }
-  }
-
-  // Connect nearby nodes
+  const cols = Math.ceil(canvas.width/60), rows = Math.ceil(canvas.height/60);
+  for(let c=0;c<cols;c++) for(let r=0;r<rows;r++) if(Math.random()>.7) nodes.push({x:c*60+Math.random()*20-10,y:r*60+Math.random()*20-10});
+  const lines = [];
   nodes.forEach(n => {
-    const near = nodes.filter(m => {
-      const dx = Math.abs(m.x - n.x), dy = Math.abs(m.y - n.y);
-      return (dx < 120 && dy < 5) || (dy < 120 && dx < 5);
-    });
-    near.slice(0, 2).forEach(m => lines.push([n, m]));
+    const near = nodes.filter(m=>{const dx=Math.abs(m.x-n.x),dy=Math.abs(m.y-n.y);return(dx<120&&dy<5)||(dy<120&&dx<5)});
+    near.slice(0,2).forEach(m=>lines.push([n,m]));
   });
-
-  ctx.strokeStyle = 'rgba(124,58,237,.2)';
-  ctx.lineWidth = 1;
-  lines.forEach(([a, b]) => {
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-  });
-
-  ctx.fillStyle = 'rgba(124,58,237,.35)';
-  nodes.forEach(n => {
-    if (Math.random() > 0.5) { ctx.beginPath(); ctx.arc(n.x, n.y, 2, 0, Math.PI * 2); ctx.fill(); }
-  });
-
-  // Cyan accent lines
-  const accentLines = lines.filter(() => Math.random() > 0.88);
-  ctx.strokeStyle = 'rgba(6,182,212,.15)';
-  ctx.lineWidth = 1;
-  accentLines.forEach(([a, b]) => {
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-  });
+  ctx.strokeStyle='rgba(124,58,237,.2)';ctx.lineWidth=1;
+  lines.forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()});
+  ctx.fillStyle='rgba(124,58,237,.35)';
+  nodes.forEach(n=>{if(Math.random()>.5){ctx.beginPath();ctx.arc(n.x,n.y,2,0,Math.PI*2);ctx.fill()}});
+  ctx.strokeStyle='rgba(6,182,212,.12)';
+  lines.filter(()=>Math.random()>.88).forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()});
 }
-
 drawCircuit();
 window.addEventListener('resize', drawCircuit);
 
-// ── LOAD DATA ──
-function loadDB() {
-  const raw = localStorage.getItem(KEY);
-  if (raw) {
-    try { DB = JSON.parse(raw); } catch(e) {}
-  }
-  DB.settings = DB.settings || {};
-  DB.topics = DB.topics || [];
-  DB.labels = DB.labels || [
-    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! Qué bueno que estás aquí. 😊 Estoy para orientarte con todo lo que necesites.',ctaText:'🎁 Unirme a la comunidad',ctaUrl:''},
-    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra mucho que quieras llevar tus habilidades al siguiente nivel. Cuéntame, ¿cuál es tu nivel actual en reparación?',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
-    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Muchas gracias por preferirnos. Aquí te dejo el contacto directo con nuestro equipo de ReparaXcell. 🔧',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:''}
-  ];
-  DB.leads = DB.leads || [];
-  DB.flows = DB.flows || [];
+// ── FIREBASE INIT + REAL-TIME CONFIG ──
+function initAndListen() {
+  if (!initFirebase()) return;
+  // Listen for config changes (real-time sync)
+  configUnsubscribe = db.collection('gkc').doc('config').onSnapshot(snap => {
+    if (!snap.exists) return;
+    const data = snap.data();
+    if (data.settings) { DB.settings = {...DB.settings,...data.settings}; applySettings(); }
+    if (data.topics && data.topics.length) DB.topics = data.topics;
+    if (data.labels && data.labels.length) DB.labels = data.labels;
+    localStorage.setItem(KEY, JSON.stringify(DB));
+  }, err => console.warn('Config listener:', err));
+}
 
-  // Apply settings
-  profilePhoto = DB.settings.profilePhoto || 'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
+function applySettings() {
+  const s = DB.settings;
+  profilePhoto = s.profilePhoto || profilePhoto;
+  // Update avatars
   document.getElementById('reg-avatar').src = profilePhoto;
   document.getElementById('ch-avatar').src = profilePhoto;
-
+  // Update description
+  const desc = s.botDescription || 'by Jhonatan Herrera · Resolvemos tus dudas técnicas y te orientamos en tu camino como técnico 🔧';
+  document.getElementById('reg-sub-text').textContent = desc;
+  document.getElementById('ch-status-text').textContent = 'En línea · ' + (desc.split('·')[1]||'Soporte técnico').trim();
   // Floating ad
-  if (DB.settings.adText) document.getElementById('ad-text').textContent = DB.settings.adText;
-  if (DB.settings.adPrice) document.getElementById('ad-price').textContent = 'por solo ' + DB.settings.adPrice;
-  if (DB.settings.adUrl) document.getElementById('ad-btn').href = DB.settings.adUrl;
-  if (DB.settings.adBtn) document.getElementById('ad-btn').textContent = DB.settings.adBtn;
+  if (s.adText) document.getElementById('ad-text').textContent = s.adText;
+  if (s.adPrice) document.getElementById('ad-price').textContent = 'por solo ' + s.adPrice;
+  if (s.adUrl) document.getElementById('ad-btn').href = s.adUrl;
+  if (s.adBtn) document.getElementById('ad-btn').textContent = s.adBtn;
+}
+
+function loadLocalDB() {
+  const raw = localStorage.getItem(KEY);
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      DB = {...DB,...saved};
+      DB.settings = {...DB.settings,...(saved.settings||{})};
+    } catch(e) {}
+  }
+  DB.labels = DB.labels || [
+    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! 😊 Estoy para orientarte.',ctaText:'🎁 Unirme',ctaUrl:''},
+    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que quieras capacitarte.',ctaText:'🚀 Expercenter',ctaUrl:'https://expercenter.com/'},
+    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Gracias por preferirnos. 🔧',ctaText:'🔧 ReparaXcell',ctaUrl:''}
+  ];
+  applySettings();
 }
 
 // ── COUNTRY SELECT ──
@@ -352,42 +298,54 @@ function buildCountrySelect() {
   const sel = document.getElementById('reg-country');
   COUNTRIES.forEach(c => {
     const opt = document.createElement('option');
-    opt.value = c.dial;
-    opt.textContent = c.dial + ' ' + c.name;
+    opt.value = c.d + '|' + c.n; // store both dial and name
+    opt.textContent = c.d + ' ' + c.n;
     sel.appendChild(opt);
   });
-  sel.value = '+57'; // Colombia default
+  sel.value = COUNTRIES[0].d + '|' + COUNTRIES[0].n;
 }
 
-// ── HISTORY HELPERS ──
-function historyKey(phone) {
-  return 'gokucell_hist_' + phone.replace(/\D/g, '');
+// ── HISTORY (Firebase + localStorage fallback) ──
+function cleanPhone(phone) { return (phone||'').replace(/\D/g,''); }
+function histKey(phone) { return 'gokucell_hist_' + cleanPhone(phone); }
+
+async function loadHistory(phone) {
+  const ph = cleanPhone(phone);
+  if (!ph) return [];
+  // Try Firebase first
+  if (db) {
+    try {
+      const snap = await db.collection('gkc_hist').doc(ph).get();
+      if (snap.exists) return snap.data().messages || [];
+    } catch(e) { console.warn('History load:', e); }
+  }
+  // Fallback: localStorage
+  const raw = localStorage.getItem(histKey(phone));
+  if (raw) { try { return JSON.parse(raw); } catch(e){} }
+  return [];
 }
 
-function saveHistory(role, text, videoUrl) {
+async function saveHistory(role, text, videoUrl) {
   if (!userPhone) return;
-  const k = historyKey(userPhone);
-  const hist = JSON.parse(localStorage.getItem(k) || '[]');
-  hist.push({ role, text, videoUrl: videoUrl || null, ts: Date.now() });
-  // Keep last 120 messages max
-  if (hist.length > 120) hist.splice(0, hist.length - 120);
-  localStorage.setItem(k, JSON.stringify(hist));
-}
-
-function loadHistory() {
-  const k = historyKey(userPhone);
-  return JSON.parse(localStorage.getItem(k) || '[]');
-}
-
-function cleanPhone(phone) {
-  return phone.replace(/\D/g, '');
+  const ph = cleanPhone(userPhone);
+  const entry = {role, text, videoUrl: videoUrl||null, ts: Date.now()};
+  // Save to localStorage immediately
+  const key = histKey(userPhone);
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  hist.push(entry);
+  if (hist.length > 150) hist.splice(0, hist.length - 150);
+  localStorage.setItem(key, JSON.stringify(hist));
+  // Save to Firebase (fire-and-forget)
+  if (db && ph) {
+    db.collection('gkc_hist').doc(ph).set({ messages: hist, phone: userPhone, updatedAt: Date.now() }).catch(e => console.warn(e));
+  }
 }
 
 // ── START CHAT ──
-function startChat() {
+async function startChat() {
   const name = document.getElementById('reg-name').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
-  const country = document.getElementById('reg-country').value;
+  const countryRaw = document.getElementById('reg-country').value; // "dial|name"
   const intentEl = document.querySelector('input[name="intent"]:checked');
   const err = document.getElementById('reg-err');
 
@@ -396,218 +354,185 @@ function startChat() {
   if (!intentEl) { err.textContent = 'Selecciona cómo podemos ayudarte.'; return; }
   err.textContent = '';
 
+  const [dial, countryName] = countryRaw.split('|');
   userName = name;
   userPhone = phone;
-  userCountry = country;
+  userCountry = dial;
+  userCountryName = countryName || dial;
   userIntent = intentEl.value;
 
   // Assign label
-  const intentLabelMap = { free: 'GRATIS', sales: 'EXPERCENTER', repair: 'REPARAXCELL' };
+  const intentLabelMap = {free:'GRATIS', sales:'EXPERCENTER', repair:'REPARAXCELL'};
   const matchLabel = DB.labels.find(l => l.flow === userIntent);
   userLabel = matchLabel ? matchLabel.name : (intentLabelMap[userIntent] || 'GRATIS');
 
-  // Check for returning user
-  const history = loadHistory();
+  // Check returning user
+  const history = await loadHistory(phone);
   const isReturning = history.length > 0;
 
-  // Save lead (only if new or update existing)
-  saveLead(isReturning);
+  // Save lead
+  await saveLead(isReturning);
 
-  // Show chat screen
+  // Show chat
   document.getElementById('register-screen').style.display = 'none';
   document.getElementById('chat-screen').style.display = 'flex';
   document.getElementById('ch-user-chip').textContent = name + ' 👋';
 
   if (isReturning) {
-    // Show history divider
-    const divider = document.createElement('div');
-    divider.style.cssText = 'text-align:center;padding:10px 0;font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:8px;margin:4px 0';
-    divider.innerHTML = '<div style="flex:1;height:1px;background:var(--border)"></div>Conversación anterior<div style="flex:1;height:1px;background:var(--border)"></div>';
-    document.getElementById('chat-area').appendChild(divider);
-    // Restore previous messages silently
-    history.forEach(m => addMsg(m.role, m.text, { videoUrl: m.videoUrl, ts: m.ts }, true));
-    // Session separator
-    const sep = document.createElement('div');
-    sep.style.cssText = 'text-align:center;padding:10px 0;font-size:.72rem;color:var(--p);display:flex;align-items:center;gap:8px;margin:4px 0';
-    sep.innerHTML = '<div style="flex:1;height:1px;background:var(--p)30"></div>Nueva sesión · hoy<div style="flex:1;height:1px;background:var(--p)30"></div>';
-    document.getElementById('chat-area').appendChild(sep);
-    // Greet returning user
+    // History divider
+    const div1 = document.createElement('div');
+    div1.style.cssText = 'text-align:center;padding:8px 0;font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:8px';
+    div1.innerHTML = '<div style="flex:1;height:1px;background:var(--border)"></div>Conversación anterior<div style="flex:1;height:1px;background:var(--border)"></div>';
+    document.getElementById('chat-area').appendChild(div1);
+    // Replay messages silently
+    history.forEach(m => addMsg(m.role, m.text, {videoUrl:m.videoUrl,ts:m.ts}, true));
+    // New session divider
+    const div2 = document.createElement('div');
+    div2.style.cssText = 'text-align:center;padding:8px 0;font-size:.72rem;color:var(--p);display:flex;align-items:center;gap:8px';
+    div2.innerHTML = '<div style="flex:1;height:1px;background:var(--p)40"></div>Nueva sesión · hoy<div style="flex:1;height:1px;background:var(--p)40"></div>';
+    document.getElementById('chat-area').appendChild(div2);
     setTimeout(() => {
-      const returnGreet = `¡Hola de nuevo, **${userName}**! Qué bueno que nos consultas otra vez 😊 ¿En qué te puedo ayudar hoy?`;
-      addMsg('bot', returnGreet, { qr: ['Tengo una duda técnica', 'Quiero info del curso', 'Otra consulta'] });
+      addMsg('bot', `¡Hola de nuevo, **${userName}**! Qué bueno que nos consultas otra vez 😊 ¿En qué te puedo ayudar hoy?`, {qr:['Tengo una duda técnica','Quiero info del curso','Otra consulta']});
       botState = 'free_chat';
-    }, 800);
+    }, 600);
   } else {
     setTimeout(() => sendWelcome(), 700);
   }
 }
 
-function saveLead(isReturning) {
-  DB.leads = DB.leads || [];
-  if (!isReturning) {
-    DB.leads.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-      name: userName,
-      phone: userPhone,
-      countryCode: userCountry,
-      label: userLabel,
-      intent: intentLabel(userIntent),
-      ts: Date.now()
-    });
-  } else {
-    // Update name/label on existing lead if phone matches
-    const existing = DB.leads.find(l => cleanPhone(l.phone) === cleanPhone(userPhone));
-    if (existing) { existing.name = userName; existing.label = userLabel; }
+async function saveLead(isReturning) {
+  const lead = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+    name: userName,
+    phone: userPhone,
+    countryCode: userCountry,
+    countryName: userCountryName,
+    label: userLabel,
+    intent: {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación'}[userIntent]||userIntent,
+    ts: Date.now()
+  };
+  if (isReturning) {
+    // Update existing lead in Firebase
+    if (db) {
+      try {
+        const snap = await db.collection('gkc_leads').where('phone','==',userPhone).limit(1).get();
+        if (!snap.empty) {
+          snap.docs[0].ref.update({name: userName, label: userLabel, countryName: userCountryName}).catch(e=>{});
+          return;
+        }
+      } catch(e) {}
+    }
+    // localStorage fallback: update
+    const raw = localStorage.getItem(KEY);
+    if (raw) { try { const d=JSON.parse(raw); const l=d.leads&&d.leads.find(x=>cleanPhone(x.phone)===cleanPhone(userPhone)); if(l){l.name=userName;l.label=userLabel;localStorage.setItem(KEY,JSON.stringify(d));} } catch(e){} }
+    return;
   }
-  localStorage.setItem(KEY, JSON.stringify(DB));
+  // New lead: save to Firebase + localStorage
+  if (db) {
+    db.collection('gkc_leads').doc(lead.id).set(lead).catch(e => console.warn(e));
+  }
+  const raw = localStorage.getItem(KEY);
+  let localDB = {};
+  if (raw) { try { localDB = JSON.parse(raw); } catch(e){} }
+  localDB.leads = localDB.leads || [];
+  localDB.leads.push(lead);
+  localStorage.setItem(KEY, JSON.stringify(localDB));
 }
 
-function intentLabel(v) {
-  return {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación'}[v] || v;
-}
-
-// ── WELCOME MESSAGE ──
+// ── WELCOME ──
 function sendWelcome() {
   const label = DB.labels.find(l => l.flow === userIntent);
   showTyping();
   setTimeout(() => {
     hideTyping();
     let welcomeText = '';
-    let ctaText = '', ctaUrl = '', ctaType = userIntent;
-
+    let ctaText='', ctaUrl='';
     if (label) {
-      welcomeText = (label.welcome || '¡Hola [nombre]! ¿En qué te puedo ayudar?').replace(/\[nombre\]/gi, userName);
-      ctaText = label.ctaText || '';
-      ctaUrl = label.ctaUrl || '';
+      welcomeText = (label.welcome||'¡Hola [nombre]! ¿En qué te puedo ayudar?').replace(/\[nombre\]/gi, userName);
+      ctaText = label.ctaText||''; ctaUrl = label.ctaUrl||'';
     } else {
-      welcomeText = `¡Hola **${userName}**! Bienvenido a GOKUCELL. Estoy aquí para ayudarte. ¿Por dónde quieres empezar?`;
+      welcomeText = `¡Hola **${userName}**! Bienvenido a GOKUCELL. Estoy aquí para ayudarte.`;
     }
-
     const extras = {};
-    if (ctaText && ctaUrl) extras.cta = { text: ctaText, url: ctaUrl, type: ctaType };
-
-    // For repair flow, no more questions needed
-    if (userIntent === 'repair') {
-      addMsg('bot', welcomeText, extras);
-      botState = 'repair_done';
-      return;
-    }
-
-    // For others, add quick replies
-    extras.qr = userIntent === 'sales'
-      ? ['Soy principiante', 'Tengo experiencia básica', 'Ya trabajo reparando']
-      : ['Tengo una duda técnica', 'Quiero aprender más', '¿Qué hay en la comunidad?'];
-
+    if (ctaText && ctaUrl) extras.cta = {text:ctaText, url:ctaUrl, type:userIntent};
+    if (userIntent === 'repair') { addMsg('bot', welcomeText, extras); botState='repair_done'; return; }
+    extras.qr = userIntent==='sales' ? ['Soy principiante','Tengo experiencia básica','Ya trabajo reparando'] : ['Tengo una duda técnica','Quiero aprender más','¿Qué hay en la comunidad?'];
     addMsg('bot', welcomeText, extras);
-    botState = userIntent === 'sales' ? 'sales_q1' : 'free_chat';
+    botState = userIntent==='sales' ? 'sales_q1' : 'free_chat';
   }, 1000);
 }
 
 // ── MESSAGE ENGINE ──
-const HUMANIZERS = [
-  '', 'Claro, ', 'Mira, ', 'Te cuento, ', 'Buena pregunta. ', 'Interesante. ', 'Entiendo perfectamente. '
-];
-
+const HUMANIZERS = ['','Claro, ','Mira, ','Te cuento, ','Buena pregunta. ','Interesante. ','Entiendo, '];
 const SALES_QUESTIONS = [
   '¿Cuánto tiempo llevas en el mundo de la reparación?',
-  '¿Ya estás generando ingresos con reparaciones, o estás buscando empezar desde cero?',
-  '¿Hay alguna marca o tipo de falla en la que quieras especializarte?'
+  '¿Ya estás generando ingresos con reparaciones, o buscas empezar desde cero?',
+  '¿Hay alguna marca o tipo de falla en la que te quieras especializar?'
 ];
-
 const SALES_BRIDGES = [
-  `Perfecto, **${() => userName}**. Con eso en mente, el programa de Expercenter tiene exactamente el nivel que necesitas.`,
-  `Muchos de nuestros alumnos empezaron igual que tú, y hoy reparan fallas que antes les parecían imposibles. 💪`,
-  `Con Expercenter dominas diagnóstico a nivel de placa, lectura de esquemáticos y técnicas de soldadura avanzada.`
+  'Con eso en mente, el programa de Expercenter tiene exactamente el nivel que necesitas. 💪',
+  'Muchos de nuestros alumnos empezaron igual que tú y hoy resuelven fallas que antes rechazaban.',
+  'Con Expercenter dominas diagnóstico a nivel de placa, lectura de esquemáticos y técnicas de soldadura.'
 ];
 
 function matchTopic(text) {
   const t = text.toLowerCase();
-  let best = null, bestScore = 0;
+  let best=null, bestScore=0;
   for (const topic of DB.topics) {
-    for (const kw of (topic.keywords || [])) {
-      if (t.includes(kw.toLowerCase()) && kw.length > bestScore) {
-        bestScore = kw.length; best = topic;
-      }
+    for (const kw of (topic.keywords||[])) {
+      if (t.includes(kw.toLowerCase()) && kw.length > bestScore) { bestScore=kw.length; best=topic; }
     }
   }
   return best;
 }
 
 function humanize(text, name) {
-  const h = HUMANIZERS[Math.floor(Math.random() * HUMANIZERS.length)];
-  return text.replace(/\[nombre\]/gi, name).replace(/^\w/, c => h + c.toLowerCase());
+  const h = HUMANIZERS[Math.floor(Math.random()*HUMANIZERS.length)];
+  return text.replace(/\[nombre\]/gi, name).replace(/^(\w)/, c => h + c.toLowerCase());
 }
 
 function botReply(userText) {
   showTyping();
   msgCount++;
-  const delay = 900 + Math.min(userText.length * 8, 800) + Math.random() * 400;
-
+  const delay = 800 + Math.min(userText.length*7,700) + Math.random()*400;
   setTimeout(() => {
     hideTyping();
-
-    // If repair done, just send support message
     if (botState === 'repair_done') {
-      const repLabel = DB.labels.find(l => l.flow === 'repair');
-      addMsg('bot', `Para cualquier otra duda estoy aquí, **${userName}**. 😊`, {
-        qr: ['Tengo otra consulta', 'Gracias']
-      });
+      addMsg('bot', `Para cualquier otra duda estoy aquí, **${userName}**. 😊`, {qr:['Tengo otra consulta','Gracias']});
       return;
     }
-
-    // Try keyword match first
     const topic = matchTopic(userText);
-
     if (topic) {
-      botState = topic.type === 'sales' ? 'sales_follow' : topic.type === 'repair' ? 'repair_done' : 'free_chat';
-      salesStep = 0;
-      const text = humanize(topic.response, userName);
+      botState = topic.type==='sales' ? 'sales_follow' : topic.type==='repair' ? 'repair_done' : 'free_chat';
+      salesStepCount = 0;
       const extras = {};
-      if (topic.ctaText) extras.cta = { text: topic.ctaText, url: topic.ctaUrl || '#', type: topic.type };
+      if (topic.ctaText) extras.cta = {text:topic.ctaText, url:topic.ctaUrl||'#', type:topic.type};
       if (topic.videoUrl) extras.videoUrl = topic.videoUrl;
-
-      if (topic.type === 'sales') {
-        extras.qr = ['¿Cómo me inscribo?', '¿Cuánto cuesta?', 'Tengo otra pregunta'];
-      } else if (topic.type === 'free') {
-        extras.qr = ['Tengo otra duda técnica', 'Quiero el curso completo', '¿Dónde es la comunidad?'];
-      } else {
-        extras.qr = ['Ver más información', 'Tengo otra consulta'];
-      }
-      addMsg('bot', text, extras);
-
-    } else if (botState === 'sales_q1' || botState === 'sales_follow') {
-      handleSalesFlow(userText);
+      if (topic.type==='sales') extras.qr = ['¿Cómo me inscribo?','¿Cuánto cuesta?','Tengo otra pregunta'];
+      else if (topic.type==='free') extras.qr = ['Tengo otra duda','Quiero el curso completo','¿Dónde es la comunidad?'];
+      else extras.qr = ['Más información','Tengo otra consulta'];
+      addMsg('bot', humanize(topic.response, userName), extras);
+    } else if (botState==='sales_q1' || botState==='sales_follow') {
+      handleSalesFlow();
     } else {
-      // No match
-      const noMatchMsg = DB.settings.noMatchMsg ||
-        `Para poder ayudarte mejor, **${userName}**, intenta escribir tu consulta así:\n\n*"¿Cómo diagnostico un celular que no carga?"*\n*"¿Qué necesito para empezar en reparación?"*\n\nO si prefieres, únete a nuestra comunidad gratuita donde más de **1.200 técnicos** están activos a diario. 👇`;
-
-      const communityUrl = DB.settings.communityLink || '#';
-      addMsg('bot', noMatchMsg.replace(/\[nombre\]/gi, userName), {
-        cta: { text: '🎁 Unirme a la Comunidad Gratuita', url: communityUrl, type: 'free' },
-        qr: ['Tengo una duda técnica', 'Quiero un curso', 'Cotizar una reparación']
-      });
+      const noMatch = (DB.settings.noMatchMsg||'').replace(/\[nombre\]/gi, userName) ||
+        `Para poder ayudarte mejor, **${userName}**, intenta escribir tu consulta así:\n\n*"¿Cómo diagnostico un celular que no carga?"*\n*"¿Qué necesito para empezar en reparación?"*\n\nO si prefieres, únete a nuestra comunidad gratuita donde más de **1.200 técnicos** están activos. 👇`;
+      const communityUrl = DB.settings.communityLink||'#';
+      addMsg('bot', noMatch, {cta:{text:'🎁 Unirme a la Comunidad Gratuita',url:communityUrl,type:'free'}, qr:['Tengo una duda técnica','Quiero un curso','Cotizar una reparación']});
     }
   }, delay);
 }
 
-let salesStepCount = 0;
-function handleSalesFlow(userText) {
+function handleSalesFlow() {
   salesStepCount++;
   if (salesStepCount <= SALES_QUESTIONS.length) {
-    const q = SALES_QUESTIONS[Math.min(salesStepCount - 1, SALES_QUESTIONS.length - 1)];
-    const bridge = salesStepCount > 1 ? SALES_BRIDGES[Math.min(salesStepCount - 2, SALES_BRIDGES.length - 1)].replace(/userName/g, userName) + '\n\n' : '';
-    addMsg('bot', bridge + q, {
-      qr: salesStepCount === 1 ? ['Principiante','Nivel básico','Ya reparo'] : ['Sí, cuéntame más', 'Quiero ver los planes', 'Tengo otra pregunta']
-    });
+    const q = SALES_QUESTIONS[Math.min(salesStepCount-1, SALES_QUESTIONS.length-1)];
+    const bridge = salesStepCount > 1 ? SALES_BRIDGES[Math.min(salesStepCount-2, SALES_BRIDGES.length-1)] + '\n\n' : '';
+    addMsg('bot', bridge + q, {qr: salesStepCount===1 ? ['Principiante','Nivel básico','Ya reparo'] : ['Sí, cuéntame más','Ver los planes','Tengo otra pregunta']});
   } else {
-    const salesLabel = DB.labels.find(l => l.flow === 'sales');
-    addMsg('bot', `Genial, **${userName}**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. Tenemos alumnos que en pocas semanas ya están resolviendo fallas que antes les costaban mucho tiempo. 🚀`, {
-      cta: { text: salesLabel?.ctaText || '🚀 Quiero unirme a Expercenter', url: salesLabel?.ctaUrl || 'https://expercenter.com/', type: 'sales' },
-      qr: ['¿Cuánto cuesta?', '¿Cuándo empiezan clases?', 'Tengo una duda más']
-    });
-    botState = 'sales_closed';
-    salesStepCount = 0;
+    const salesLabel = DB.labels.find(l => l.flow==='sales');
+    addMsg('bot', `Genial, **${userName}**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. Tenemos alumnos que en pocas semanas resuelven fallas que antes les costaban horas. 🚀`, {cta:{text:salesLabel?.ctaText||'🚀 Quiero unirme a Expercenter',url:salesLabel?.ctaUrl||'https://expercenter.com/',type:'sales'}, qr:['¿Cuánto cuesta?','¿Cuándo empiezan?','Tengo una duda más']});
+    botState='sales_closed'; salesStepCount=0;
   }
 }
 
@@ -617,95 +542,81 @@ function getYoutubeId(url) {
   return m ? m[1] : null;
 }
 
-function buildVideoElement(videoUrl) {
+function buildVideoEl(videoUrl) {
   if (!videoUrl) return null;
   const wrap = document.createElement('div');
   wrap.className = 'video-wrap';
   const ytId = getYoutubeId(videoUrl);
   if (ytId) {
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1`;
-    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+    iframe.allow = 'autoplay;encrypted-media;picture-in-picture';
     iframe.allowFullscreen = true;
     wrap.appendChild(iframe);
     const lbl = document.createElement('div');
-    lbl.className = 'video-label';
-    lbl.innerHTML = '▶ Video de YouTube · se reproduce automáticamente';
+    lbl.className='video-label'; lbl.innerHTML='▶ Video · reproducción automática';
     wrap.appendChild(lbl);
   } else {
     const vid = document.createElement('video');
-    vid.src = videoUrl;
-    vid.autoplay = true;
-    vid.muted = true;
-    vid.controls = true;
-    vid.playsInline = true;
+    vid.src=videoUrl; vid.autoplay=true; vid.muted=true; vid.controls=true; vid.playsInline=true;
     wrap.appendChild(vid);
     const lbl = document.createElement('div');
-    lbl.className = 'video-label';
-    lbl.innerHTML = '▶ Video adjunto';
+    lbl.className='video-label'; lbl.innerHTML='▶ Video adjunto';
     wrap.appendChild(lbl);
   }
   return wrap;
 }
 
 // ── UI ──
-function addMsg(role, text, extras = {}, skipHistory = false) {
+function addMsg(role, text, extras={}, skipHistory=false) {
   const area = document.getElementById('chat-area');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
 
-  if (role === 'bot') {
+  if (role==='bot') {
     const av = document.createElement('img');
-    av.className = 'msg-av';
-    av.src = profilePhoto;
-    av.alt = 'Bot';
+    av.className='msg-av'; av.src=profilePhoto; av.alt='Bot';
     row.appendChild(av);
   } else {
     const av = document.createElement('div');
-    av.className = 'msg-av-user';
+    av.className='msg-av-user';
     av.textContent = userName ? userName[0].toUpperCase() : '👤';
     row.appendChild(av);
   }
 
   const content = document.createElement('div');
-  content.className = 'msg-content';
+  content.className='msg-content';
 
   const bubble = document.createElement('div');
-  bubble.className = 'bubble';
+  bubble.className='bubble';
   bubble.innerHTML = formatText(text);
   content.appendChild(bubble);
 
-  // Video embed (YouTube autoplay or direct mp4)
   if (extras.videoUrl) {
-    const videoEl = buildVideoElement(extras.videoUrl);
-    if (videoEl) content.appendChild(videoEl);
+    const vidEl = buildVideoEl(extras.videoUrl);
+    if (vidEl) content.appendChild(vidEl);
   }
 
   if (extras.cta) {
     const btn = document.createElement('a');
-    btn.className = `cta-btn cta-${extras.cta.type || 'free'}`;
-    btn.textContent = extras.cta.text;
-    btn.href = extras.cta.url || '#';
-    btn.target = '_blank';
+    btn.className=`cta-btn cta-${extras.cta.type||'free'}`;
+    btn.textContent=extras.cta.text; btn.href=extras.cta.url||'#'; btn.target='_blank';
     content.appendChild(btn);
   }
 
-  // Quick replies only shown for fresh messages (not history replay)
   if (!skipHistory && extras.qr && extras.qr.length) {
     const wrap = document.createElement('div');
-    wrap.className = 'qr-wrap';
+    wrap.className='qr-wrap';
     extras.qr.forEach(q => {
       const btn = document.createElement('button');
-      btn.className = 'qr-btn';
-      btn.textContent = q;
-      btn.onclick = () => sendQuick(q);
+      btn.className='qr-btn'; btn.textContent=q; btn.onclick=()=>sendQuick(q);
       wrap.appendChild(btn);
     });
     content.appendChild(wrap);
   }
 
   const time = document.createElement('div');
-  time.className = 'msg-time';
+  time.className='msg-time';
   time.textContent = extras.ts ? new Date(extras.ts).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}) : getTime();
   content.appendChild(time);
 
@@ -713,77 +624,33 @@ function addMsg(role, text, extras = {}, skipHistory = false) {
   area.appendChild(row);
   scrollBottom();
 
-  // Persist to history (only for fresh messages, not replays)
-  if (!skipHistory) saveHistory(role, text, extras.videoUrl || null);
+  if (!skipHistory) saveHistory(role, text, extras.videoUrl||null);
 }
 
 function formatText(t) {
-  return String(t)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/\n/g,'<br>');
+  return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
 }
 
 function showTyping() {
-  const area = document.getElementById('chat-area');
-  const row = document.createElement('div');
-  row.className = 'typing-row';
-  row.id = 'typing-ind';
-  const av = document.createElement('img');
-  av.className = 'msg-av';
-  av.src = profilePhoto;
-  av.style.cssText = 'width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--p);flex-shrink:0;margin-top:2px';
-  const bubble = document.createElement('div');
-  bubble.className = 'typing-bubble';
-  bubble.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-  row.appendChild(av);
-  row.appendChild(bubble);
-  area.appendChild(row);
-  scrollBottom();
+  const area=document.getElementById('chat-area');
+  const row=document.createElement('div'); row.className='typing-row'; row.id='typing-ind';
+  const av=document.createElement('img'); av.className='msg-av'; av.src=profilePhoto; av.style.cssText='width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--p);flex-shrink:0;margin-top:2px';
+  const bubble=document.createElement('div'); bubble.className='typing-bubble'; bubble.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  row.appendChild(av); row.appendChild(bubble); area.appendChild(row); scrollBottom();
 }
-
-function hideTyping() {
-  const t = document.getElementById('typing-ind');
-  if (t) t.remove();
-}
-
-function sendMsg() {
-  const input = document.getElementById('user-input');
-  const text = input.value.trim();
-  if (!text) return;
-  addMsg('user', text);
-  input.value = '';
-  input.style.height = 'auto';
-  botReply(text);
-}
-
-function sendQuick(text) {
-  addMsg('user', text);
-  botReply(text);
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
-}
-
-function scrollBottom() {
-  const a = document.getElementById('chat-area');
-  a.scrollTop = a.scrollHeight;
-}
-
-function getTime() {
-  return new Date().toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
-}
+function hideTyping(){const t=document.getElementById('typing-ind');if(t)t.remove();}
+function sendMsg(){const input=document.getElementById('user-input');const text=input.value.trim();if(!text)return;addMsg('user',text);input.value='';input.style.height='auto';botReply(text);}
+function sendQuick(text){addMsg('user',text);botReply(text);}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function scrollBottom(){const a=document.getElementById('chat-area');a.scrollTop=a.scrollHeight;}
+function getTime(){return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});}
 
 // ── INIT ──
-loadDB();
+loadLocalDB();
 buildCountrySelect();
+initAndListen();
 </script>
 </body>
 </html>
