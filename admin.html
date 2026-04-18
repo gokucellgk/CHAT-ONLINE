@@ -5,152 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GOKUCELL — Panel Admin</title>
 <style>
-:root {
-  --bg: #080b14;
-  --s1: #0f1320;
-  --s2: #161b2e;
-  --s3: #1e2540;
-  --border: #252d4a;
-  --p: #7c3aed;
-  --pl: #a78bfa;
-  --pg: rgba(124,58,237,.18);
-  --cyan: #06b6d4;
-  --cg: rgba(6,182,212,.12);
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --free: #10b981;
-  --sales: #a78bfa;
-  --repair: #3b82f6;
-  --danger: #ef4444;
-  --warn: #f59e0b;
-}
+:root{--bg:#080b14;--s1:#0f1320;--s2:#161b2e;--s3:#1e2540;--border:#252d4a;--p:#7c3aed;--pl:#a78bfa;--pg:rgba(124,58,237,.18);--cyan:#06b6d4;--cg:rgba(6,182,212,.12);--text:#e2e8f0;--muted:#64748b;--free:#10b981;--sales:#a78bfa;--repair:#3b82f6;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;height:100vh;overflow:hidden;display:flex}
 input,textarea,select,button{font-family:inherit}
-
-/* ── SIDEBAR ── */
-#sidebar{width:220px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .3s}
+#sidebar{width:220px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .sb-brand{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .sb-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0}
-.sb-name{font-size:.85rem;font-weight:700;line-height:1.2}
-.sb-sub{font-size:.7rem;color:var(--muted)}
+.sb-name{font-size:.85rem;font-weight:700;line-height:1.2}.sb-sub{font-size:.7rem;color:var(--muted)}
 nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:.88rem;transition:all .2s;border:none;background:none;width:100%;text-align:left}
-.nav-item:hover{background:var(--s2);color:var(--text)}
-.nav-item.active{background:var(--pg);color:var(--pl);border:1px solid var(--p)30}
+.nav-item:hover{background:var(--s2);color:var(--text)}.nav-item.active{background:var(--pg);color:var(--pl);border:1px solid rgba(124,58,237,.3)}
 .nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
 .nav-badge{margin-left:auto;background:var(--p);color:#fff;font-size:.65rem;border-radius:20px;padding:1px 7px;font-weight:700}
 .sb-footer{padding:12px 8px;border-top:1px solid var(--border)}
 .btn-logout{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.82rem;width:100%;transition:all .2s}
 .btn-logout:hover{border-color:var(--danger);color:var(--danger)}
-
-/* ── MAIN ── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 #topbar{background:var(--s1);border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.topbar-title{font-size:1.05rem;font-weight:700}
-.topbar-sub{font-size:.78rem;color:var(--muted);margin-top:1px}
-.topbar-actions{display:flex;gap:8px}
+.topbar-title{font-size:1.05rem;font-weight:700}.topbar-sub{font-size:.78rem;color:var(--muted);margin-top:1px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--free);flex-shrink:0;animation:pulse 2s infinite}
+.sync-dot.off{background:var(--danger);animation:none}
 #content{flex:1;overflow-y:auto;padding:24px}
 #content::-webkit-scrollbar{width:4px}
 #content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
-/* ── LOGIN ── */
 #login-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
 .login-box{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center}
 .login-logo{font-size:2rem;font-weight:900;letter-spacing:2px;margin-bottom:4px}
-.login-logo span{color:var(--pl)}
-.login-sub{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+.login-logo span{color:var(--pl)}.login-sub{color:var(--muted);font-size:.85rem;margin-bottom:28px}
 .login-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-size:1.1rem;text-align:center;letter-spacing:6px;outline:none;margin-bottom:16px}
 .login-input:focus{border-color:var(--p)}
 .btn-login{width:100%;background:var(--p);border:none;border-radius:10px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s}
-.btn-login:hover{opacity:.85}
-.login-err{color:var(--danger);font-size:.82rem;margin-top:8px;min-height:20px}
-
-/* ── STATS ── */
+.btn-login:hover{opacity:.85}.login-err{color:var(--danger);font-size:.82rem;margin-top:8px;min-height:20px}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .stat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px;position:relative;overflow:hidden}
 .stat-card::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;opacity:.15}
-.stat-card.purple::before{background:var(--p)}
-.stat-card.cyan::before{background:var(--cyan)}
-.stat-card.green::before{background:var(--free)}
-.stat-card.blue::before{background:var(--repair)}
+.stat-card.purple::before{background:var(--p)}.stat-card.cyan::before{background:var(--cyan)}.stat-card.green::before{background:var(--free)}.stat-card.blue::before{background:var(--repair)}
 .stat-num{font-size:2rem;font-weight:800;line-height:1}
-.stat-num.purple{color:var(--pl)}
-.stat-num.cyan{color:var(--cyan)}
-.stat-num.green{color:var(--free)}
-.stat-num.blue{color:var(--repair)}
+.stat-num.purple{color:var(--pl)}.stat-num.cyan{color:var(--cyan)}.stat-num.green{color:var(--free)}.stat-num.blue{color:var(--repair)}
 .stat-label{color:var(--muted);font-size:.78rem;margin-top:6px}
-
-/* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s}
-.btn-primary{background:var(--p);color:#fff}
-.btn-primary:hover{opacity:.85}
-.btn-secondary{background:var(--s2);color:var(--text);border:1px solid var(--border)}
-.btn-secondary:hover{border-color:var(--p);color:var(--pl)}
-.btn-danger{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.2)}
-.btn-danger:hover{background:rgba(239,68,68,.2)}
+.btn-primary{background:var(--p);color:#fff}.btn-primary:hover{opacity:.85}
+.btn-secondary{background:var(--s2);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{border-color:var(--p);color:var(--pl)}
+.btn-danger{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.2)}.btn-danger:hover{background:rgba(239,68,68,.2)}
 .btn-sm{padding:6px 12px;font-size:.78rem}
-.btn-cyan{background:var(--cyan);color:#000;font-weight:700}
-.btn-cyan:hover{opacity:.85}
-
-/* ── TABLE ── */
+.btn-cyan{background:var(--cyan);color:#000;font-weight:700}.btn-cyan:hover{opacity:.85}
+.btn-hist{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.2)}.btn-hist:hover{background:rgba(6,182,212,.2)}
 .table-wrap{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 table{width:100%;border-collapse:collapse}
 thead{background:var(--s2)}
 th{padding:13px 16px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
-td{padding:13px 16px;border-top:1px solid var(--border);font-size:.88rem;vertical-align:middle}
+td{padding:11px 16px;border-top:1px solid var(--border);font-size:.85rem;vertical-align:middle}
 tr:hover td{background:var(--s2)}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap}
-.badge-free{background:rgba(16,185,129,.15);color:var(--free)}
-.badge-sales{background:rgba(167,139,250,.15);color:var(--sales)}
-.badge-repair{background:rgba(59,130,246,.15);color:var(--repair)}
-.kw-wrap{display:flex;flex-wrap:wrap;gap:4px}
-.kw{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:.72rem;color:var(--muted)}
-
-/* ── FORMS ── */
+.badge-free{background:rgba(16,185,129,.15);color:var(--free)}.badge-sales{background:rgba(167,139,250,.15);color:var(--sales)}.badge-repair{background:rgba(59,130,246,.15);color:var(--repair)}
+.kw-wrap{display:flex;flex-wrap:wrap;gap:4px}.kw{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:.72rem;color:var(--muted)}
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .form-input,.form-select,.form-textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-size:.9rem;outline:none;transition:border-color .2s}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--p)}
-.form-textarea{resize:vertical;min-height:90px;line-height:1.5}
-.form-select{cursor:pointer}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.5}.form-select{cursor:pointer}
 .form-hint{font-size:.75rem;color:var(--muted);margin-top:5px}
-
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--s1);border:1px solid var(--border);border-radius:18px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
 .modal-header{padding:22px 22px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .modal-header h2{font-size:1rem;font-weight:700}
-.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.4rem;padding:4px;line-height:1}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:22px;flex:1;overflow-y:auto}
-.modal-footer{padding:0 22px 22px;display:flex;gap:10px;justify-content:flex-end;flex-shrink:0}
-
-/* ── TYPE CARDS ── */
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.4rem;padding:4px;line-height:1}.modal-close:hover{color:var(--text)}
+.modal-body{padding:22px;flex:1;overflow-y:auto}.modal-footer{padding:0 22px 22px;display:flex;gap:10px;justify-content:flex-end;flex-shrink:0}
 .type-radio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .type-option input{display:none}
 .type-card{border:2px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s}
 .type-option input:checked+.type-card{border-color:var(--p);background:var(--pg)}
-.tc-icon{font-size:1.3rem;margin-bottom:4px}
-.tc-name{font-size:.8rem;font-weight:700}
-.tc-desc{font-size:.68rem;color:var(--muted);margin-top:2px}
-
-/* ── KEYWORDS BUILDER ── */
+.tc-icon{font-size:1.3rem;margin-bottom:4px}.tc-name{font-size:.8rem;font-weight:700}.tc-desc{font-size:.68rem;color:var(--muted);margin-top:2px}
 .kw-builder{display:flex;flex-wrap:wrap;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px;min-height:44px;align-items:center;cursor:text}
 .kw-builder:focus-within{border-color:var(--p)}
 .kw-tag{background:var(--p);color:#fff;border-radius:6px;padding:3px 8px;font-size:.78rem;display:flex;align-items:center;gap:5px}
 .kw-tag button{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.85rem;padding:0;line-height:1}
 .kw-input{background:none;border:none;outline:none;color:var(--text);font-size:.88rem;min-width:100px;flex:1}
-
-/* ── FLOW MAP ── */
-#flow-workspace{position:relative;width:100%;height:calc(100vh - 200px);background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:default}
+#flow-workspace{position:relative;width:100%;height:calc(100vh - 200px);background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 #flow-bg{position:absolute;inset:0;pointer-events:none}
 #flow-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
 #flow-nodes-layer{position:absolute;inset:0}
 .flow-node{position:absolute;background:var(--s2);border:2px solid var(--border);border-radius:12px;width:200px;cursor:move;user-select:none;transition:border-color .2s;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.flow-node:hover,.flow-node.selected{border-color:var(--p)}
-.flow-node.connect-source{border-color:var(--cyan)}
+.flow-node:hover,.flow-node.selected{border-color:var(--p)}.flow-node.connect-source{border-color:var(--cyan)}
 .fn-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:6px}
 .fn-title{font-size:.82rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fn-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
@@ -158,75 +97,63 @@ tr:hover td{background:var(--s2)}
 .fn-ports{padding:6px 12px;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
 .fn-port{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--s1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;transition:all .2s}
 .fn-port:hover,.fn-port.active{border-color:var(--cyan);background:var(--cg);color:var(--cyan)}
-.fn-port-in{cursor:crosshair}
-.flow-toolbar{position:absolute;top:12px;left:12px;display:flex;gap:8px;z-index:10}
 .flow-legend{position:absolute;bottom:12px;right:12px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:.75rem;display:flex;flex-direction:column;gap:5px}
 .flow-legend-item{display:flex;align-items:center;gap:6px;color:var(--muted)}
 .flow-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .connecting-hint{position:absolute;top:12px;right:12px;background:rgba(6,182,212,.15);border:1px solid var(--cyan);border-radius:8px;padding:8px 14px;font-size:.78rem;color:var(--cyan);display:none}
-
-/* ── LEADS ── */
-.leads-toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.leads-toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .filter-btn{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--muted);cursor:pointer;font-size:.8rem;transition:all .2s}
 .filter-btn.active,.filter-btn:hover{border-color:var(--p);color:var(--pl)}
-.lead-row td:first-child{font-weight:600}
-.lead-actions{display:flex;gap:6px}
 .wa-link{color:#25d366;font-weight:600;text-decoration:none;font-size:.82rem;display:inline-flex;align-items:center;gap:4px;transition:opacity .2s}
 .wa-link:hover{opacity:.7}
-.note-chip{display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--warn);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;vertical-align:middle}
-
-/* ── GUIDE ── */
-.guide-steps{display:flex;flex-direction:column;gap:0}
-.guide-step{display:flex;gap:0;position:relative}
-.guide-step:not(:last-child) .gs-line{content:'';position:absolute;left:22px;top:46px;bottom:-1px;width:2px;background:linear-gradient(var(--p),var(--border));z-index:0}
-.gs-num{width:46px;height:46px;border-radius:50%;background:var(--pg);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;color:var(--pl);flex-shrink:0;position:relative;z-index:1}
-.gs-line{position:absolute;left:22px;top:46px;bottom:-20px;width:2px;background:linear-gradient(var(--p)40,transparent)}
-.gs-body{flex:1;padding:0 0 32px 18px}
-.gs-title{font-size:.95rem;font-weight:700;margin-bottom:6px;color:var(--text)}
-.gs-desc{font-size:.85rem;color:var(--muted);line-height:1.6}
-.gs-desc code{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.8rem;color:var(--cyan);font-family:monospace}
-.gs-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--cyan);margin-top:10px;line-height:1.5}
-.guide-section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--p);font-weight:800;margin:28px 0 16px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.gs-badge{background:rgba(16,185,129,.12);color:var(--free);border:1px solid rgba(16,185,129,.2);border-radius:4px;padding:1px 7px;font-size:.65rem;font-weight:700;margin-left:auto}
-
-/* ── LABELS ── */
+.note-chip{display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--warn);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;vertical-align:middle}
 .labels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.label-card{background:var(--s1);border:2px solid var(--border);border-radius:14px;padding:18px;position:relative}
+.label-card{background:var(--s1);border:2px solid var(--border);border-radius:14px;padding:18px}
 .label-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .label-color-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px}
 .label-name-large{font-size:1rem;font-weight:800;letter-spacing:.5px}
 .label-info{color:var(--muted);font-size:.8rem;line-height:1.5}
 .label-actions{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-
-/* ── SETTINGS ── */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .settings-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:22px}
 .settings-card h3{font-size:.9rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .profile-preview{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:14px;background:var(--s2);border-radius:10px}
 .profile-img-preview{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--p)}
-
-/* ── TOAST ── */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:13px 18px;font-size:.88rem;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;max-width:340px}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.ok{border-left:3px solid var(--free)}
-.toast.err{border-left:3px solid var(--danger)}
-
-/* ── SECTION HEADER ── */
+.toast.show{transform:translateY(0);opacity:1}.toast.ok{border-left:3px solid var(--free)}.toast.err{border-left:3px solid var(--danger)}
 .sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.sec-title{font-size:1.1rem;font-weight:700}
-.sec-sub{font-size:.8rem;color:var(--muted);margin-top:2px}
-
-.search-input{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:.85rem;outline:none;width:240px}
+.sec-title{font-size:1.1rem;font-weight:700}.sec-sub{font-size:.8rem;color:var(--muted);margin-top:2px}
+.search-input{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:.85rem;outline:none;width:200px}
 .search-input:focus{border-color:var(--p)}
-
-.empty{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty-icon{font-size:2rem;margin-bottom:8px}
-
-@media(max-width:768px){
-  #sidebar{display:none}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .settings-grid{grid-template-columns:1fr}
-}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}.empty-icon{font-size:2rem;margin-bottom:8px}
+/* HISTORY MODAL */
+.hist-modal{max-width:540px}
+.hist-messages{max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px}
+.hist-messages::-webkit-scrollbar{width:4px}
+.hist-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.hm-row{display:flex;gap:8px}
+.hm-row.bot{align-self:flex-start}.hm-row.user{align-self:flex-end;flex-direction:row-reverse}
+.hm-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px}
+.hm-av-u{width:26px;height:26px;border-radius:50%;background:var(--s3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px}
+.hm-content{max-width:80%}
+.hm-bubble{padding:9px 12px;border-radius:14px;font-size:.82rem;line-height:1.5}
+.hm-row.bot .hm-bubble{background:var(--s2);border:1px solid var(--border);border-top-left-radius:4px}
+.hm-row.user .hm-bubble{background:var(--p);color:#fff;border-top-right-radius:4px}
+.hm-time{font-size:.65rem;color:var(--muted);margin-top:3px;padding:0 2px}
+.hm-row.user .hm-time{text-align:right}
+.hm-video-link{font-size:.72rem;color:var(--cyan);text-decoration:none;display:block;margin-top:4px}
+/* GUIDE */
+.guide-steps{display:flex;flex-direction:column;gap:0}
+.guide-step{display:flex;gap:0;position:relative}
+.gs-line{position:absolute;left:22px;top:46px;bottom:-20px;width:2px;background:linear-gradient(var(--p)40,transparent)}
+.gs-num{width:46px;height:46px;border-radius:50%;background:var(--pg);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;color:var(--pl);flex-shrink:0;position:relative;z-index:1}
+.gs-body{flex:1;padding:0 0 28px 18px}
+.gs-title{font-size:.92rem;font-weight:700;margin-bottom:5px}
+.gs-desc{font-size:.83rem;color:var(--muted);line-height:1.6}
+.gs-desc code{background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.78rem;color:var(--cyan);font-family:monospace}
+.gs-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:9px 12px;font-size:.78rem;color:var(--cyan);margin-top:8px;line-height:1.5}
+.guide-section-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--p);font-weight:800;margin:24px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+@media(max-width:768px){#sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.settings-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -236,22 +163,19 @@ tr:hover td{background:var(--s2)}
   <div class="login-box">
     <div class="login-logo">GOKU<span>CELL</span></div>
     <div class="login-sub">by Jhonatan Herrera · Panel Administrativo</div>
-    <input class="login-input" id="login-pwd" type="password" placeholder="••••" maxlength="20" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-input" id="login-pwd" type="password" placeholder="••••" maxlength="20">
     <button class="btn-login" onclick="doLogin()">Ingresar</button>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none;width:100%;height:100vh;display:none;flex">
+<div id="app" style="display:none;width:100%;height:100vh;display:none">
 
   <div id="sidebar">
     <div class="sb-brand">
       <img class="sb-avatar" id="sb-avatar" src="" alt="Foto">
-      <div>
-        <div class="sb-name">GOKUCELL</div>
-        <div class="sb-sub">by Jhonatan Herrera</div>
-      </div>
+      <div><div class="sb-name">GOKUCELL</div><div class="sb-sub">by Jhonatan Herrera</div></div>
     </div>
     <nav>
       <button class="nav-item active" onclick="showSection('dashboard',this)"><span class="nav-icon">📊</span>Dashboard</button>
@@ -271,10 +195,12 @@ tr:hover td{background:var(--s2)}
     <div id="topbar">
       <div>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-sub" id="topbar-sub">Resumen general del sistema</div>
+        <div class="topbar-sub" id="topbar-sub">Resumen general</div>
       </div>
       <div class="topbar-actions">
-        <a href="index.html" target="_blank" class="btn btn-secondary">👁 Ver Chat</a>
+        <div class="sync-dot" id="sync-dot" title="Sincronizado con Firebase"></div>
+        <span style="font-size:.72rem;color:var(--muted)" id="sync-label">Sincronizado</span>
+        <a href="index.html" target="_blank" class="btn btn-secondary" style="margin-left:8px">👁 Ver Chat</a>
       </div>
     </div>
     <div id="content">
@@ -283,68 +209,46 @@ tr:hover td{background:var(--s2)}
       <div id="sec-dashboard">
         <div class="stats-grid" id="stats-grid"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-          <div>
-            <div class="sec-header"><div><div class="sec-title">Últimos Contactos</div></div></div>
-            <div class="table-wrap">
-              <table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Etiqueta</th><th>Fecha</th></tr></thead>
-              <tbody id="dash-leads"></tbody></table>
-            </div>
-          </div>
-          <div>
-            <div class="sec-header"><div><div class="sec-title">Disparadores Activos</div></div></div>
-            <div class="table-wrap">
-              <table><thead><tr><th>Tema</th><th>Palabras clave</th><th>Tipo</th></tr></thead>
-              <tbody id="dash-topics"></tbody></table>
-            </div>
-          </div>
+          <div><div class="sec-header"><div><div class="sec-title">Últimos Contactos</div></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>WhatsApp</th><th>Etiqueta</th><th>Fecha</th></tr></thead><tbody id="dash-leads"></tbody></table></div></div>
+          <div><div class="sec-header"><div><div class="sec-title">Disparadores Activos</div></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Tema</th><th>Keywords</th><th>Tipo</th></tr></thead><tbody id="dash-topics"></tbody></table></div></div>
         </div>
       </div>
 
       <!-- TOPICS -->
       <div id="sec-topics" style="display:none">
         <div class="sec-header">
-          <div>
-            <div class="sec-title">Disparadores del Chat</div>
-            <div class="sec-sub">Configura los temas y palabras clave que activan respuestas</div>
-          </div>
-          <div style="display:flex;gap:8px">
+          <div><div class="sec-title">Disparadores del Chat</div><div class="sec-sub">Keywords que activan respuestas automáticas</div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
             <input class="search-input" id="topics-search" placeholder="🔍 Buscar..." oninput="renderTopics()">
             <select class="form-select" style="width:140px" id="topics-filter" onchange="renderTopics()">
-              <option value="all">Todos los tipos</option>
-              <option value="free">Gratuito</option>
-              <option value="sales">Expercenter</option>
-              <option value="repair">ReparaXcell</option>
+              <option value="all">Todos</option><option value="free">Gratuito</option><option value="sales">Expercenter</option><option value="repair">ReparaXcell</option>
             </select>
             <button class="btn btn-primary" onclick="openTopicModal()">+ Nuevo Disparador</button>
           </div>
         </div>
         <div class="table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>Título</th><th>Disparadores (keywords)</th><th>Respuesta</th><th>Tipo / Etiqueta</th><th>Acciones</th></tr></thead>
-            <tbody id="topics-body"></tbody>
-          </table>
-          <div class="empty" id="topics-empty" style="display:none"><div class="empty-icon">⚡</div><p>Sin disparadores aún. Crea el primero.</p></div>
+          <table><thead><tr><th>#</th><th>Título</th><th>Keywords</th><th>Respuesta</th><th>Video</th><th>Tipo</th><th>Acciones</th></tr></thead>
+          <tbody id="topics-body"></tbody></table>
+          <div class="empty" id="topics-empty" style="display:none"><div class="empty-icon">⚡</div><p>Sin disparadores. Crea el primero.</p></div>
         </div>
       </div>
 
       <!-- FLOW MAP -->
       <div id="sec-flowmap" style="display:none">
         <div class="sec-header">
-          <div>
-            <div class="sec-title">Mapa Visual de Flujos</div>
-            <div class="sec-sub">Arrastra los nodos y conecta los flujos de conversación</div>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div><div class="sec-title">Mapa Visual de Flujos</div><div class="sec-sub">Arrastra nodos y conecta flujos de conversación</div></div>
+          <div style="display:flex;gap:8px">
             <button class="btn btn-secondary btn-sm" onclick="flowAutoLayout()">🔄 Auto-organizar</button>
-            <button class="btn btn-danger btn-sm" onclick="clearConnections()">🗑 Limpiar conexiones</button>
+            <button class="btn btn-danger btn-sm" onclick="clearConnections()">🗑 Limpiar</button>
             <button class="btn btn-primary btn-sm" onclick="saveFlowLayout()">💾 Guardar</button>
           </div>
         </div>
         <div id="flow-workspace">
-          <canvas id="flow-bg"></canvas>
-          <svg id="flow-svg"></svg>
+          <canvas id="flow-bg"></canvas><svg id="flow-svg"></svg>
           <div id="flow-nodes-layer"></div>
-          <div class="connecting-hint" id="connecting-hint">🔗 Haz clic en el nodo destino para conectar</div>
+          <div class="connecting-hint" id="connecting-hint">🔗 Haz clic en el nodo destino</div>
           <div class="flow-legend">
             <div style="font-size:.72rem;font-weight:700;color:var(--text);margin-bottom:4px">Leyenda</div>
             <div class="flow-legend-item"><div class="flow-dot" style="background:var(--free)"></div>Comunidad Gratuita</div>
@@ -357,35 +261,32 @@ tr:hover td{background:var(--s2)}
       <!-- LEADS -->
       <div id="sec-leads" style="display:none">
         <div class="sec-header">
-          <div>
-            <div class="sec-title">Contactos / Leads</div>
-            <div class="sec-sub">Personas que iniciaron conversación en el chat</div>
-          </div>
+          <div><div class="sec-title">Contactos / Leads</div><div class="sec-sub">Sincronizado en tiempo real con Firebase</div></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <input class="search-input" id="leads-search" placeholder="🔍 Nombre..." oninput="renderLeads()" style="width:160px">
-            <select class="form-select" id="leads-country-filter" onchange="renderLeads()" style="width:140px;padding:9px 10px">
-              <option value="">Todos los países</option>
-            </select>
-            <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar todo</button>
+            <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
           </div>
         </div>
         <div class="leads-toolbar" id="leads-filter-bar"></div>
+        <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap" id="leads-extra-filters">
+          <select class="form-select" id="leads-country-filter" onchange="renderLeads()" style="width:170px;padding:8px 10px">
+            <option value="">Todos los países</option>
+          </select>
+          <select class="form-select" id="leads-label-filter" onchange="renderLeads()" style="width:160px;padding:8px 10px">
+            <option value="">Todas las etiquetas</option>
+          </select>
+        </div>
         <div class="table-wrap">
-          <table>
-            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Fecha</th><th>Acciones</th></tr></thead>
-            <tbody id="leads-body"></tbody>
-          </table>
-          <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún. Aparecerán cuando alguien inicie el chat.</p></div>
+          <table><thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th><th></th></tr></thead>
+          <tbody id="leads-body"></tbody></table>
+          <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún.</p></div>
         </div>
       </div>
 
       <!-- LABELS -->
       <div id="sec-labels" style="display:none">
         <div class="sec-header">
-          <div>
-            <div class="sec-title">Etiquetas</div>
-            <div class="sec-sub">Define los flujos de conversación por tipo de interés</div>
-          </div>
+          <div><div class="sec-title">Etiquetas</div><div class="sec-sub">Flujos de conversación por tipo de interés</div></div>
           <button class="btn btn-primary" onclick="openLabelModal()">+ Nueva Etiqueta</button>
         </div>
         <div class="labels-grid" id="labels-grid"></div>
@@ -393,78 +294,43 @@ tr:hover td{background:var(--s2)}
 
       <!-- SETTINGS -->
       <div id="sec-settings" style="display:none">
-        <div class="sec-header"><div><div class="sec-title">Configuración General</div></div></div>
+        <div class="sec-header"><div><div class="sec-title">Configuración General</div><div class="sec-sub">Los cambios se sincronizan automáticamente en el chat</div></div></div>
         <div class="settings-grid">
           <div class="settings-card">
             <h3>🖼 Foto de perfil del bot</h3>
             <div class="profile-preview">
-              <img class="profile-img-preview" id="profile-preview-img" src="" alt="preview">
-              <div>
-                <div style="font-size:.85rem;font-weight:600">GOKUCELL Bot</div>
-                <div style="font-size:.75rem;color:var(--muted)">Visible en el chat</div>
-              </div>
+              <img class="profile-img-preview" id="profile-preview-img" src="" alt="">
+              <div><div style="font-size:.85rem;font-weight:600">GOKUCELL Bot</div><div style="font-size:.75rem;color:var(--muted)">Visible en el chat</div></div>
             </div>
-            <div class="form-group">
-              <label class="form-label">URL de la foto</label>
-              <input class="form-input" id="s-photo" placeholder="https://..." oninput="previewPhoto()">
-            </div>
+            <div class="form-group"><label class="form-label">URL de la foto</label><input class="form-input" id="s-photo" placeholder="https://..." oninput="previewPhoto()"></div>
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar foto</button>
           </div>
-
           <div class="settings-card">
             <h3>🔗 Enlace Comunidad Gratuita</h3>
-            <div class="form-group">
-              <label class="form-label">URL de la comunidad</label>
-              <input class="form-input" id="s-community" placeholder="https://...">
-              <div class="form-hint">Botón que aparece cuando no hay coincidencia de keywords</div>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar enlace</button>
+            <div class="form-group"><label class="form-label">URL de la comunidad</label><input class="form-input" id="s-community" placeholder="https://..."><div class="form-hint">Botón de sin coincidencia en el chat</div></div>
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
           </div>
-
           <div class="settings-card" style="grid-column:1/-1">
             <h3>📢 Publicidad flotante (Expercenter)</h3>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div class="form-group">
-                <label class="form-label">Texto del anuncio</label>
-                <textarea class="form-textarea" id="s-ad-text" style="min-height:70px" placeholder="¿Has visto cursos pero no entiendes? Lo mejor es estar en vivo..."></textarea>
-              </div>
+              <div class="form-group"><label class="form-label">Texto del anuncio</label><textarea class="form-textarea" id="s-ad-text" style="min-height:70px"></textarea></div>
               <div>
-                <div class="form-group">
-                  <label class="form-label">Precio / oferta</label>
-                  <input class="form-input" id="s-ad-price" placeholder="$17/mes">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">URL del anuncio</label>
-                  <input class="form-input" id="s-ad-url" placeholder="https://expercenter.com/">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Texto del botón</label>
-                  <input class="form-input" id="s-ad-btn" placeholder="¡Quiero unirme!">
-                </div>
+                <div class="form-group"><label class="form-label">Precio / oferta</label><input class="form-input" id="s-ad-price" placeholder="$17/mes"></div>
+                <div class="form-group"><label class="form-label">URL del anuncio</label><input class="form-input" id="s-ad-url" placeholder="https://expercenter.com/"></div>
+                <div class="form-group"><label class="form-label">Texto del botón</label><input class="form-input" id="s-ad-btn"></div>
               </div>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar anuncio</button>
           </div>
-
           <div class="settings-card">
             <h3>💬 Mensaje sin coincidencia</h3>
-            <div class="form-group">
-              <label class="form-label">Texto cuando el bot no entiende</label>
-              <textarea class="form-textarea" id="s-nomatch" placeholder="Para ayudarte mejor, intenta escribir así..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar mensaje</button>
+            <div class="form-group"><label class="form-label">Texto cuando el bot no entiende</label><textarea class="form-textarea" id="s-nomatch"></textarea></div>
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
           </div>
-
           <div class="settings-card">
-            <h3>🔐 Cambiar contraseña de acceso</h3>
-            <div class="form-group">
-              <label class="form-label">Contraseña actual</label>
-              <input class="form-input" id="s-pwd-old" type="password" placeholder="••••">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Nueva contraseña</label>
-              <input class="form-input" id="s-pwd-new" type="password" placeholder="Nueva contraseña">
-            </div>
+            <h3>🔐 Cambiar contraseña</h3>
+            <div class="form-group"><label class="form-label">Contraseña actual</label><input class="form-input" id="s-pwd-old" type="password"></div>
+            <div class="form-group"><label class="form-label">Nueva contraseña</label><input class="form-input" id="s-pwd-new" type="password"></div>
             <button class="btn btn-primary btn-sm" onclick="changePwd()">Cambiar contraseña</button>
           </div>
         </div>
@@ -472,7 +338,7 @@ tr:hover td{background:var(--s2)}
 
       <!-- GUIDE -->
       <div id="sec-guide" style="display:none">
-        <div class="sec-header"><div><div class="sec-title">📖 Guía de uso paso a paso</div><div class="sec-sub">Aprende a configurar y usar cada función del sistema GOKUCELL</div></div></div>
+        <div class="sec-header"><div><div class="sec-title">📖 Guía de uso paso a paso</div><div class="sec-sub">Configuración completa del sistema GOKUCELL</div></div></div>
         <div id="guide-content"></div>
       </div>
 
@@ -480,878 +346,658 @@ tr:hover td{background:var(--s2)}
   </div>
 </div>
 
-<!-- MODAL NOTE -->
-<div class="modal-overlay" id="modal-note">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <h2>📝 Nota del contacto</h2>
-      <button class="modal-close" onclick="closeModal('modal-note')">×</button>
-    </div>
-    <div class="modal-body">
-      <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">Contacto: <strong id="mn-name"></strong></div>
-      <div class="form-group">
-        <label class="form-label">Nota interna</label>
-        <textarea class="form-textarea" id="mn-text" placeholder="Escribe una nota sobre este contacto..." style="min-height:120px"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-note')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNote()">Guardar nota</button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL TOPIC -->
 <div class="modal-overlay" id="modal-topic">
   <div class="modal">
-    <div class="modal-header">
-      <h2 id="mt-title">Nuevo Disparador</h2>
-      <button class="modal-close" onclick="closeModal('modal-topic')">×</button>
-    </div>
+    <div class="modal-header"><h2 id="mt-title">Nuevo Disparador</h2><button class="modal-close" onclick="closeModal('modal-topic')">×</button></div>
     <div class="modal-body">
+      <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="mt-name" placeholder="Ej: Fuente de alimentación"></div>
       <div class="form-group">
-        <label class="form-label">Título del tema</label>
-        <input class="form-input" id="mt-name" placeholder="Ej: Fuente de alimentación">
+        <label class="form-label">Palabras clave <span style="color:var(--muted);font-weight:400">(Enter o coma para agregar)</span></label>
+        <div class="kw-builder" id="kw-builder" onclick="document.getElementById('kw-input').focus()"><input class="kw-input" id="kw-input" placeholder="Escribe y presiona Enter..."></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Palabras clave / Disparadores <span style="color:var(--muted);font-weight:400">(escribe y presiona Enter o coma)</span></label>
-        <div class="kw-builder" id="kw-builder" onclick="document.getElementById('kw-input').focus()">
-          <input class="kw-input" id="kw-input" placeholder="Escribe una keyword y presiona Enter...">
-        </div>
-        <input type="hidden" id="mt-keywords">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Respuesta del bot</label>
-        <textarea class="form-textarea" id="mt-response" placeholder="Escribe la respuesta que verá el usuario..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Texto del botón CTA</label>
-        <input class="form-input" id="mt-cta-text" placeholder="Ej: Ver contenido gratuito / Conocer Expercenter">
-      </div>
-      <div class="form-group">
-        <label class="form-label">URL del botón CTA</label>
-        <input class="form-input" id="mt-cta-url" placeholder="https://...">
-      </div>
+      <div class="form-group"><label class="form-label">Respuesta del bot</label><textarea class="form-textarea" id="mt-response"></textarea></div>
+      <div class="form-group"><label class="form-label">Texto del botón CTA</label><input class="form-input" id="mt-cta-text" placeholder="Ej: Ver contenido gratuito"></div>
+      <div class="form-group"><label class="form-label">URL del botón CTA</label><input class="form-input" id="mt-cta-url" placeholder="https://..."></div>
       <div class="form-group">
         <label class="form-label">🎬 Video de respuesta <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
         <input class="form-input" id="mt-video-url" placeholder="URL de YouTube o enlace directo de video (mp4)">
-        <div class="form-hint">Pega un link de YouTube (se incrustará y reproducirá automáticamente) o una URL directa a un archivo de video.</div>
+        <div class="form-hint">YouTube se reproduce automáticamente. También acepta URL directa a archivo MP4.</div>
       </div>
       <div class="form-group">
         <label class="form-label">Tipo de flujo</label>
         <div class="type-radio">
-          <label class="type-option"><input type="radio" name="mt-type" value="free" checked><div class="type-card"><div class="tc-icon">🎁</div><div class="tc-name">Gratuito</div><div class="tc-desc">Comunidad libre</div></div></label>
-          <label class="type-option"><input type="radio" name="mt-type" value="sales"><div class="type-card"><div class="tc-icon">🚀</div><div class="tc-name">Expercenter</div><div class="tc-desc">Cursos / Mentorías</div></div></label>
-          <label class="type-option"><input type="radio" name="mt-type" value="repair"><div class="type-card"><div class="tc-icon">🔧</div><div class="tc-name">ReparaXcell</div><div class="tc-desc">Servicio de reparación</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="free" checked><div class="type-card"><div class="tc-icon">🎁</div><div class="tc-name">Gratuito</div><div class="tc-desc">Comunidad</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="sales"><div class="type-card"><div class="tc-icon">🚀</div><div class="tc-name">Expercenter</div><div class="tc-desc">Cursos/Mentorías</div></div></label>
+          <label class="type-option"><input type="radio" name="mt-type" value="repair"><div class="type-card"><div class="tc-icon">🔧</div><div class="tc-name">ReparaXcell</div><div class="tc-desc">Reparación</div></div></label>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-topic')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTopic()">Guardar Disparador</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-topic')">Cancelar</button><button class="btn btn-primary" onclick="saveTopic()">Guardar</button></div>
   </div>
 </div>
 
 <!-- MODAL LABEL -->
 <div class="modal-overlay" id="modal-label">
   <div class="modal">
+    <div class="modal-header"><h2 id="ml-title">Nueva Etiqueta</h2><button class="modal-close" onclick="closeModal('modal-label')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ml-name" placeholder="Ej: GRATIS, EXPERCENTER"></div>
+      <div class="form-group"><label class="form-label">Color</label><div style="display:flex;gap:10px;align-items:center"><input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none;border-radius:6px;cursor:pointer"><span style="font-size:.82rem;color:var(--muted)">Color del badge</span></div></div>
+      <div class="form-group"><label class="form-label">Tipo de flujo</label><select class="form-select" id="ml-flow"><option value="free">Gratuito</option><option value="sales">Ventas — Expercenter</option><option value="repair">Reparación — ReparaXcell</option></select></div>
+      <div class="form-group"><label class="form-label">Mensaje de bienvenida <span style="color:var(--muted);font-weight:400">(usa [nombre])</span></label><textarea class="form-textarea" id="ml-welcome"></textarea></div>
+      <div class="form-group"><label class="form-label">Texto del botón CTA</label><input class="form-input" id="ml-cta-text"></div>
+      <div class="form-group"><label class="form-label">URL del CTA</label><input class="form-input" id="ml-cta-url" placeholder="https://..."></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-label')">Cancelar</button><button class="btn btn-primary" onclick="saveLabel()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL NOTE -->
+<div class="modal-overlay" id="modal-note">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><h2>📝 Nota del contacto</h2><button class="modal-close" onclick="closeModal('modal-note')">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">Contacto: <strong id="mn-name"></strong></div>
+      <div class="form-group"><label class="form-label">Nota interna</label><textarea class="form-textarea" id="mn-text" style="min-height:120px" placeholder="Seguimiento, estado, interés específico..."></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-note')">Cancelar</button><button class="btn btn-primary" onclick="saveNote()">Guardar nota</button></div>
+  </div>
+</div>
+
+<!-- MODAL HISTORY -->
+<div class="modal-overlay" id="modal-history">
+  <div class="modal hist-modal">
     <div class="modal-header">
-      <h2 id="ml-title">Nueva Etiqueta</h2>
-      <button class="modal-close" onclick="closeModal('modal-label')">×</button>
+      <div><h2>💬 Historial de chat</h2><div style="font-size:.78rem;color:var(--muted);margin-top:3px" id="mh-info"></div></div>
+      <button class="modal-close" onclick="closeModal('modal-history')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Nombre de la etiqueta</label>
-        <input class="form-input" id="ml-name" placeholder="Ej: GRATIS, EXPERCENTER, REPARAXCELL">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Color</label>
-        <div style="display:flex;gap:10px;align-items:center">
-          <input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none">
-          <span style="font-size:.82rem;color:var(--muted)">Elige el color de la etiqueta</span>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tipo de flujo</label>
-        <select class="form-select" id="ml-flow">
-          <option value="free">Gratuito — Recursos y comunidad</option>
-          <option value="sales">Ventas — Expercenter</option>
-          <option value="repair">Reparación — ReparaXcell</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Mensaje de bienvenida para esta etiqueta</label>
-        <textarea class="form-textarea" id="ml-welcome" placeholder="¡Hola [nombre]! Gracias por comunicarte..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Texto del botón CTA</label>
-        <input class="form-input" id="ml-cta-text" placeholder="Ej: Unirse a la comunidad / Ver Expercenter">
-      </div>
-      <div class="form-group">
-        <label class="form-label">URL del botón CTA</label>
-        <input class="form-input" id="ml-cta-url" placeholder="https://...">
-      </div>
+      <div class="hist-messages" id="mh-body"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-label')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveLabel()">Guardar Etiqueta</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-history')">Cerrar</button>
+      <a class="btn btn-cyan" id="mh-wa-btn" href="#" target="_blank">📱 Abrir WhatsApp</a>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <script>
-// ── DATA STORE ──
-const KEY = 'gokucell_v2';
-let DB = {
-  settings: {
-    profilePhoto: 'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg',
-    communityLink: '',
-    password: '5616',
-    adText: '¿Has visto cursos pero no los entiendes del todo? Lo mejor es estar en VIVO en las consultorías directas con el instructor para aprender más rápido.',
-    adPrice: '$17/mes',
-    adUrl: 'https://expercenter.com/',
-    adBtn: '¡Únete por solo $17/mes!',
-    noMatchMsg: 'Para poder ayudarte mejor, intenta escribir tu consulta así:\n\n*"¿Cómo diagnostico un celular que no carga?"*\n*"¿Cuánto cuesta el curso?"*\n\nO si prefieres, únete a nuestra comunidad gratuita con más de 1.200 técnicos activos. 👇'
-  },
-  topics: [],
-  labels: [
-    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! Qué bueno que te interesas por los recursos gratuitos de GOKUCELL. Estoy aquí para orientarte. 😊',ctaText:'🎁 Unirme a la Comunidad',ctaUrl:''},
-    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que estés interesado en una capacitación completa. Cuéntame un poco más, ¿cuál es tu nivel actual en reparación?',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
-    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Gracias por preferirnos para realizar tu reparación. Aquí te dejo el contacto directo con nuestro equipo de ReparaXcell. 🔧',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:''}
-  ],
-  flows: [],
-  flowPositions: {},
-  leads: []
+// ── FIREBASE ──
+const firebaseConfig = {
+  apiKey: "AIzaSyC_i8CM3AF38KLMVsAsh_Hmrokzk_9luNU",
+  authDomain: "expercenter.firebaseapp.com",
+  projectId: "expercenter",
+  storageBucket: "expercenter.firebasestorage.app",
+  messagingSenderId: "141103944194",
+  appId: "1:141103944194:web:da7f28c28b3118c6044d1b"
 };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+db.settings({ experimentalForceLongPolling: true });
+
+// ── STATE ──
+let DB = {
+  settings: { profilePhoto:'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg', communityLink:'', password:'5616', adText:'¿Has visto cursos pero no los entiendes del todo? Lo mejor es estar en VIVO con el instructor.', adPrice:'$17/mes', adUrl:'https://expercenter.com/', adBtn:'¡Únete por solo $17/mes!', noMatchMsg:'' },
+  topics: [], labels: [
+    {id:'lbl1',name:'GRATIS',color:'#10b981',flow:'free',welcome:'¡Hola [nombre]! Qué bueno que estás aquí 😊 Estoy para orientarte.',ctaText:'🎁 Unirme a la Comunidad',ctaUrl:''},
+    {id:'lbl2',name:'EXPERCENTER',color:'#a78bfa',flow:'sales',welcome:'¡Hola [nombre]! Me alegra que quieras capacitarte. ¿Cuál es tu nivel actual?',ctaText:'🚀 Conocer Expercenter',ctaUrl:'https://expercenter.com/'},
+    {id:'lbl3',name:'REPARAXCELL',color:'#3b82f6',flow:'repair',welcome:'¡Hola [nombre]! Gracias por preferirnos. Aquí el contacto directo con ReparaXcell 🔧',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:''}
+  ], flows: [], flowPositions: {}
+};
+let leads = [];
+let editTopicId = null, editLabelId = null, editNoteId = null;
+let kwTags = [];
+let leadsFilterLabel = 'all', flowDragging = null, connectingFrom = null;
+let configUnsubscribe = null, leadsUnsubscribe = null;
 
 const DEFAULT_TOPICS = [
-  {id:'t1',title:'Fuente de alimentación',keywords:['fuente de alimentación','fuente','power supply','voltaje','amperaje','alimentación'],response:'¡Claro! La fuente de alimentación es fundamental en el diagnóstico. En nuestra comunidad gratuita tenemos guías sobre lecturas de voltaje, amperaje y diagnóstico de fallas comunes.',ctaText:'🎁 Ver guías gratuitas',ctaUrl:'',type:'free'},
-  {id:'t2',title:'Multímetro y medición',keywords:['multímetro','medir','continuidad','resistencia','condensador','capacitor'],response:'El multímetro es tu mejor aliado. En la comunidad gratuita tenemos tutoriales completos sobre cómo medir componentes y qué valores buscar en cada punto de la placa.',ctaText:'🎁 Ver tutoriales',ctaUrl:'',type:'free'},
-  {id:'t3',title:'No carga / No enciende',keywords:['no carga','no enciende','no prende','no arranca','pantalla negra','muerto','sin imagen'],response:'Ese diagnóstico tiene un protocolo específico: primero el conector, luego la línea de carga, el PMIC y los circuitos de arranque. En la comunidad tienes el protocolo completo paso a paso.',ctaText:'🎁 Ver protocolo',ctaUrl:'',type:'free'},
-  {id:'t4',title:'Curso completo / Capacitación',keywords:['curso','capacitación','capacitar','formación','aprender completo','todo el proceso','certificado'],response:'¡Excelente decisión invertir en ti mismo! En Expercenter tenemos el programa más completo para llevar tus habilidades al siguiente nivel. Desde diagnóstico básico hasta microfusión avanzada con casos reales. ¿Cuál es tu nivel actual?',ctaText:'🚀 Ver programa Expercenter',ctaUrl:'https://expercenter.com/',type:'sales'},
-  {id:'t5',title:'Mentoría personalizada',keywords:['mentoría','mentoria','mentor','asesoría','acompañamiento','uno a uno'],response:'Las mentorías son sesiones personalizadas donde trabajamos directamente en tus casos y dudas específicas. Es la forma más rápida de avanzar. ¿Tienes alguna falla en la que estés trabajando, o quieres una ruta de aprendizaje completa?',ctaText:'🚀 Solicitar Mentoría',ctaUrl:'https://expercenter.com/',type:'sales'},
-  {id:'t6',title:'Precio del curso',keywords:['precio','costo','cuánto vale','cuánto cuesta','inversión','pago','cuotas','mensualidad'],response:'La inversión en Expercenter está diseñada para que la recuperes con tus primeras reparaciones. Tenemos planes desde $17/mes con acceso completo. ¿Te cuento los detalles?',ctaText:'🚀 Ver planes y precios',ctaUrl:'https://expercenter.com/',type:'sales'},
-  {id:'t7',title:'Cotizar reparación',keywords:['cotizar','reparar','reparación','cuánto cuesta reparar','servicio técnico','roto','dañado','pantalla rota'],response:'¡Con gusto te ayudamos! Para una cotización precisa, en ReparaXcell somos expertos en reparación de equipos. Contáctanos directamente y en minutos te damos el presupuesto.',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:'',type:'repair'},
-  {id:'t8',title:'Soldadura y BGA',keywords:['soldar','soldadura','bga','microfusión','flux','estaño','hot air','aire caliente','reballing'],response:'Soldadura y BGA es uno de los temas más avanzados. En nuestra comunidad tienes contenido introductorio, y en Expercenter el módulo completo con práctica en equipos reales.',ctaText:'🎁 Ver contenido de soldadura',ctaUrl:'',type:'free'}
+  {id:'t1',title:'Fuente de alimentación',keywords:['fuente de alimentación','fuente','power supply','voltaje','amperaje'],response:'¡Claro! La fuente de alimentación es fundamental. En nuestra comunidad gratuita tenemos guías sobre lecturas de voltaje y diagnóstico de fallas comunes.',ctaText:'🎁 Ver guías gratuitas',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t2',title:'No carga / No enciende',keywords:['no carga','no enciende','no prende','pantalla negra','muerto','sin imagen'],response:'Ese diagnóstico tiene un protocolo específico: conector → línea de carga → PMIC → circuitos de arranque. En la comunidad tienes el protocolo completo.',ctaText:'🎁 Ver protocolo',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t3',title:'Multímetro y medición',keywords:['multímetro','medir','continuidad','resistencia','condensador'],response:'El multímetro es tu mejor aliado. En la comunidad tenemos tutoriales sobre cómo medir componentes y qué valores buscar en cada punto.',ctaText:'🎁 Ver tutoriales',ctaUrl:'',videoUrl:'',type:'free'},
+  {id:'t4',title:'Curso completo / Capacitación',keywords:['curso','capacitación','capacitar','formación','aprender completo','certificado'],response:'¡Excelente decisión! En Expercenter tenemos el programa más completo desde diagnóstico básico hasta microfusión avanzada. ¿Cuál es tu nivel actual?',ctaText:'🚀 Ver programa Expercenter',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t5',title:'Mentoría personalizada',keywords:['mentoría','mentor','asesoría','acompañamiento','uno a uno'],response:'Las mentorías son sesiones uno a uno donde trabajamos en tus casos específicos. Es la forma más rápida de avanzar. ¿En qué área te quieres enfocar?',ctaText:'🚀 Solicitar Mentoría',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t6',title:'Precio del curso',keywords:['precio','costo','cuánto vale','cuánto cuesta','inversión','pago','cuotas'],response:'La inversión está diseñada para recuperarla con tus primeras reparaciones. Tenemos planes desde $17/mes. ¿Te cuento los detalles?',ctaText:'🚀 Ver planes y precios',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t7',title:'Cotizar reparación',keywords:['cotizar','reparar','reparación','servicio técnico','pantalla rota','dañado'],response:'¡Con gusto! En ReparaXcell somos expertos en reparación de equipos. Contáctanos y en minutos te damos el presupuesto.',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:'',videoUrl:'',type:'repair'},
+  {id:'t8',title:'Soldadura y BGA',keywords:['soldar','soldadura','bga','microfusión','flux','estaño','hot air','reballing'],response:'Soldadura y BGA es uno de los temas más avanzados. En la comunidad tienes contenido introductorio, y en Expercenter el módulo completo.',ctaText:'🎁 Ver contenido de soldadura',ctaUrl:'',videoUrl:'',type:'free'}
 ];
 
-function loadDB() {
-  const raw = localStorage.getItem(KEY);
-  if (raw) {
-    try {
-      const saved = JSON.parse(raw);
-      DB = { ...DB, ...saved };
-      if (!DB.settings) DB.settings = {};
-      DB.settings = { ...{profilePhoto:'https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg',communityLink:'',password:'5616',adText:'',adPrice:'$17/mes',adUrl:'https://expercenter.com/',adBtn:'¡Únete por solo $17/mes!',noMatchMsg:''}, ...DB.settings };
-    } catch(e) {}
-  } else {
-    DB.topics = DEFAULT_TOPICS.map(t => ({...t}));
-    saveDB();
-  }
-  if (!DB.topics || DB.topics.length === 0) {
-    DB.topics = DEFAULT_TOPICS.map(t => ({...t}));
-    saveDB();
-  }
-}
-
-function saveDB() { localStorage.setItem(KEY, JSON.stringify(DB)); }
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-
 // ── AUTH ──
-function doLogin() {
+async function doLogin() {
   const pwd = document.getElementById('login-pwd').value;
-  if (pwd === DB.settings.password) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    initApp();
-  } else {
-    const err = document.getElementById('login-err');
-    err.textContent = '❌ Contraseña incorrecta';
-    setTimeout(() => err.textContent = '', 2500);
-    document.getElementById('login-pwd').value = '';
+  const err = document.getElementById('login-err');
+  err.textContent = 'Verificando...';
+  try {
+    const doc = await db.collection('config').doc('main').get();
+    let storedPwd = '5616';
+    if (doc.exists && doc.data().settings?.password) storedPwd = doc.data().settings.password;
+    if (pwd === storedPwd) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initApp(doc.exists ? doc.data() : null);
+    } else {
+      err.textContent = '❌ Contraseña incorrecta';
+      setTimeout(() => err.textContent = '', 2500);
+      document.getElementById('login-pwd').value = '';
+    }
+  } catch(e) {
+    // Fallback to local check if offline
+    if (pwd === DB.settings.password) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initApp(null);
+    } else {
+      err.textContent = '❌ Error de conexión o contraseña incorrecta';
+    }
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-pwd').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  const ki = document.getElementById('kw-input');
+  if (ki) ki.addEventListener('keydown', e => {
+    if (e.key==='Enter'||e.key===',') { e.preventDefault(); addKwTag(ki.value.trim().replace(/,/g,'').toLowerCase()); }
+    if (e.key==='Backspace'&&!ki.value&&kwTags.length) { kwTags.pop(); renderKwTags(); }
+  });
+});
 
 function logout() {
+  if (configUnsubscribe) configUnsubscribe();
+  if (leadsUnsubscribe) leadsUnsubscribe();
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-pwd').value = '';
 }
 
 // ── INIT ──
-function initApp() {
-  const photo = DB.settings.profilePhoto || '';
-  document.getElementById('sb-avatar').src = photo;
-  document.getElementById('profile-preview-img').src = photo;
-  document.getElementById('s-photo').value = photo;
-  document.getElementById('s-community').value = DB.settings.communityLink || '';
-  document.getElementById('s-ad-text').value = DB.settings.adText || '';
-  document.getElementById('s-ad-price').value = DB.settings.adPrice || '$17/mes';
-  document.getElementById('s-ad-url').value = DB.settings.adUrl || 'https://expercenter.com/';
-  document.getElementById('s-ad-btn').value = DB.settings.adBtn || '¡Únete ahora!';
-  document.getElementById('s-nomatch').value = DB.settings.noMatchMsg || '';
+function initApp(initialData) {
+  if (initialData) applyConfig(initialData);
+  else seedConfigIfNeeded();
+  setupListeners();
   renderDashboard();
   updateBadges();
 }
 
-function updateBadges() {
-  document.getElementById('nb-topics').textContent = DB.topics.length;
-  document.getElementById('nb-leads').textContent = DB.leads.length;
+async function seedConfigIfNeeded() {
+  const doc = await db.collection('config').doc('main').get();
+  if (!doc.exists) {
+    DB.topics = DEFAULT_TOPICS.map(t => ({...t}));
+    await db.collection('config').doc('main').set({
+      settings: DB.settings, topics: DB.topics, labels: DB.labels, flows: DB.flows, flowPositions: DB.flowPositions
+    });
+  }
+}
+
+function applyConfig(data) {
+  if (data.settings) DB.settings = { ...DB.settings, ...data.settings };
+  if (data.topics) DB.topics = data.topics;
+  if (data.labels) DB.labels = data.labels;
+  if (data.flows) DB.flows = data.flows;
+  if (data.flowPositions) DB.flowPositions = data.flowPositions;
+  if (!DB.topics.length) { DB.topics = DEFAULT_TOPICS.map(t=>({...t})); saveConfig(); }
+  refreshSettingsUI();
+}
+
+function refreshSettingsUI() {
+  const s = DB.settings;
+  const setVal = (id, v) => { const el = document.getElementById(id); if(el) el.value = v||''; };
+  setVal('s-photo', s.profilePhoto);
+  setVal('s-community', s.communityLink);
+  setVal('s-ad-text', s.adText);
+  setVal('s-ad-price', s.adPrice);
+  setVal('s-ad-url', s.adUrl);
+  setVal('s-ad-btn', s.adBtn);
+  setVal('s-nomatch', s.noMatchMsg);
+  const photo = s.profilePhoto || '';
+  const av = document.getElementById('sb-avatar');
+  const pr = document.getElementById('profile-preview-img');
+  if(av) av.src = photo;
+  if(pr) pr.src = photo;
+}
+
+function setupListeners() {
+  // Config listener
+  configUnsubscribe = db.collection('config').doc('main').onSnapshot(doc => {
+    if (doc.exists) applyConfig(doc.data());
+    setSyncStatus(true);
+  }, () => setSyncStatus(false));
+
+  // Leads listener
+  leadsUnsubscribe = db.collection('leads').orderBy('ts','desc').onSnapshot(snap => {
+    leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateBadges();
+    buildLeadsFilters();
+    if (document.getElementById('sec-leads').style.display !== 'none') renderLeads();
+    if (document.getElementById('sec-dashboard').style.display !== 'none') renderDashboard();
+  }, () => {});
+}
+
+function setSyncStatus(ok) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if (dot) { dot.className = 'sync-dot' + (ok ? '' : ' off'); }
+  if (lbl) lbl.textContent = ok ? 'Sincronizado' : 'Sin conexión';
+}
+
+async function saveConfig() {
+  try {
+    await db.collection('config').doc('main').set({
+      settings: DB.settings, topics: DB.topics, labels: DB.labels, flows: DB.flows, flowPositions: DB.flowPositions
+    });
+  } catch(e) { showToast('Error al guardar en Firebase', 'err'); }
 }
 
 // ── NAV ──
 const SECTION_LABELS = {
-  dashboard: ['Dashboard','Resumen general del sistema'],
-  topics: ['Disparadores','Configura los temas y palabras clave'],
-  flowmap: ['Mapa de Flujos','Conecta visualmente los flujos de conversación'],
-  leads: ['Contactos','Personas que iniciaron el chat'],
-  labels: ['Etiquetas','Flujos por tipo de interés'],
-  settings: ['Configuración','Ajustes generales del sistema'],
-  guide: ['Guía de uso','Instrucciones paso a paso del sistema']
+  dashboard:['Dashboard','Resumen general'],
+  topics:['Disparadores','Keywords que activan respuestas'],
+  flowmap:['Mapa de Flujos','Conecta flujos de conversación'],
+  leads:['Contactos','Leads sincronizados en tiempo real'],
+  labels:['Etiquetas','Flujos por tipo de interés'],
+  settings:['Configuración','Cambios en tiempo real en el chat'],
+  guide:['Guía de uso','Instrucciones paso a paso']
 };
 
 function showSection(id, el) {
-  document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display = 'none');
-  document.getElementById('sec-' + id).style.display = 'block';
+  document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display='none');
+  document.getElementById('sec-'+id).style.display='block';
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  const [t, s] = SECTION_LABELS[id];
-  document.getElementById('topbar-title').textContent = t;
-  document.getElementById('topbar-sub').textContent = s;
-  if (id === 'topics') renderTopics();
-  if (id === 'flowmap') initFlowMap();
-  if (id === 'leads') renderLeads();
-  if (id === 'labels') renderLabels();
-  if (id === 'guide') renderGuide();
+  const [t,s] = SECTION_LABELS[id];
+  document.getElementById('topbar-title').textContent=t;
+  document.getElementById('topbar-sub').textContent=s;
+  if(id==='topics') renderTopics();
+  if(id==='flowmap') initFlowMap();
+  if(id==='leads') renderLeads();
+  if(id==='labels') renderLabels();
+  if(id==='guide') renderGuide();
 }
 
 // ── DASHBOARD ──
 function renderDashboard() {
-  const free = DB.topics.filter(t => t.type === 'free').length;
-  const sales = DB.topics.filter(t => t.type === 'sales').length;
-  const repair = DB.topics.filter(t => t.type === 'repair').length;
-  document.getElementById('stats-grid').innerHTML = `
+  const free=DB.topics.filter(t=>t.type==='free').length, sales=DB.topics.filter(t=>t.type==='sales').length;
+  document.getElementById('stats-grid').innerHTML=`
     <div class="stat-card purple"><div class="stat-num purple">${DB.topics.length}</div><div class="stat-label">Total Disparadores</div></div>
     <div class="stat-card green"><div class="stat-num green">${free}</div><div class="stat-label">Flujo Gratuito</div></div>
     <div class="stat-card cyan"><div class="stat-num cyan">${sales}</div><div class="stat-label">Flujo Expercenter</div></div>
-    <div class="stat-card blue"><div class="stat-num blue">${DB.leads.length}</div><div class="stat-label">Contactos captados</div></div>
-  `;
-  const dl = document.getElementById('dash-leads');
-  const recentLeads = [...DB.leads].reverse().slice(0, 6);
-  dl.innerHTML = recentLeads.length ? recentLeads.map(l => `
-    <tr><td>${esc(l.name)}</td><td style="color:var(--muted);font-size:.8rem">${esc(l.countryCode)} ${esc(l.phone)}</td><td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label)}</span></td><td style="color:var(--muted);font-size:.78rem">${formatDate(l.ts)}</td></tr>
-  `).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Sin contactos aún</td></tr>';
-
-  const dt = document.getElementById('dash-topics');
-  dt.innerHTML = DB.topics.slice(0, 6).map(t => `
-    <tr><td><strong>${esc(t.title)}</strong></td><td><div class="kw-wrap">${t.keywords.slice(0,3).map(k=>`<span class="kw">${esc(k)}</span>`).join('')}${t.keywords.length>3?`<span class="kw">+${t.keywords.length-3}</span>`:''}</div></td><td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td></tr>
-  `).join('');
+    <div class="stat-card blue"><div class="stat-num blue">${leads.length}</div><div class="stat-label">Contactos captados</div></div>`;
+  const dl=document.getElementById('dash-leads');
+  dl.innerHTML=leads.slice(0,6).map(l=>{
+    const cp=(l.countryCode||'').replace(/\D/g,'')+(l.phone||'').replace(/\D/g,'');
+    return`<tr><td>${esc(l.name)}</td><td><a class="wa-link" href="https://wa.me/${cp}" target="_blank">📱 ${esc(l.countryCode)} ${esc(l.phone)}</a></td><td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label)}</span></td><td style="color:var(--muted);font-size:.75rem">${formatDate(l.ts)}</td></tr>`;
+  }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Sin contactos aún</td></tr>';
+  const dt=document.getElementById('dash-topics');
+  dt.innerHTML=DB.topics.slice(0,6).map(t=>`<tr><td><strong>${esc(t.title)}</strong></td><td><div class="kw-wrap">${t.keywords.slice(0,3).map(k=>`<span class="kw">${esc(k)}</span>`).join('')}${t.keywords.length>3?`<span class="kw">+${t.keywords.length-3}</span>`:''}</div></td><td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td></tr>`).join('');
 }
 
 // ── TOPICS ──
-let editTopicId = null;
-let kwTags = [];
-
 function renderTopics() {
-  const q = (document.getElementById('topics-search')?.value || '').toLowerCase();
-  const flt = document.getElementById('topics-filter')?.value || 'all';
-  let list = DB.topics.filter(t => {
-    const match = flt === 'all' || t.type === flt;
-    const search = !q || t.title.toLowerCase().includes(q) || t.keywords.some(k => k.includes(q));
-    return match && search;
-  });
-  const tbody = document.getElementById('topics-body');
-  const empty = document.getElementById('topics-empty');
-  if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = list.map((t, i) => `
-    <tr>
-      <td style="color:var(--muted);font-size:.8rem">${i+1}</td>
-      <td><strong>${esc(t.title)}</strong></td>
-      <td><div class="kw-wrap">${t.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div></td>
-      <td style="max-width:260px;color:var(--muted);font-size:.82rem">${esc(t.response.substring(0,70))}…</td>
-      <td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td>
-      <td><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openTopicModal('${t.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="deleteTopic('${t.id}')">🗑</button></div></td>
-    </tr>
-  `).join('');
+  const q=(document.getElementById('topics-search')?.value||'').toLowerCase();
+  const flt=document.getElementById('topics-filter')?.value||'all';
+  const list=DB.topics.filter(t=>(flt==='all'||t.type===flt)&&(!q||t.title.toLowerCase().includes(q)||t.keywords.some(k=>k.includes(q))));
+  const empty=document.getElementById('topics-empty');
+  if(!list.length){document.getElementById('topics-body').innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  document.getElementById('topics-body').innerHTML=list.map((t,i)=>`
+    <tr><td style="color:var(--muted);font-size:.78rem">${i+1}</td><td><strong>${esc(t.title)}</strong></td>
+    <td><div class="kw-wrap">${t.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div></td>
+    <td style="max-width:220px;color:var(--muted);font-size:.8rem">${esc((t.response||'').substring(0,60))}…</td>
+    <td>${t.videoUrl?'<span style="color:var(--cyan);font-size:.75rem">▶ Sí</span>':'<span style="color:var(--muted);font-size:.75rem">—</span>'}</td>
+    <td><span class="badge badge-${t.type}">${typeLabel(t.type)}</span></td>
+    <td><div style="display:flex;gap:5px"><button class="btn btn-secondary btn-sm" onclick="openTopicModal('${t.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteTopic('${t.id}')">🗑</button></div></td></tr>`).join('');
   updateBadges();
 }
 
-function openTopicModal(id = null) {
-  editTopicId = id;
-  kwTags = [];
-  document.getElementById('mt-title').textContent = id ? 'Editar Disparador' : 'Nuevo Disparador';
-  const kbb = document.getElementById('kw-builder');
-  document.getElementById('kw-input').value = '';
-  if (id) {
-    const t = DB.topics.find(x => x.id === id);
-    document.getElementById('mt-name').value = t.title;
-    document.getElementById('mt-response').value = t.response;
-    document.getElementById('mt-cta-text').value = t.ctaText || '';
-    document.getElementById('mt-cta-url').value = t.ctaUrl || '';
-    document.getElementById('mt-video-url').value = t.videoUrl || '';
-    document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked = true;
-    kwTags = [...t.keywords];
+function openTopicModal(id=null) {
+  editTopicId=id; kwTags=[];
+  document.getElementById('mt-title').textContent=id?'Editar Disparador':'Nuevo Disparador';
+  if(id) {
+    const t=DB.topics.find(x=>x.id===id);
+    document.getElementById('mt-name').value=t.title;
+    document.getElementById('mt-response').value=t.response;
+    document.getElementById('mt-cta-text').value=t.ctaText||'';
+    document.getElementById('mt-cta-url').value=t.ctaUrl||'';
+    document.getElementById('mt-video-url').value=t.videoUrl||'';
+    document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked=true;
+    kwTags=[...t.keywords];
   } else {
-    document.getElementById('mt-name').value = '';
-    document.getElementById('mt-response').value = '';
-    document.getElementById('mt-cta-text').value = '';
-    document.getElementById('mt-cta-url').value = '';
-    document.getElementById('mt-video-url').value = '';
-    document.querySelector('input[name="mt-type"][value="free"]').checked = true;
+    ['mt-name','mt-response','mt-cta-text','mt-cta-url','mt-video-url'].forEach(id=>document.getElementById(id).value='');
+    document.querySelector('input[name="mt-type"][value="free"]').checked=true;
   }
-  renderKwTags();
-  openModal('modal-topic');
+  renderKwTags(); openModal('modal-topic');
 }
 
-function renderKwTags() {
-  const kbb = document.getElementById('kw-builder');
-  const input = document.getElementById('kw-input');
-  kbb.innerHTML = '';
-  kwTags.forEach((k, i) => {
-    const tag = document.createElement('div');
-    tag.className = 'kw-tag';
-    tag.innerHTML = `${esc(k)}<button onclick="removeKw(${i})">×</button>`;
-    kbb.appendChild(tag);
-  });
-  kbb.appendChild(input);
-  input.focus();
+function addKwTag(val) {
+  if(val&&!kwTags.includes(val)){kwTags.push(val);renderKwTags();}
+  else document.getElementById('kw-input').value='';
+}
+function removeKw(i){kwTags.splice(i,1);renderKwTags();}
+function renderKwTags(){
+  const b=document.getElementById('kw-builder'),inp=document.getElementById('kw-input');
+  b.innerHTML='';
+  kwTags.forEach((k,i)=>{const t=document.createElement('div');t.className='kw-tag';t.innerHTML=`${esc(k)}<button onclick="removeKw(${i})">×</button>`;b.appendChild(t);});
+  b.appendChild(inp); inp.value=''; inp.focus();
 }
 
-function removeKw(i) { kwTags.splice(i, 1); renderKwTags(); }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const kwInput = document.getElementById('kw-input');
-  if (kwInput) {
-    kwInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault();
-        const val = kwInput.value.trim().replace(/,/g, '').toLowerCase();
-        if (val && !kwTags.includes(val)) { kwTags.push(val); renderKwTags(); }
-        else kwInput.value = '';
-      }
-      if (e.key === 'Backspace' && !kwInput.value && kwTags.length) {
-        kwTags.pop(); renderKwTags();
-      }
-    });
-  }
-  document.getElementById('login-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-});
-
-function saveTopic() {
-  const title = document.getElementById('mt-name').value.trim();
-  const response = document.getElementById('mt-response').value.trim();
-  const ctaText = document.getElementById('mt-cta-text').value.trim();
-  const ctaUrl = document.getElementById('mt-cta-url').value.trim();
-  const videoUrl = document.getElementById('mt-video-url').value.trim();
-  const type = document.querySelector('input[name="mt-type"]:checked').value;
-  const val = document.getElementById('kw-input').value.trim().replace(/,/g,'').toLowerCase();
-  if (val) kwTags.push(val);
-
-  if (!title || !response || kwTags.length === 0) {
-    showToast('Completa título, keywords y respuesta.', 'err'); return;
-  }
-  if (editTopicId) {
-    const idx = DB.topics.findIndex(t => t.id === editTopicId);
-    DB.topics[idx] = { ...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type };
+async function saveTopic() {
+  const title=document.getElementById('mt-name').value.trim();
+  const response=document.getElementById('mt-response').value.trim();
+  const ctaText=document.getElementById('mt-cta-text').value.trim();
+  const ctaUrl=document.getElementById('mt-cta-url').value.trim();
+  const videoUrl=document.getElementById('mt-video-url').value.trim();
+  const type=document.querySelector('input[name="mt-type"]:checked').value;
+  const v=document.getElementById('kw-input').value.trim().replace(/,/g,'').toLowerCase();
+  if(v) kwTags.push(v);
+  if(!title||!response||kwTags.length===0){showToast('Completa título, keywords y respuesta.','err');return;}
+  if(editTopicId){
+    const idx=DB.topics.findIndex(t=>t.id===editTopicId);
+    DB.topics[idx]={...DB.topics[idx],title,keywords:kwTags,response,ctaText,ctaUrl,videoUrl,type};
     showToast('Disparador actualizado.');
   } else {
-    DB.topics.push({ id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type });
+    DB.topics.push({id:uid(),title,keywords:kwTags,response,ctaText,ctaUrl,videoUrl,type});
     showToast('Disparador creado.');
   }
-  saveDB(); renderTopics(); renderDashboard(); closeModal('modal-topic');
+  await saveConfig(); renderTopics(); renderDashboard(); closeModal('modal-topic');
 }
 
-function deleteTopic(id) {
-  if (!confirm('¿Eliminar este disparador?')) return;
-  DB.topics = DB.topics.filter(t => t.id !== id);
-  DB.flows = DB.flows.filter(f => f.from !== id && f.to !== id);
-  saveDB(); renderTopics(); renderDashboard();
-  showToast('Disparador eliminado.');
+async function deleteTopic(id) {
+  if(!confirm('¿Eliminar este disparador?'))return;
+  DB.topics=DB.topics.filter(t=>t.id!==id);
+  DB.flows=DB.flows.filter(f=>f.from!==id&&f.to!==id);
+  await saveConfig(); renderTopics(); renderDashboard(); showToast('Disparador eliminado.');
 }
 
 // ── FLOW MAP ──
-let flowDragging = null;
-let connectingFrom = null;
-
 function initFlowMap() {
-  const ws = document.getElementById('flow-workspace');
-  const layer = document.getElementById('flow-nodes-layer');
-  const svg = document.getElementById('flow-svg');
-  svg.setAttribute('width', ws.offsetWidth);
-  svg.setAttribute('height', ws.offsetHeight);
-
-  drawFlowBg();
-  layer.innerHTML = '';
-  svg.innerHTML = '';
-
-  DB.topics.forEach((t, i) => {
-    const pos = DB.flowPositions[t.id] || { x: 40 + (i % 4) * 230, y: 40 + Math.floor(i / 4) * 160 };
-    DB.flowPositions[t.id] = pos;
-    createFlowNode(t, pos);
+  const ws=document.getElementById('flow-workspace'),layer=document.getElementById('flow-nodes-layer'),svg=document.getElementById('flow-svg');
+  svg.setAttribute('width',ws.offsetWidth); svg.setAttribute('height',ws.offsetHeight);
+  drawFlowBg(); layer.innerHTML=''; svg.innerHTML='';
+  DB.topics.forEach((t,i)=>{
+    const pos=DB.flowPositions[t.id]||{x:40+(i%4)*230,y:40+Math.floor(i/4)*160};
+    DB.flowPositions[t.id]=pos; createFlowNode(t,pos);
   });
   drawConnections();
 }
-
 function drawFlowBg() {
-  const canvas = document.getElementById('flow-bg');
-  const ws = document.getElementById('flow-workspace');
-  canvas.width = ws.offsetWidth;
-  canvas.height = ws.offsetHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.strokeStyle = 'rgba(124,58,237,.08)';
-  ctx.lineWidth = 1;
-  const step = 30;
-  for (let x = 0; x < canvas.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-  for (let y = 0; y < canvas.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
-  ctx.fillStyle = 'rgba(124,58,237,.12)';
-  for (let x = 0; x < canvas.width; x += step) {
-    for (let y = 0; y < canvas.height; y += step) {
-      if (Math.random() > 0.85) { ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill(); }
-    }
-  }
+  const c=document.getElementById('flow-bg'),ws=document.getElementById('flow-workspace');
+  c.width=ws.offsetWidth; c.height=ws.offsetHeight;
+  const ctx=c.getContext('2d'); ctx.strokeStyle='rgba(124,58,237,.08)'; ctx.lineWidth=1;
+  for(let x=0;x<c.width;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+  for(let y=0;y<c.height;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
 }
-
-function createFlowNode(t, pos) {
-  const layer = document.getElementById('flow-nodes-layer');
-  const colorMap = { free: '#10b981', sales: '#a78bfa', repair: '#3b82f6' };
-  const node = document.createElement('div');
-  node.className = 'flow-node';
-  node.dataset.id = t.id;
-  node.style.left = pos.x + 'px';
-  node.style.top = pos.y + 'px';
-  node.innerHTML = `
-    <div class="fn-header">
-      <div class="fn-title" title="${esc(t.title)}">${esc(t.title)}</div>
-      <div class="fn-badge" style="background:${colorMap[t.type]}22;color:${colorMap[t.type]}">${typeLabel(t.type)}</div>
-    </div>
-    <div class="fn-body">${esc(t.keywords.slice(0,3).join(', '))}${t.keywords.length>3?'…':''}</div>
-    <div class="fn-ports">
-      <div class="fn-port fn-port-in" title="Puerto entrada" onclick="connectTo('${t.id}')">◀</div>
-      <div class="fn-port fn-port-out" title="Conectar a otro nodo" onclick="startConnect('${t.id}')">▶</div>
-    </div>
-  `;
-  layer.appendChild(node);
-  makeDraggable(node, t.id);
+function createFlowNode(t,pos) {
+  const layer=document.getElementById('flow-nodes-layer'),cm={free:'#10b981',sales:'#a78bfa',repair:'#3b82f6'};
+  const node=document.createElement('div'); node.className='flow-node'; node.dataset.id=t.id;
+  node.style.left=pos.x+'px'; node.style.top=pos.y+'px';
+  node.innerHTML=`<div class="fn-header"><div class="fn-title" title="${esc(t.title)}">${esc(t.title)}</div><div class="fn-badge" style="background:${cm[t.type]}22;color:${cm[t.type]}">${typeLabel(t.type)}</div></div><div class="fn-body">${esc(t.keywords.slice(0,3).join(', '))}${t.keywords.length>3?'…':''}</div><div class="fn-ports"><div class="fn-port" onclick="connectTo('${t.id}')">◀</div><div class="fn-port" onclick="startConnect('${t.id}')">▶</div></div>`;
+  layer.appendChild(node); makeDraggable(node,t.id);
 }
-
-function makeDraggable(node, id) {
-  let startX, startY, origX, origY;
-  node.addEventListener('mousedown', e => {
-    if (e.target.classList.contains('fn-port')) return;
-    if (connectingFrom) return;
-    flowDragging = id;
-    startX = e.clientX; startY = e.clientY;
-    origX = parseInt(node.style.left); origY = parseInt(node.style.top);
-    e.preventDefault();
-  });
-  document.addEventListener('mousemove', e => {
-    if (flowDragging !== id) return;
-    node.style.left = (origX + e.clientX - startX) + 'px';
-    node.style.top = (origY + e.clientY - startY) + 'px';
-    drawConnections();
-  });
-  document.addEventListener('mouseup', () => {
-    if (flowDragging === id) {
-      DB.flowPositions[id] = { x: parseInt(node.style.left), y: parseInt(node.style.top) };
-      flowDragging = null;
-    }
-  });
+function makeDraggable(node,id) {
+  let sx,sy,ox,oy;
+  node.addEventListener('mousedown',e=>{if(e.target.classList.contains('fn-port')||connectingFrom)return;flowDragging=id;sx=e.clientX;sy=e.clientY;ox=parseInt(node.style.left);oy=parseInt(node.style.top);e.preventDefault();});
+  document.addEventListener('mousemove',e=>{if(flowDragging!==id)return;node.style.left=(ox+e.clientX-sx)+'px';node.style.top=(oy+e.clientY-sy)+'px';drawConnections();});
+  document.addEventListener('mouseup',()=>{if(flowDragging===id){DB.flowPositions[id]={x:parseInt(node.style.left),y:parseInt(node.style.top)};flowDragging=null;}});
 }
-
-function startConnect(fromId) {
-  connectingFrom = fromId;
-  document.getElementById('connecting-hint').style.display = 'block';
-  document.querySelectorAll('.flow-node').forEach(n => {
-    if (n.dataset.id === fromId) n.classList.add('connect-source');
-  });
-}
-
-function connectTo(toId) {
-  if (!connectingFrom) return;
-  if (connectingFrom === toId) { cancelConnect(); return; }
-  const exists = DB.flows.some(f => f.from === connectingFrom && f.to === toId);
-  if (!exists) {
-    DB.flows.push({ id: uid(), from: connectingFrom, to: toId });
-    saveDB(); drawConnections(); showToast('Conexión creada.');
-  }
-  cancelConnect();
-}
-
-function cancelConnect() {
-  connectingFrom = null;
-  document.getElementById('connecting-hint').style.display = 'none';
-  document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('connect-source'));
-}
-
-function drawConnections() {
-  const svg = document.getElementById('flow-svg');
-  const ws = document.getElementById('flow-workspace');
-  svg.setAttribute('width', ws.offsetWidth);
-  svg.setAttribute('height', ws.offsetHeight);
-  svg.innerHTML = '';
-
-  DB.flows.forEach(f => {
-    const fromNode = document.querySelector(`.flow-node[data-id="${f.from}"]`);
-    const toNode = document.querySelector(`.flow-node[data-id="${f.to}"]`);
-    if (!fromNode || !toNode) return;
-    const fR = fromNode.getBoundingClientRect();
-    const tR = toNode.getBoundingClientRect();
-    const wsR = ws.getBoundingClientRect();
-    const x1 = fR.right - wsR.left;
-    const y1 = fR.top + fR.height / 2 - wsR.top;
-    const x2 = tR.left - wsR.left;
-    const y2 = tR.top + tR.height / 2 - wsR.top;
-    const cp = Math.abs(x2 - x1) / 2;
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', `M${x1},${y1} C${x1+cp},${y1} ${x2-cp},${y2} ${x2},${y2}`);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', '#7c3aed');
-    path.setAttribute('stroke-width', '2');
-    path.setAttribute('stroke-dasharray', '5,3');
-    path.setAttribute('marker-end', 'url(#arrow)');
-    path.style.cursor = 'pointer';
-    path.onclick = () => { if (confirm('¿Eliminar esta conexión?')) { DB.flows = DB.flows.filter(x => x.id !== f.id); saveDB(); drawConnections(); } };
-    path.title = 'Clic para eliminar';
+function startConnect(fromId){connectingFrom=fromId;document.getElementById('connecting-hint').style.display='block';document.querySelectorAll('.flow-node').forEach(n=>{if(n.dataset.id===fromId)n.classList.add('connect-source');});}
+function connectTo(toId){if(!connectingFrom)return;if(connectingFrom===toId){cancelConnect();return;}if(!DB.flows.some(f=>f.from===connectingFrom&&f.to===toId)){DB.flows.push({id:uid(),from:connectingFrom,to:toId});drawConnections();showToast('Conexión creada.');}cancelConnect();}
+function cancelConnect(){connectingFrom=null;document.getElementById('connecting-hint').style.display='none';document.querySelectorAll('.flow-node').forEach(n=>n.classList.remove('connect-source'));}
+function drawConnections(){
+  const svg=document.getElementById('flow-svg'),ws=document.getElementById('flow-workspace');
+  svg.setAttribute('width',ws.offsetWidth);svg.setAttribute('height',ws.offsetHeight);svg.innerHTML='';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML='<marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7c3aed"/></marker>';
+  svg.appendChild(defs);
+  DB.flows.forEach(f=>{
+    const fn=document.querySelector(`.flow-node[data-id="${f.from}"]`),tn=document.querySelector(`.flow-node[data-id="${f.to}"]`);
+    if(!fn||!tn)return;
+    const fr=fn.getBoundingClientRect(),tr=tn.getBoundingClientRect(),wr=ws.getBoundingClientRect();
+    const x1=fr.right-wr.left,y1=fr.top+fr.height/2-wr.top,x2=tr.left-wr.left,y2=tr.top+tr.height/2-wr.top,cp=Math.abs(x2-x1)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${x1},${y1} C${x1+cp},${y1} ${x2-cp},${y2} ${x2},${y2}`);
+    path.setAttribute('fill','none');path.setAttribute('stroke','#7c3aed');path.setAttribute('stroke-width','2');path.setAttribute('stroke-dasharray','5,3');path.setAttribute('marker-end','url(#arrow)');
+    path.style.cursor='pointer';path.onclick=()=>{if(confirm('¿Eliminar conexión?')){DB.flows=DB.flows.filter(x=>x.id!==f.id);drawConnections();}};
     svg.appendChild(path);
   });
-
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  defs.innerHTML = `<marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7c3aed"/></marker>`;
-  svg.appendChild(defs);
 }
-
-function clearConnections() {
-  if (!confirm('¿Eliminar todas las conexiones del mapa?')) return;
-  DB.flows = []; saveDB(); drawConnections(); showToast('Conexiones eliminadas.');
-}
-
-function saveFlowLayout() { saveDB(); showToast('Mapa guardado.'); }
-
-function flowAutoLayout() {
-  DB.topics.forEach((t, i) => {
-    DB.flowPositions[t.id] = { x: 40 + (i % 4) * 230, y: 40 + Math.floor(i / 4) * 160 };
-  });
-  initFlowMap(); showToast('Mapa reorganizado.');
-}
-
-document.addEventListener('click', e => {
-  if (connectingFrom && !e.target.classList.contains('fn-port')) cancelConnect();
-});
+async function saveFlowLayout(){await saveConfig();showToast('Mapa guardado.');}
+async function clearConnections(){if(!confirm('¿Eliminar todas las conexiones?'))return;DB.flows=[];await saveConfig();drawConnections();showToast('Conexiones eliminadas.');}
+function flowAutoLayout(){DB.topics.forEach((t,i)=>{DB.flowPositions[t.id]={x:40+(i%4)*230,y:40+Math.floor(i/4)*160};});initFlowMap();showToast('Mapa reorganizado.');}
+document.addEventListener('click',e=>{if(connectingFrom&&!e.target.classList.contains('fn-port'))cancelConnect();});
 
 // ── LEADS ──
-let leadsFilterLabel = 'all';
-let editNoteId = null;
-
-function buildCountryFilter() {
-  const sel = document.getElementById('leads-country-filter');
-  if (!sel) return;
-  const countries = [...new Set(DB.leads.map(l => l.countryCode).filter(Boolean))].sort();
-  const current = sel.value;
-  sel.innerHTML = '<option value="">Todos los países</option>';
-  countries.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    if (c === current) opt.selected = true;
-    sel.appendChild(opt);
-  });
+function buildLeadsFilters() {
+  // Country filter (by name)
+  const cSel=document.getElementById('leads-country-filter'); if(!cSel)return;
+  const currentC=cSel.value;
+  const countries=[...new Set(leads.map(l=>l.countryName||l.countryCode||'').filter(Boolean))].sort();
+  cSel.innerHTML='<option value="">Todos los países</option>';
+  countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===currentC)o.selected=true;cSel.appendChild(o);});
+  // Label filter
+  const lSel=document.getElementById('leads-label-filter'); if(!lSel)return;
+  const currentL=lSel.value;
+  const lbls=[...new Set(leads.map(l=>l.label||'').filter(Boolean))].sort();
+  lSel.innerHTML='<option value="">Todas las etiquetas</option>';
+  lbls.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;if(l===currentL)o.selected=true;lSel.appendChild(o);});
 }
 
 function renderLeads() {
-  buildCountryFilter();
-  const q = (document.getElementById('leads-search')?.value || '').toLowerCase();
-  const countryF = document.getElementById('leads-country-filter')?.value || '';
-  let list = DB.leads.filter(l => {
-    const matchLabel = leadsFilterLabel === 'all' || l.label === leadsFilterLabel;
-    const matchCountry = !countryF || l.countryCode === countryF;
-    const matchSearch = !q || l.name.toLowerCase().includes(q) || l.phone.includes(q);
-    return matchLabel && matchCountry && matchSearch;
-  }).reverse();
-
-  const bar = document.getElementById('leads-filter-bar');
-  bar.innerHTML = `
-    <button class="filter-btn ${leadsFilterLabel==='all'?'active':''}" onclick="leadsFilter('all')">Todos (${DB.leads.length})</button>
-    ${DB.labels.map(lb => `<button class="filter-btn ${leadsFilterLabel===lb.name?'active':''}" onclick="leadsFilter('${lb.name}')" style="${leadsFilterLabel===lb.name?`border-color:${lb.color};color:${lb.color}`:`border-color:${lb.color}30`}">${lb.name} (${DB.leads.filter(l=>l.label===lb.name).length})</button>`).join('')}
-  `;
-
-  const tbody = document.getElementById('leads-body');
-  const empty = document.getElementById('leads-empty');
-  if (!list.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(l => {
-    const cleanPhone = (l.countryCode || '').replace(/\D/g,'') + (l.phone || '').replace(/\D/g,'');
-    const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hola ' + l.name + ', te contactamos desde GOKUCELL 👋')}`;
-    const noteHtml = l.note
-      ? `<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,30))}${l.note.length>30?'…':''}</span>`
-      : `<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.72rem;padding:3px 8px">+ Nota</button>`;
-    return `
-    <tr class="lead-row">
-      <td>${esc(l.name)}</td>
+  const q=(document.getElementById('leads-search')?.value||'').toLowerCase();
+  const countryF=document.getElementById('leads-country-filter')?.value||'';
+  const labelF=document.getElementById('leads-label-filter')?.value||'';
+  let list=leads.filter(l=>{
+    const ml=leadsFilterLabel==='all'||l.label===leadsFilterLabel;
+    const mc=!countryF||(l.countryName||l.countryCode||'')===countryF;
+    const mlf=!labelF||l.label===labelF;
+    const ms=!q||l.name.toLowerCase().includes(q)||(l.phone||'').includes(q);
+    return ml&&mc&&mlf&&ms;
+  });
+  // Filter buttons bar (label tabs)
+  const bar=document.getElementById('leads-filter-bar');
+  const allLabels=[...new Set(leads.map(l=>l.label).filter(Boolean))];
+  bar.innerHTML=`<button class="filter-btn ${leadsFilterLabel==='all'?'active':''}" onclick="leadsFilter('all')">Todos (${leads.length})</button>`+
+    allLabels.map(lb=>{const lbObj=DB.labels.find(x=>x.name===lb);const c=lbObj?.color||'#64748b';return`<button class="filter-btn ${leadsFilterLabel===lb?'active':''}" onclick="leadsFilter('${lb}')" style="${leadsFilterLabel===lb?`border-color:${c};color:${c}`:''}">${lb} (${leads.filter(l=>l.label===lb).length})</button>`;}).join('');
+  const tbody=document.getElementById('leads-body'),empty=document.getElementById('leads-empty');
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=list.map(l=>{
+    const cp=(l.countryCode||'').replace(/\D/g,'')+(l.phone||'').replace(/\D/g,'');
+    const waLink=`https://wa.me/${cp}?text=${encodeURIComponent('Hola '+l.name+', te contactamos desde GOKUCELL 👋')}`;
+    const noteHtml=l.note?`<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,25))}${l.note.length>25?'…':''}</span>`:`<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.7rem;padding:3px 8px">+ Nota</button>`;
+    return`<tr>
+      <td><strong>${esc(l.name)}</strong></td>
       <td><a class="wa-link" href="${waLink}" target="_blank">📱 ${esc(l.countryCode)} ${esc(l.phone)}</a></td>
-      <td style="color:var(--muted);font-size:.8rem">${esc(l.countryCode)}</td>
-      <td style="color:var(--muted);font-size:.82rem">${esc(l.intent)}</td>
+      <td style="color:var(--muted);font-size:.8rem">${esc(l.countryName||l.countryCode||'')}</td>
+      <td style="color:var(--muted);font-size:.8rem">${esc(l.intent||'')}</td>
       <td><span class="badge" style="background:${labelColor(l.label)}22;color:${labelColor(l.label)}">${esc(l.label)}</span></td>
       <td>${noteHtml}</td>
-      <td style="color:var(--muted);font-size:.78rem;white-space:nowrap">${formatDate(l.ts)}</td>
+      <td><button class="btn btn-hist btn-sm" onclick="viewHistory('${esc(l.phone)}','${esc(l.name)}','${esc(l.countryCode||'')}')">💬 Ver</button></td>
+      <td style="color:var(--muted);font-size:.75rem;white-space:nowrap">${formatDate(l.ts)}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteLead('${l.id}')">🗑</button></td>
     </tr>`;
   }).join('');
   updateBadges();
 }
 
-function leadsFilter(val) {
-  leadsFilterLabel = val;
-  renderLeads();
-}
+function leadsFilter(val){leadsFilterLabel=val;renderLeads();}
 
-function openNoteModal(id) {
-  editNoteId = id;
-  const l = DB.leads.find(x => x.id === id);
-  if (!l) return;
-  document.getElementById('mn-name').textContent = l.name;
-  document.getElementById('mn-text').value = l.note || '';
+function openNoteModal(id){
+  editNoteId=id;
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  document.getElementById('mn-name').textContent=l.name;
+  document.getElementById('mn-text').value=l.note||'';
   openModal('modal-note');
 }
 
-function saveNote() {
-  const idx = DB.leads.findIndex(x => x.id === editNoteId);
-  if (idx < 0) return;
-  DB.leads[idx].note = document.getElementById('mn-text').value.trim();
-  saveDB(); renderLeads(); closeModal('modal-note');
-  showToast('Nota guardada.');
+async function saveNote(){
+  const l=leads.find(x=>x.id===editNoteId);if(!l)return;
+  const note=document.getElementById('mn-text').value.trim();
+  try{
+    await db.collection('leads').doc(editNoteId).update({note});
+    closeModal('modal-note');showToast('Nota guardada.');
+  }catch(e){showToast('Error al guardar','err');}
 }
 
-function deleteLead(id) {
-  DB.leads = DB.leads.filter(l => l.id !== id);
-  saveDB(); renderLeads(); renderDashboard();
+async function deleteLead(id){
+  if(!confirm('¿Eliminar este contacto?'))return;
+  await db.collection('leads').doc(id).delete();
+  showToast('Contacto eliminado.');
 }
 
-function clearLeads() {
-  if (!confirm('¿Eliminar TODOS los contactos?')) return;
-  DB.leads = []; saveDB(); renderLeads(); renderDashboard(); showToast('Contactos eliminados.');
+async function clearLeads(){
+  if(!confirm('¿Eliminar TODOS los contactos?'))return;
+  const batch=db.batch();
+  leads.forEach(l=>batch.delete(db.collection('leads').doc(l.id)));
+  await batch.commit();showToast('Contactos eliminados.');
+}
+
+// ── HISTORY VIEW ──
+async function viewHistory(phone, name, countryCode) {
+  const cleanPh=(countryCode||'').replace(/\D/g,'')+(phone||'').replace(/\D/g,'');
+  document.getElementById('mh-info').textContent=name+' · '+countryCode+' '+phone;
+  const waUrl=`https://wa.me/${cleanPh}?text=${encodeURIComponent('Hola '+name+', te contactamos desde GOKUCELL 👋')}`;
+  document.getElementById('mh-wa-btn').href=waUrl;
+  document.getElementById('mh-body').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">Cargando historial...</div>';
+  openModal('modal-history');
+  try{
+    const doc=await db.collection('histories').doc(cleanPh.replace(/\D/g,'')).get();
+    const msgs=doc.exists?(doc.data().messages||[]):[];
+    if(!msgs.length){document.getElementById('mh-body').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">Sin historial de conversación aún.</div>';return;}
+    const avatar=DB.settings.profilePhoto||'';
+    document.getElementById('mh-body').innerHTML=msgs.map(m=>{
+      const isBot=m.role==='bot';
+      const av=isBot?`<div class="hm-av">🔧</div>`:`<div class="hm-av-u">${(name||'U')[0].toUpperCase()}</div>`;
+      const time=m.ts?new Date(m.ts).toLocaleString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      const videoHtml=m.videoUrl?`<a class="hm-video-link" href="${esc(m.videoUrl)}" target="_blank">▶ Video adjunto</a>`:'';
+      return`<div class="hm-row ${m.role}">${av}<div class="hm-content"><div class="hm-bubble">${formatHist(m.text||'')}${videoHtml}</div><div class="hm-time">${time}</div></div></div>`;
+    }).join('');
+    // Scroll to bottom of history
+    const mb=document.getElementById('mh-body');mb.scrollTop=mb.scrollHeight;
+  }catch(e){document.getElementById('mh-body').innerHTML='<div style="text-align:center;color:var(--danger);padding:30px">Error al cargar el historial.</div>';}
+}
+
+function formatHist(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
 }
 
 // ── LABELS ──
-let editLabelId = null;
-
-function renderLabels() {
-  const grid = document.getElementById('labels-grid');
-  if (!DB.labels.length) { grid.innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><p>Sin etiquetas. Crea la primera.</p></div>'; return; }
-  grid.innerHTML = DB.labels.map(lb => `
+function renderLabels(){
+  const grid=document.getElementById('labels-grid');
+  if(!DB.labels.length){grid.innerHTML='<div class="empty"><div class="empty-icon">🏷️</div><p>Sin etiquetas.</p></div>';return;}
+  grid.innerHTML=DB.labels.map(lb=>`
     <div class="label-card" style="border-color:${lb.color}40">
-      <div class="label-card-top">
-        <div>
-          <div class="label-name-large" style="color:${lb.color}">${esc(lb.name)}</div>
-          <div class="label-info" style="margin-top:6px">
-            Flujo: <strong>${typeLabel(lb.flow)}</strong><br>
-            ${lb.ctaUrl ? `<a href="${esc(lb.ctaUrl)}" target="_blank" style="color:var(--p);font-size:.75rem">🔗 Ver enlace</a>` : '<span style="font-size:.75rem">Sin enlace</span>'}
-          </div>
-        </div>
-        <div class="label-color-dot" style="background:${lb.color}"></div>
-      </div>
-      ${lb.welcome ? `<div style="background:var(--s2);border-radius:8px;padding:8px 10px;font-size:.78rem;color:var(--muted);margin-bottom:8px;line-height:1.4">"${esc(lb.welcome.substring(0,80))}…"</div>` : ''}
-      <div class="label-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openLabelModal('${lb.id}')">✏️ Editar</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteLabel('${lb.id}')">🗑</button>
-      </div>
-    </div>
-  `).join('');
+      <div class="label-card-top"><div><div class="label-name-large" style="color:${lb.color}">${esc(lb.name)}</div><div class="label-info" style="margin-top:5px">Flujo: <strong>${typeLabel(lb.flow)}</strong><br>${lb.ctaUrl?`<a href="${esc(lb.ctaUrl)}" target="_blank" style="color:var(--p);font-size:.75rem">🔗 Enlace</a>`:'Sin enlace'}</div></div><div class="label-color-dot" style="background:${lb.color}"></div></div>
+      ${lb.welcome?`<div style="background:var(--s2);border-radius:8px;padding:8px 10px;font-size:.77rem;color:var(--muted);margin-bottom:8px;line-height:1.4">"${esc(lb.welcome.substring(0,80))}…"</div>`:''}
+      <div class="label-actions"><button class="btn btn-secondary btn-sm" onclick="openLabelModal('${lb.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="deleteLabel('${lb.id}')">🗑</button></div>
+    </div>`).join('');
 }
 
-function openLabelModal(id = null) {
-  editLabelId = id;
-  document.getElementById('ml-title').textContent = id ? 'Editar Etiqueta' : 'Nueva Etiqueta';
-  if (id) {
-    const lb = DB.labels.find(x => x.id === id);
-    document.getElementById('ml-name').value = lb.name;
-    document.getElementById('ml-color').value = lb.color;
-    document.getElementById('ml-flow').value = lb.flow;
-    document.getElementById('ml-welcome').value = lb.welcome || '';
-    document.getElementById('ml-cta-text').value = lb.ctaText || '';
-    document.getElementById('ml-cta-url').value = lb.ctaUrl || '';
-  } else {
-    document.getElementById('ml-name').value = '';
-    document.getElementById('ml-color').value = '#10b981';
-    document.getElementById('ml-flow').value = 'free';
-    document.getElementById('ml-welcome').value = '';
-    document.getElementById('ml-cta-text').value = '';
-    document.getElementById('ml-cta-url').value = '';
-  }
+function openLabelModal(id=null){
+  editLabelId=id;document.getElementById('ml-title').textContent=id?'Editar Etiqueta':'Nueva Etiqueta';
+  if(id){const lb=DB.labels.find(x=>x.id===id);document.getElementById('ml-name').value=lb.name;document.getElementById('ml-color').value=lb.color;document.getElementById('ml-flow').value=lb.flow;document.getElementById('ml-welcome').value=lb.welcome||'';document.getElementById('ml-cta-text').value=lb.ctaText||'';document.getElementById('ml-cta-url').value=lb.ctaUrl||'';}
+  else{['ml-name','ml-welcome','ml-cta-text','ml-cta-url'].forEach(i=>document.getElementById(i).value='');document.getElementById('ml-color').value='#10b981';document.getElementById('ml-flow').value='free';}
   openModal('modal-label');
 }
 
-function saveLabel() {
-  const name = document.getElementById('ml-name').value.trim().toUpperCase();
-  const color = document.getElementById('ml-color').value;
-  const flow = document.getElementById('ml-flow').value;
-  const welcome = document.getElementById('ml-welcome').value.trim();
-  const ctaText = document.getElementById('ml-cta-text').value.trim();
-  const ctaUrl = document.getElementById('ml-cta-url').value.trim();
-  if (!name) { showToast('El nombre es requerido.', 'err'); return; }
-  if (editLabelId) {
-    const idx = DB.labels.findIndex(x => x.id === editLabelId);
-    DB.labels[idx] = { ...DB.labels[idx], name, color, flow, welcome, ctaText, ctaUrl };
-    showToast('Etiqueta actualizada.');
-  } else {
-    DB.labels.push({ id: uid(), name, color, flow, welcome, ctaText, ctaUrl });
-    showToast('Etiqueta creada.');
-  }
-  saveDB(); renderLabels(); closeModal('modal-label');
+async function saveLabel(){
+  const name=document.getElementById('ml-name').value.trim().toUpperCase();
+  const color=document.getElementById('ml-color').value;
+  const flow=document.getElementById('ml-flow').value;
+  const welcome=document.getElementById('ml-welcome').value.trim();
+  const ctaText=document.getElementById('ml-cta-text').value.trim();
+  const ctaUrl=document.getElementById('ml-cta-url').value.trim();
+  if(!name){showToast('El nombre es requerido.','err');return;}
+  if(editLabelId){const idx=DB.labels.findIndex(x=>x.id===editLabelId);DB.labels[idx]={...DB.labels[idx],name,color,flow,welcome,ctaText,ctaUrl};showToast('Etiqueta actualizada.');}
+  else{DB.labels.push({id:uid(),name,color,flow,welcome,ctaText,ctaUrl});showToast('Etiqueta creada.');}
+  await saveConfig();renderLabels();closeModal('modal-label');
 }
 
-function deleteLabel(id) {
-  if (!confirm('¿Eliminar esta etiqueta?')) return;
-  DB.labels = DB.labels.filter(x => x.id !== id);
-  saveDB(); renderLabels(); showToast('Etiqueta eliminada.');
+async function deleteLabel(id){
+  if(!confirm('¿Eliminar esta etiqueta?'))return;
+  DB.labels=DB.labels.filter(x=>x.id!==id);
+  await saveConfig();renderLabels();showToast('Etiqueta eliminada.');
 }
 
 // ── SETTINGS ──
-function previewPhoto() {
-  const url = document.getElementById('s-photo').value.trim();
-  document.getElementById('profile-preview-img').src = url;
-  document.getElementById('sb-avatar').src = url;
+function previewPhoto(){const url=document.getElementById('s-photo').value.trim();document.getElementById('profile-preview-img').src=url;document.getElementById('sb-avatar').src=url;}
+async function saveSettings(){
+  DB.settings.profilePhoto=document.getElementById('s-photo').value.trim();
+  DB.settings.communityLink=document.getElementById('s-community').value.trim();
+  DB.settings.adText=document.getElementById('s-ad-text').value.trim();
+  DB.settings.adPrice=document.getElementById('s-ad-price').value.trim();
+  DB.settings.adUrl=document.getElementById('s-ad-url').value.trim();
+  DB.settings.adBtn=document.getElementById('s-ad-btn').value.trim();
+  DB.settings.noMatchMsg=document.getElementById('s-nomatch').value.trim();
+  await saveConfig();
+  document.getElementById('sb-avatar').src=DB.settings.profilePhoto;
+  document.getElementById('profile-preview-img').src=DB.settings.profilePhoto;
+  showToast('Configuración guardada y sincronizada.');
 }
-
-function saveSettings() {
-  DB.settings.profilePhoto = document.getElementById('s-photo').value.trim();
-  DB.settings.communityLink = document.getElementById('s-community').value.trim();
-  DB.settings.adText = document.getElementById('s-ad-text').value.trim();
-  DB.settings.adPrice = document.getElementById('s-ad-price').value.trim();
-  DB.settings.adUrl = document.getElementById('s-ad-url').value.trim();
-  DB.settings.adBtn = document.getElementById('s-ad-btn').value.trim();
-  DB.settings.noMatchMsg = document.getElementById('s-nomatch').value.trim();
-  saveDB();
-  document.getElementById('sb-avatar').src = DB.settings.profilePhoto;
-  document.getElementById('profile-preview-img').src = DB.settings.profilePhoto;
-  showToast('Configuración guardada.');
-}
-
-function changePwd() {
-  const old = document.getElementById('s-pwd-old').value;
-  const nw = document.getElementById('s-pwd-new').value.trim();
-  if (old !== DB.settings.password) { showToast('Contraseña actual incorrecta.', 'err'); return; }
-  if (!nw) { showToast('La nueva contraseña no puede estar vacía.', 'err'); return; }
-  DB.settings.password = nw;
-  saveDB();
-  document.getElementById('s-pwd-old').value = '';
-  document.getElementById('s-pwd-new').value = '';
+async function changePwd(){
+  const old=document.getElementById('s-pwd-old').value,nw=document.getElementById('s-pwd-new').value.trim();
+  if(old!==DB.settings.password){showToast('Contraseña actual incorrecta.','err');return;}
+  if(!nw){showToast('La nueva contraseña no puede estar vacía.','err');return;}
+  DB.settings.password=nw;await saveConfig();
+  document.getElementById('s-pwd-old').value='';document.getElementById('s-pwd-new').value='';
   showToast('Contraseña actualizada.');
 }
 
-// ── HELPERS ──
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
-
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  t.textContent = (type === 'ok' ? '✅ ' : '⚠️ ') + msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function typeLabel(t) { return {free:'Gratuito',sales:'Expercenter',repair:'ReparaXcell',all:'Todos'}[t]||t; }
-function labelColor(name) { const lb = DB.labels.find(x => x.name === name); return lb ? lb.color : '#64748b'; }
-function formatDate(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  return d.toLocaleDateString('es', {day:'2-digit',month:'short',year:'numeric'}) + ' ' + d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
-}
-
 // ── GUIDE ──
-const GUIDE_STEPS = [
-  {
-    section: '🔐 Acceso al sistema',
-    steps: [
-      { n:1, title:'Ingresar al panel admin', desc:'Abre el archivo <code>admin.html</code> en tu navegador. Verás la pantalla de login con el logo GOKUCELL. Ingresa tu contraseña (por defecto: <code>5616</code>) y presiona <strong>Ingresar</strong>.', tip:'Puedes cambiar la contraseña desde Configuración → "Cambiar contraseña de acceso" en cualquier momento.' },
-      { n:2, title:'Navegar entre secciones', desc:'En el panel lateral izquierdo encontrarás el menú con todas las secciones: Dashboard, Disparadores, Mapa de Flujos, Contactos, Etiquetas, Configuración y esta Guía.', tip:'El botón "Ver Chat" en la barra superior abre el chat de cara al público en una nueva pestaña.' }
-    ]
-  },
-  {
-    section: '⚡ Disparadores del chat',
-    steps: [
-      { n:3, title:'¿Qué es un disparador?', desc:'Un disparador es un conjunto de palabras clave que, al ser escritas por el usuario en el chat, activan una respuesta específica del bot. Por ejemplo: si alguien escribe "fuente de alimentación", el bot responde con el contenido configurado para ese tema.', tip:'Cuantas más palabras clave tenga un disparador, más preciso será el reconocimiento.' },
-      { n:4, title:'Crear un nuevo disparador', desc:'Ve a <strong>Disparadores</strong> y haz clic en <strong>+ Nuevo Disparador</strong>. Completa: (1) Título del tema, (2) Palabras clave: escríbelas una por una presionando <code>Enter</code> o <code>,</code> después de cada una, (3) Respuesta que verá el usuario, (4) Botón CTA opcional con texto y enlace, (5) Video opcional con URL de YouTube o enlace directo, (6) Tipo de flujo: Gratuito, Expercenter o ReparaXcell.', tip:'Usa frases completas como keywords: "no carga el celular" es más preciso que solo "carga".' },
-      { n:5, title:'Agregar videos a las respuestas', desc:'En el modal de cada disparador encontrarás el campo <strong>Video de respuesta</strong>. Pega ahí: un link de YouTube (ej: <code>https://youtu.be/abc123</code>) y se mostrará como video embebido con reproducción automática, o una URL directa a un archivo MP4 y se reproducirá con el reproductor nativo.', tip:'El video aparece debajo del mensaje de texto en el chat, y se reproduce automáticamente cuando el usuario lo ve.' }
-    ]
-  },
-  {
-    section: '🗺️ Mapa de flujos',
-    steps: [
-      { n:6, title:'Entender el mapa de flujos', desc:'El mapa es un canvas visual donde cada disparador aparece como un nodo. Puedes arrastrarlos libremente para organizarlos y conectarlos para definir secuencias de conversación (después de tema A, el bot puede guiar hacia tema B).', tip:'Las conexiones se guardan con el botón "Guardar". Usa "Auto-organizar" si el mapa se desordena.' },
-      { n:7, title:'Crear una conexión entre nodos', desc:'Para conectar dos disparadores: (1) Haz clic en el botón <strong>▶</strong> (puerto de salida) del nodo origen, (2) Aparecerá el aviso "Haz clic en el nodo destino", (3) Haz clic en el botón <strong>◀</strong> (puerto de entrada) del nodo destino. Para eliminar una conexión, haz clic sobre la línea punteada.', tip:'Las líneas punteadas moradas indican el flujo de conversación de un tema al siguiente.' }
-    ]
-  },
-  {
-    section: '👥 Contactos y leads',
-    steps: [
-      { n:8, title:'Ver los contactos captados', desc:'En la sección <strong>Contactos</strong> se registran automáticamente todas las personas que abren el chat y completan el formulario de inicio (nombre, teléfono y tipo de consulta). Verás sus datos, etiqueta asignada y fecha.', tip:'Los contactos se guardan automáticamente, sin que tengas que hacer nada.' },
-      { n:9, title:'Enviar mensaje por WhatsApp', desc:'En la columna <strong>WhatsApp</strong> de cada contacto hay un enlace verde 📱 con su número. Al hacer clic, se abre WhatsApp Web listo para enviarle un mensaje personalizado con el saludo de GOKUCELL ya escrito.', tip:'El mensaje pre-cargado dice: "Hola [nombre], te contactamos desde GOKUCELL 👋". Puedes editarlo antes de enviar.' },
-      { n:10, title:'Filtrar contactos', desc:'Usa los filtros en la barra superior de Contactos para buscar por: <strong>nombre</strong> (caja de texto), <strong>país</strong> (desplegable con los países registrados) y <strong>etiqueta</strong> (botones de filtro GRATIS / EXPERCENTER / REPARAXCELL).', tip:'Los filtros se combinan: puedes buscar "Carlos" + Colombia + EXPERCENTER al mismo tiempo.' },
-      { n:11, title:'Agregar notas a un contacto', desc:'Haz clic en el botón <strong>+ Nota</strong> de cualquier contacto para abrirle una nota interna. Escribe lo que necesites recordar sobre esa persona (seguimiento, estado, interés, etc.) y guarda. La nota aparece como un chip visible en la tabla.', tip:'Las notas son solo visibles en el admin. El usuario del chat no las ve.' }
-    ]
-  },
-  {
-    section: '🏷️ Etiquetas',
-    steps: [
-      { n:12, title:'¿Para qué sirven las etiquetas?', desc:'Las etiquetas definen el tipo de flujo que tendrá el chat según la intención declarada por el usuario al registrarse. Cada etiqueta tiene: nombre, color, tipo de flujo (gratuito/ventas/reparación), mensaje de bienvenida personalizado y botón CTA.', tip:'Por defecto existen: GRATIS, EXPERCENTER y REPARAXCELL. Puedes editarlas o crear nuevas.' },
-      { n:13, title:'Crear o editar una etiqueta', desc:'Ve a <strong>Etiquetas</strong> y haz clic en <strong>+ Nueva Etiqueta</strong>. Define: nombre (en mayúsculas), color del badge, tipo de flujo, mensaje de bienvenida (usa <code>[nombre]</code> para insertar el nombre del usuario) y el botón CTA con su enlace.', tip:'El mensaje de bienvenida es lo primero que ve el usuario cuando abre el chat, así que hazlo cálido y personalizado.' }
-    ]
-  },
-  {
-    section: '⚙️ Configuración general',
-    steps: [
-      { n:14, title:'Cambiar la foto de perfil del bot', desc:'Ve a <strong>Configuración → Foto de perfil</strong>. Pega la URL de la imagen que quieres usar y verás una vista previa inmediata. Haz clic en <strong>Guardar foto</strong>. La nueva imagen aparecerá en el chat y en el sidebar del admin.', tip:'Usa una URL directa a una imagen (termina en .jpg, .png o .webp). La foto de Jhonatan Herrera está precargada por defecto.' },
-      { n:15, title:'Configurar el enlace de la comunidad gratuita', desc:'Ve a <strong>Configuración → Enlace Comunidad Gratuita</strong>. Pega el enlace de tu comunidad (WhatsApp, Telegram, Discord, etc.). Este enlace aparece como botón cuando el bot no encuentra coincidencia con las palabras del usuario.', tip:'Siempre ten este enlace configurado, es tu red de seguridad cuando el bot no sabe responder.' },
-      { n:16, title:'Configurar el anuncio flotante de Expercenter', desc:'Ve a <strong>Configuración → Publicidad flotante</strong>. Edita: texto del anuncio (apunta a un dolor del técnico), precio/oferta, URL de destino y texto del botón. El anuncio aparece como una tarjeta flotante discreta en el chat después de 3 segundos.', tip:'Actualiza el texto cada cierto tiempo para que no se vea estático. Mensajes como "Aprende a reparar en vivo" generan más clics.' },
-      { n:17, title:'Configurar mensaje de sin coincidencia', desc:'En <strong>Configuración → Mensaje sin coincidencia</strong>, personaliza el texto que aparece cuando el bot no entiende lo que el usuario escribió. Incluye ejemplos de cómo preguntar bien y el botón de comunidad gratuita.', tip:'Usa un tono amigable, que el usuario sienta que hay un humano detrás aunque sea el bot quien responda.' }
-    ]
-  },
-  {
-    section: '💬 Historial del chat (NUEVO)',
-    steps: [
-      { n:18, title:'Historial persistente por contacto', desc:'Cuando un usuario que ya habló antes regresa al chat y usa el mismo número de teléfono, el sistema detecta que ya es conocido y carga automáticamente todo el historial de conversación anterior. El bot lo saluda diferente: "¡Hola de nuevo, [nombre]! Qué bueno que nos consultas otra vez 😊".', tip:'El historial se guarda en el dispositivo del usuario (localStorage). Si abre el chat desde otro dispositivo, comenzará desde cero.' },
-      { n:19, title:'¿Cómo se identifica al usuario que regresa?', desc:'El sistema usa el número de teléfono limpio (sin espacios ni caracteres especiales) como identificador único. Si el número ya tiene historial guardado, se carga automáticamente. Si es nuevo, comienza el flujo normal de registro.', tip:'El historial incluye todos los mensajes del bot y del usuario de sesiones anteriores, con marcas de tiempo.' }
-    ]
-  },
-  {
-    section: '🎬 Videos en el chat (NUEVO)',
-    steps: [
-      { n:20, title:'Agregar videos de YouTube a respuestas', desc:'En cualquier disparador, ve al campo <strong>Video de respuesta</strong> y pega el link de YouTube. Acepta formatos: <code>https://youtu.be/ID</code>, <code>https://youtube.com/watch?v=ID</code> o <code>https://youtube.com/embed/ID</code>. El video se embebe automáticamente y se reproduce sin que el usuario tenga que presionar play.', tip:'Ideal para tutoriales cortos, demostraciones de reparación o presentaciones de Expercenter.' },
-      { n:21, title:'Agregar videos directos (MP4)', desc:'Si tienes el video alojado en un servidor o servicio de almacenamiento (Google Drive con enlace directo, Cloudinary, AWS S3, etc.), pega la URL directa del archivo en el campo <strong>Video de respuesta</strong>. El chat lo reproducirá con el reproductor nativo del navegador con autoplay.', tip:'Para Google Drive, cambia la URL de "/view" a "/preview" para que funcione como embed.' }
-    ]
-  }
+const GUIDE = [
+  {section:'🔐 Acceso y sincronización',steps:[
+    {n:1,title:'Ingresar al panel admin',desc:'Abre <code>admin.html</code>. Ingresa tu contraseña (por defecto: <code>5616</code>). El sistema verifica contra Firebase — necesitas conexión a internet.',tip:'El indicador verde "Sincronizado" en la barra superior confirma que estás conectado a Firebase en tiempo real.'},
+    {n:2,title:'Sincronización automática',desc:'Todo cambio que hagas en el admin (disparadores, etiquetas, configuración) se actualiza automáticamente en el chat <strong>en todos los dispositivos en tiempo real</strong>, sin recargar la página.',tip:'Los contactos captados en cualquier dispositivo también aparecen aquí instantáneamente.'}
+  ]},
+  {section:'⚡ Disparadores',steps:[
+    {n:3,title:'Crear un disparador',desc:'Ve a <strong>Disparadores → + Nuevo Disparador</strong>. Completa: título, keywords (Enter para agregar cada una), respuesta, CTA opcional, video opcional y tipo de flujo.',tip:'Usa frases completas como keywords: "no carga el celular" es más preciso que solo "carga".'},
+    {n:4,title:'Agregar video a una respuesta',desc:'En el campo <strong>Video de respuesta</strong> pega un link de YouTube o URL directa a MP4. YouTube se reproduce automáticamente sin que el usuario presione play.',tip:'Ideal para demos de reparación o presentaciones de Expercenter.'}
+  ]},
+  {section:'👥 Contactos',steps:[
+    {n:5,title:'WhatsApp directo',desc:'El número de cada contacto es un enlace 📱 que abre WhatsApp Web con el mensaje "Hola [nombre], te contactamos desde GOKUCELL 👋" ya escrito.',tip:'El mensaje es editable antes de enviar.'},
+    {n:6,title:'Filtrar contactos',desc:'Usa los filtros combinados: búsqueda por nombre, país (muestra nombres reales, no códigos), etiqueta (GRATIS/EXPERCENTER/REPARAXCELL). Los tres filtros funcionan al mismo tiempo.',tip:'El filtro de país te permite identificar de qué países te escriben más para estrategias de publicidad.'},
+    {n:7,title:'Ver historial de chat',desc:'Haz clic en <strong>💬 Ver</strong> de cualquier contacto para ver toda la conversación que tuvo en el chat. Útil para dar seguimiento personalizado por WhatsApp.',tip:'El historial muestra mensajes del bot y del usuario con timestamps exactos.'},
+    {n:8,title:'Agregar notas',desc:'Clic en <strong>+ Nota</strong> para agregar una nota interna sobre el contacto (estado, seguimiento, etc.). Solo visible en el admin.',tip:'Las notas ayudan a recordar el contexto antes de hacer el follow-up por WhatsApp.'}
+  ]},
+  {section:'⚙️ Configuración',steps:[
+    {n:9,title:'Foto de perfil',desc:'Pega la URL de la imagen del bot. Vista previa inmediata. Al guardar, se actualiza en el chat en todos los dispositivos.',tip:'URL por defecto: la foto de Jhonatan Herrera.'},
+    {n:10,title:'Anuncio flotante',desc:'Configura el texto, precio, URL y botón del anuncio flotante de Expercenter que aparece en el chat. Cualquier cambio se aplica de inmediato.',tip:'Cambia el texto cada cierto tiempo para mantenerlo fresco.'},
+    {n:11,title:'Mensaje sin coincidencia',desc:'Texto que aparece cuando el bot no entiende al usuario. Incluye sugerencias de cómo preguntar mejor y el botón de la comunidad gratuita.',tip:'Siempre configura el enlace de la comunidad gratuita como red de seguridad.'}
+  ]},
+  {section:'💬 Historial de chat',steps:[
+    {n:12,title:'Historial persistente',desc:'Cuando un usuario regresa y usa el mismo número de teléfono, el chat carga su historial automáticamente y lo saluda diferente: <em>"¡Hola de nuevo, [nombre]!"</em>.',tip:'El historial está guardado en Firebase por número de teléfono, funciona desde cualquier dispositivo.'},
+    {n:13,title:'Ver historial desde admin',desc:'En la sección Contactos, haz clic en <strong>💬 Ver</strong> para revisar toda la conversación de ese usuario. Perfecto para preparar el seguimiento por WhatsApp.',tip:''}
+  ]}
 ];
 
-function renderGuide() {
-  const container = document.getElementById('guide-content');
-  if (!container) return;
-  container.innerHTML = GUIDE_STEPS.map(section => `
-    <div class="guide-section-title">${section.section} <span class="gs-badge">✓ Activo</span></div>
-    <div class="guide-steps">
-      ${section.steps.map((s, i, arr) => `
-        <div class="guide-step">
-          ${i < arr.length - 1 ? '<div class="gs-line"></div>' : ''}
-          <div class="gs-num">${s.n}</div>
-          <div class="gs-body">
-            <div class="gs-title">${s.title}</div>
-            <div class="gs-desc">${s.desc}</div>
-            ${s.tip ? `<div class="gs-tip">💡 <strong>Tip:</strong> ${s.tip}</div>` : ''}
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
+function renderGuide(){
+  const c=document.getElementById('guide-content');if(!c)return;
+  c.innerHTML=GUIDE.map(s=>`
+    <div class="guide-section-title">${s.section}</div>
+    <div class="guide-steps">${s.steps.map((st,i,arr)=>`
+      <div class="guide-step">${i<arr.length-1?'<div class="gs-line"></div>':''}
+        <div class="gs-num">${st.n}</div>
+        <div class="gs-body"><div class="gs-title">${st.title}</div><div class="gs-desc">${st.desc}</div>${st.tip?`<div class="gs-tip">💡 ${st.tip}</div>`:''}</div>
+      </div>`).join('')}
+    </div>`).join('');
 }
 
-loadDB();
+// ── HELPERS ──
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function showToast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=(type==='ok'?'✅ ':'⚠️ ')+msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function typeLabel(t){return{free:'Gratuito',sales:'Expercenter',repair:'ReparaXcell'}[t]||t;}
+function labelColor(name){const lb=DB.labels.find(x=>x.name===name);return lb?lb.color:'#64748b';}
+function formatDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});}
+function updateBadges(){document.getElementById('nb-topics').textContent=DB.topics.length;document.getElementById('nb-leads').textContent=leads.length;}
 </script>
 </body>
 </html>
