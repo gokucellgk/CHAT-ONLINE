@@ -331,9 +331,20 @@ tr:hover td{background:var(--s2)}
             <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
           </div>
         </div>
+        <div id="bulk-bar" style="display:none;background:var(--pg);border:1px solid var(--p)40;border-radius:10px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:12px;flex-wrap:wrap">
+          <span id="bulk-count" style="font-weight:700;font-size:.9rem;color:var(--pl)">0 seleccionados</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteSelected()">🗑 Eliminar seleccionados</button>
+          <div style="display:flex;align-items:center;gap:8px">
+            <select id="bulk-label-select" class="form-select" style="padding:7px 10px;font-size:.82rem">
+              <option value="">Mover a etiqueta...</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="moveSelectedToLabel()">Mover</button>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="clearSelection()" style="margin-left:auto">✕ Cancelar</button>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Origen</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
+            <thead><tr><th style="width:36px"><input type="checkbox" id="select-all-leads" onchange="toggleSelectAll()" style="cursor:pointer"></th><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Origen</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Historial</th><th>Fecha</th></tr></thead>
             <tbody id="leads-body"></tbody>
           </table>
           <div class="empty" id="leads-empty" style="display:none"><div class="empty-icon">👥</div><p>Sin contactos aún.</p></div>
@@ -1115,6 +1126,7 @@ function renderLeads() {
       ? `<span class="note-chip" title="${esc(l.note)}" onclick="openNoteModal('${l.id}')">${esc(l.note.substring(0,25))}${l.note.length>25?'…':''}</span>`
       : `<button class="btn btn-secondary btn-sm" onclick="openNoteModal('${l.id}')" style="font-size:.72rem;padding:3px 8px">+ Nota</button>`;
     return `<tr>
+      <td><input type="checkbox" class="lead-check" value="${l.id}" onchange="toggleLeadSelect('${l.id}')" style="cursor:pointer"></td>
       <td style="font-weight:600">${esc(l.name)}</td>
       <td><button class="wa-link" style="background:none;border:none;cursor:pointer" onclick="openWASend('${l.id}')">📱 ${esc(l.countryCode||'')} ${esc(l.phone||'')}</button></td>
       <td style="color:var(--muted);font-size:.82rem">${esc(l.countryName||l.countryCode||'')}</td>
@@ -1126,6 +1138,12 @@ function renderLeads() {
       <td style="color:var(--muted);font-size:.75rem;white-space:nowrap">${formatDate(l.ts)}</td>
     </tr>`;
   }).join('');
+  // Restore checkbox states after re-render
+  selectedLeads.forEach(id => {
+    const cb = document.querySelector(`.lead-check[value="${id}"]`);
+    if (cb) cb.checked = true;
+  });
+  updateBulkBar();
   updateBadges();
 }
 
@@ -1211,7 +1229,78 @@ function clearLeads() {
   if (db) { DB.leads.forEach(l => db.collection('gkc_leads').doc(l.id).delete().catch(e=>{})); }
   DB.leads = [];
   localStorage.setItem(KEY, JSON.stringify(DB));
+  selectedLeads.clear();
   renderLeads(); renderDashboard(); showToast('Contactos eliminados.');
+}
+
+// ── BULK SELECTION ──
+let selectedLeads = new Set();
+
+function toggleLeadSelect(id) {
+  if (selectedLeads.has(id)) selectedLeads.delete(id);
+  else selectedLeads.add(id);
+  updateBulkBar();
+}
+
+function toggleSelectAll() {
+  const checked = document.getElementById('select-all-leads').checked;
+  document.querySelectorAll('.lead-check').forEach(cb => {
+    cb.checked = checked;
+    if (checked) selectedLeads.add(cb.value);
+    else selectedLeads.delete(cb.value);
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  if (!bar) return;
+  const n = selectedLeads.size;
+  bar.style.display = n > 0 ? 'flex' : 'none';
+  document.getElementById('bulk-count').textContent = n + ' seleccionado' + (n !== 1 ? 's' : '');
+  const sel = document.getElementById('bulk-label-select');
+  sel.innerHTML = '<option value="">Mover a etiqueta...</option>' +
+    DB.labels.map(lb => `<option value="${esc(lb.name)}">${esc(lb.name)}</option>`).join('');
+}
+
+function clearSelection() {
+  selectedLeads.clear();
+  document.querySelectorAll('.lead-check').forEach(cb => cb.checked = false);
+  const sa = document.getElementById('select-all-leads');
+  if (sa) sa.checked = false;
+  updateBulkBar();
+}
+
+function deleteSelected() {
+  if (!selectedLeads.size) return;
+  if (!confirm(`¿Eliminar ${selectedLeads.size} contacto(s) seleccionado(s)?`)) return;
+  selectedLeads.forEach(id => {
+    if (db) db.collection('gkc_leads').doc(id).delete().catch(e=>{});
+    DB.leads = DB.leads.filter(l => l.id !== id);
+  });
+  localStorage.setItem(KEY, JSON.stringify(DB));
+  const n = selectedLeads.size;
+  selectedLeads.clear();
+  renderLeads(); renderDashboard();
+  showToast(`${n} contacto(s) eliminado(s).`);
+}
+
+function moveSelectedToLabel() {
+  const newLabel = document.getElementById('bulk-label-select').value;
+  if (!newLabel) { showToast('Selecciona una etiqueta destino.', 'err'); return; }
+  if (!selectedLeads.size) return;
+  selectedLeads.forEach(id => {
+    const idx = DB.leads.findIndex(l => l.id === id);
+    if (idx >= 0) {
+      DB.leads[idx].label = newLabel;
+      if (db) db.collection('gkc_leads').doc(id).update({label: newLabel}).catch(e=>{});
+    }
+  });
+  localStorage.setItem(KEY, JSON.stringify(DB));
+  const n = selectedLeads.size;
+  selectedLeads.clear();
+  renderLeads();
+  showToast(`${n} contacto(s) movidos a ${newLabel}.`);
 }
 
 // ── LABELS ──

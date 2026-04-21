@@ -428,50 +428,41 @@ async function startChat() {
 }
 
 async function saveLead(isReturning) {
-  const lead = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-    name: userName,
-    phone: userPhone,
-    countryCode: userCountry,
-    countryName: userCountryName,
-    label: userLabel,
-    source: userSource || '',
-    intent: {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación',pending:'Por definir'}[userIntent]||userIntent,
-    ts: Date.now()
+  const ph = cleanPhone(userPhone);
+  if (!ph) return;
+  const intentLabel = {free:'Recursos gratuitos',sales:'Capacitación Expercenter',repair:'Cotización reparación',pending:'Por definir'};
+  const fields = {
+    name: userName, phone: userPhone, phoneClean: ph,
+    countryCode: userCountry, countryName: userCountryName,
+    label: userLabel, source: userSource || '',
+    intent: intentLabel[userIntent] || userIntent,
+    updatedAt: Date.now()
   };
-  if (isReturning) {
-    // Update existing lead in Firebase
-    if (db) {
-      try {
-        const snap = await db.collection('gkc_leads').where('phone','==',userPhone).limit(1).get();
-        if (!snap.empty) {
-          snap.docs[0].ref.update({name: userName, label: userLabel, countryName: userCountryName}).catch(e=>{});
-          return;
-        }
-      } catch(e) {}
-    }
-    // localStorage fallback: update
-    const raw = localStorage.getItem(KEY);
-    if (raw) { try { const d=JSON.parse(raw); const l=d.leads&&d.leads.find(x=>cleanPhone(x.phone)===cleanPhone(userPhone)); if(l){l.name=userName;l.label=userLabel;localStorage.setItem(KEY,JSON.stringify(d));} } catch(e){} }
-    return;
-  }
-  // New lead: save to Firebase + localStorage (verify no duplicate by phone)
+  // Use cleanPhone as doc ID — prevents all duplicates by phone number
   if (db) {
+    const docRef = db.collection('gkc_leads').doc(ph);
     try {
-      const existing = await db.collection('gkc_leads').where('phone','==',userPhone).limit(1).get();
-      if (!existing.empty) {
-        // Update existing instead of creating duplicate
-        existing.docs[0].ref.update({name:userName,label:userLabel,countryName:userCountryName,source:userSource||'',updatedAt:Date.now()}).catch(e=>{});
-        return;
+      const snap = await docRef.get();
+      if (snap.exists) {
+        docRef.update({name:userName, label:userLabel, countryName:userCountryName, intent:fields.intent, updatedAt:fields.updatedAt}).catch(e=>{});
+      } else {
+        docRef.set({...fields, id: ph, ts: fields.updatedAt}).catch(e => console.warn(e));
       }
-    } catch(e) {}
-    db.collection('gkc_leads').doc(lead.id).set(lead).catch(e => console.warn(e));
+    } catch(e) {
+      docRef.set({...fields, id: ph, ts: fields.updatedAt}, {merge: true}).catch(e => console.warn(e));
+    }
   }
+  // localStorage fallback
   const raw = localStorage.getItem(KEY);
   let localDB = {};
   if (raw) { try { localDB = JSON.parse(raw); } catch(e){} }
   localDB.leads = localDB.leads || [];
-  localDB.leads.push(lead);
+  const idx = localDB.leads.findIndex(x => cleanPhone(x.phone||'') === ph);
+  if (idx >= 0) {
+    localDB.leads[idx] = {...localDB.leads[idx], name:userName, label:userLabel, countryName:userCountryName, intent:fields.intent, updatedAt:fields.updatedAt};
+  } else {
+    localDB.leads.push({...fields, id: ph, ts: fields.updatedAt});
+  }
   localStorage.setItem(KEY, JSON.stringify(localDB));
 }
 
