@@ -149,20 +149,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
 
       <div id="intent-section">
         <div class="reg-sec-title">¿En qué te podemos ayudar?</div>
-        <div class="intent-grid">
-          <label class="intent-option">
-            <input type="radio" name="intent" value="free">
-            <div class="intent-card"><div class="intent-icon">🎁</div><div><div class="intent-text">Quiero acceder a recursos gratuitos</div><div class="intent-sub">Comunidad, guías y tutoriales sin costo</div></div></div>
-          </label>
-          <label class="intent-option">
-            <input type="radio" name="intent" value="sales">
-            <div class="intent-card"><div class="intent-icon">🚀</div><div><div class="intent-text">Me interesa una capacitación completa</div><div class="intent-sub">Cursos y mentorías en Expercenter</div></div></div>
-          </label>
-          <label class="intent-option">
-            <input type="radio" name="intent" value="repair">
-            <div class="intent-card"><div class="intent-icon">🔧</div><div><div class="intent-text">Necesito cotizar una reparación</div><div class="intent-sub">Servicio técnico profesional ReparaXcell</div></div></div>
-          </label>
-        </div>
+        <div class="intent-grid" id="intent-grid"></div>
       </div>
 
       <div class="consent-row">
@@ -225,7 +212,7 @@ function initFirebase() {
 const KEY = 'gokucell_v2';
 let DB = { settings:{}, topics:[], labels:[], flows:[], leads:[] };
 let configUnsubscribe = null;
-let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='', userSource='';
+let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='', userSource='', userLabelId=null;
 let botState='idle', salesStepCount=0, msgCount=0, adminMsgStart=0;
 let profilePhoto='https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
 
@@ -299,7 +286,8 @@ function applySettings() {
   if (consentEl) consentEl.textContent = s.consentText || 'Acepto recibir mensajes y recursos de GOKUCELL';
   // Intent mode
   const intentSec = document.getElementById('intent-section');
-  if (intentSec) intentSec.style.display = (s.intentMode === 'hide') ? 'none' : 'block';
+  if (intentSec) intentSec.style.display = (s.intentMode === 'hide' || s.intentMode === 'after') ? 'none' : 'block';
+  renderIntentCards();
 }
 
 function loadLocalDB() {
@@ -390,11 +378,19 @@ async function startChat() {
   userCountry = dial;
   userCountryName = countryName || dial;
   userSource = source;
-  userIntent = (intentMode === 'hide') ? 'free' : (intentMode === 'after') ? 'pending' : (intentEl?.value || 'free');
+  if (intentMode === 'hide') {
+    userIntent = 'free'; userLabelId = null;
+  } else if (intentMode === 'after') {
+    userIntent = 'pending'; userLabelId = null;
+  } else {
+    const selLabel = intentEl ? DB.labels.find(l => l.id === intentEl.value) : null;
+    userIntent = selLabel ? selLabel.flow : 'free';
+    userLabelId = selLabel ? selLabel.id : null;
+  }
 
-  // Assign label
+  // Assign label name
   const intentLabelMap = {free:'GRATIS', sales:'EXPERCENTER', repair:'REPARAXCELL'};
-  const matchLabel = DB.labels.find(l => l.flow === userIntent);
+  const matchLabel = userLabelId ? DB.labels.find(l => l.id === userLabelId) : DB.labels.find(l => l.flow === userIntent);
   userLabel = matchLabel ? matchLabel.name : (intentLabelMap[userIntent] || 'GRATIS');
 
   // Check returning user
@@ -487,7 +483,7 @@ function sendWelcome() {
     setTimeout(() => {
       hideTyping();
       addMsg('bot', `¡Hola **${userName}**! 👋 Bienvenido. Cuéntame, ¿en qué te puedo ayudar hoy?`, {
-        qr:['🎁 Recursos gratuitos','🚀 Capacitación Expercenter','🔧 Cotizar una reparación']
+        qr: buildIntentQR()
       });
       botState = 'pending_intent';
     }, 900);
@@ -553,9 +549,9 @@ function botReply(userText) {
     hideTyping();
     // pending_intent: usuario eligió su tema desde 'after' mode
     if (botState === 'pending_intent') {
-      const intentMap = {'🎁 Recursos gratuitos':'free','🚀 Capacitación Expercenter':'sales','🔧 Cotizar una reparación':'repair'};
-      const mapped = intentMap[userText];
-      if (mapped) { changeIntent(mapped); return; }
+      const visibleLabels = DB.labels.filter(lb => lb.visibleInChat !== false);
+      const matched = visibleLabels.find(lb => userText === labelQRText(lb));
+      if (matched) { changeIntent(matched.flow, matched.id); return; }
     }
     if (botState === 'repair_done') {
       addMsg('bot', `Para cualquier otra duda estoy aquí, **${userName}**. 😊`, {qr:['Tengo otra consulta','Gracias']});
@@ -676,7 +672,7 @@ function addMsg(role, text, extras={}, skipHistory=false) {
     content.appendChild(btn);
   }
 
-  if (!skipHistory && extras.qr && extras.qr.length) {
+  if (!skipHistory && extras.qr && extras.qr.length && !DB.settings.hideQuickReplies) {
     const wrap = document.createElement('div');
     wrap.className='qr-wrap';
     extras.qr.forEach(q => {
@@ -722,16 +718,46 @@ function getTime(){return new Date().toLocaleTimeString('es',{hour:'2-digit',min
 // ── CAMBIAR TEMA ──
 function showChangeTopicMenu() {
   addMsg('bot', `¡Claro, **${userName}**! ¿Sobre qué tema quieres consultar ahora?`, {
-    qr:['🎁 Recursos gratuitos','🚀 Capacitación Expercenter','🔧 Cotizar una reparación']
+    qr: buildIntentQR()
   });
   botState = 'pending_intent';
   scrollBottom();
 }
 
-function changeIntent(newIntent) {
+function labelIcon(lb) {
+  return lb.icon || (lb.flow === 'free' ? '🎁' : lb.flow === 'sales' ? '🚀' : lb.flow === 'repair' ? '🔧' : '💬');
+}
+function labelQRText(lb) { return labelIcon(lb) + ' ' + lb.name; }
+function buildIntentQR() {
+  return DB.labels.filter(lb => lb.visibleInChat !== false).map(lb => labelQRText(lb));
+}
+
+function renderIntentCards() {
+  const grid = document.getElementById('intent-grid');
+  if (!grid) return;
+  const visible = DB.labels.filter(lb => lb.visibleInChat !== false);
+  grid.innerHTML = '';
+  visible.forEach(lb => {
+    const icon = labelIcon(lb);
+    const label = document.createElement('label');
+    label.className = 'intent-option';
+    const input = document.createElement('input');
+    input.type = 'radio'; input.name = 'intent'; input.value = lb.id;
+    const card = document.createElement('div');
+    card.className = 'intent-card';
+    const sub = lb.subtitle || '';
+    card.innerHTML = `<div class="intent-icon">${icon}</div><div><div class="intent-text">${lb.name}</div>${sub ? `<div class="intent-sub">${sub}</div>` : ''}</div>`;
+    label.appendChild(input);
+    label.appendChild(card);
+    grid.appendChild(label);
+  });
+}
+
+function changeIntent(newIntent, newLabelId) {
   userIntent = newIntent;
+  userLabelId = newLabelId || null;
   const intentLabelMap = {free:'GRATIS', sales:'EXPERCENTER', repair:'REPARAXCELL'};
-  const matchLabel = DB.labels.find(l => l.flow === newIntent);
+  const matchLabel = newLabelId ? DB.labels.find(l => l.id === newLabelId) : DB.labels.find(l => l.flow === newIntent);
   userLabel = matchLabel ? matchLabel.name : (intentLabelMap[newIntent] || 'GRATIS');
   botState = newIntent === 'sales' ? 'sales_q1' : newIntent === 'free' ? 'free_chat' : 'repair_done';
   salesStepCount = 0;

@@ -398,6 +398,19 @@ tr:hover td{background:var(--s2)}
             <button class="btn btn-primary btn-sm" onclick="saveSettings()">Guardar</button>
           </div>
 
+          <div class="settings-card">
+            <h3>💬 Botones de respuesta rápida (Quick Replies)</h3>
+            <div class="form-hint" style="margin-bottom:12px">Controla si aparecen los botones de opción debajo de los mensajes del bot en el chat.</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.88rem">
+                <input type="checkbox" id="s-hide-qr" style="width:18px;height:18px;cursor:pointer">
+                <span>Ocultar botones de respuesta rápida en el chat</span>
+              </label>
+            </div>
+            <div class="form-hint">Si está activado, los usuarios verán solo el campo de texto sin botones de sugerencia.</div>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="saveSettings()">Guardar</button>
+          </div>
+
           <div class="settings-card" style="grid-column:1/-1">
             <h3>🎯 ¿En qué te podemos ayudar? — Modo de visualización</h3>
             <div class="form-hint" style="margin-bottom:12px">Controla cómo y cuándo aparece la sección de intención en el chat del usuario.</div>
@@ -560,8 +573,12 @@ tr:hover td{background:var(--s2)}
   <div class="modal">
     <div class="modal-header"><h2 id="ml-title">Nueva Etiqueta</h2><button class="modal-close" onclick="closeModal('modal-label')">×</button></div>
     <div class="modal-body">
-      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ml-name" placeholder="GRATIS, EXPERCENTER, REPARAXCELL"></div>
-      <div class="form-group"><label class="form-label">Color</label><div style="display:flex;gap:10px;align-items:center"><input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none;border-radius:6px;cursor:pointer"><span style="font-size:.82rem;color:var(--muted)">Color del badge</span></div></div>
+      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ml-name" placeholder="GRATIS, COLABORACIONES, etc."></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Ícono (emoji)</label><input class="form-input" id="ml-icon" placeholder="🎁" style="font-size:1.3rem;text-align:center"><div class="form-hint">Déjalo vacío para usar el ícono por defecto del flujo.</div></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Color</label><div style="display:flex;gap:10px;align-items:center;height:38px"><input type="color" id="ml-color" value="#10b981" style="width:50px;height:36px;border:none;border-radius:6px;cursor:pointer"><span style="font-size:.82rem;color:var(--muted)">Color del badge</span></div></div>
+      </div>
+      <div class="form-group"><label class="form-label">Subtítulo (opcional)</label><input class="form-input" id="ml-subtitle" placeholder="Descripción corta que ve el usuario al elegir"></div>
       <div class="form-group"><label class="form-label">Tipo de flujo</label><select class="form-select" id="ml-flow"><option value="free">Gratuito</option><option value="sales">Ventas — Expercenter</option><option value="repair">Reparación — ReparaXcell</option></select></div>
       <div class="form-group"><label class="form-label">Mensaje de bienvenida <span style="color:var(--muted);font-weight:400">(usa [nombre])</span></label><textarea class="form-textarea" id="ml-welcome" placeholder="¡Hola [nombre]! ..."></textarea></div>
       <div class="form-group"><label class="form-label">Texto botón CTA</label><input class="form-input" id="ml-cta-text" placeholder="Ej: Unirse a la comunidad"></div>
@@ -826,6 +843,7 @@ function initApp() {
   document.getElementById('s-ad-url').value = DB.settings.adUrl || 'https://expercenter.com/';
   document.getElementById('s-ad-btn').value = DB.settings.adBtn || '¡Únete!';
   document.getElementById('s-nomatch').value = DB.settings.noMatchMsg || '';
+  document.getElementById('s-hide-qr').checked = DB.settings.hideQuickReplies || false;
   document.getElementById('s-consent').value = DB.settings.consentText || 'Acepto recibir mensajes y recursos de GOKUCELL';
   setIntentMode(DB.settings.intentMode || 'show', false);
   renderDashboard(); updateBadges();
@@ -1201,14 +1219,31 @@ let editLabelId = null;
 function renderLabels() {
   const grid = document.getElementById('labels-grid');
   if (!DB.labels.length) { grid.innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><p>Sin etiquetas.</p></div>'; return; }
-  grid.innerHTML = DB.labels.map(lb => `<div class="label-card" style="border-color:${lb.color}40">
+  grid.innerHTML = DB.labels.map(lb => {
+    const visible = lb.visibleInChat !== false;
+    const icon = lb.icon || (lb.flow === 'free' ? '🎁' : lb.flow === 'sales' ? '🚀' : lb.flow === 'repair' ? '🔧' : '💬');
+    return `<div class="label-card" style="border-color:${lb.color}40;opacity:${visible?1:.6}">
     <div class="label-card-top">
-      <div><div class="label-name-large" style="color:${lb.color}">${esc(lb.name)}</div><div class="label-info" style="margin-top:6px">Flujo: <strong>${typeLabel(lb.flow)}</strong><br>${lb.ctaUrl?`<a href="${esc(lb.ctaUrl)}" target="_blank" style="color:var(--p);font-size:.75rem">🔗 Ver enlace</a>`:'<span style="font-size:.75rem;color:var(--muted)">Sin enlace</span>'}</div></div>
+      <div><div class="label-name-large" style="color:${lb.color}">${icon} ${esc(lb.name)}</div><div class="label-info" style="margin-top:6px">Flujo: <strong>${typeLabel(lb.flow)}</strong><br>${lb.ctaUrl?`<a href="${esc(lb.ctaUrl)}" target="_blank" style="color:var(--p);font-size:.75rem">🔗 Ver enlace</a>`:'<span style="font-size:.75rem;color:var(--muted)">Sin enlace</span>'}</div></div>
       <div class="label-color-dot" style="background:${lb.color}"></div>
     </div>
     ${lb.welcome?`<div style="background:var(--s2);border-radius:8px;padding:8px 10px;font-size:.78rem;color:var(--muted);margin-bottom:8px">"${esc(lb.welcome.substring(0,80))}…"</div>`:''}
+    <div style="margin-bottom:8px">
+      <button class="btn btn-sm" style="width:100%;background:${visible?'rgba(16,185,129,.12)':'var(--s3)'};color:${visible?'#10b981':'var(--muted)'};border:1px solid ${visible?'rgba(16,185,129,.3)':'var(--border)'}" onclick="toggleLabelVisibility('${lb.id}')">
+        ${visible ? '👁 Visible en interfaz de chat' : '🙈 Oculta en interfaz de chat'}
+      </button>
+    </div>
     <div class="label-actions"><button class="btn btn-secondary btn-sm" onclick="openLabelModal('${lb.id}')">✏️ Editar</button><button class="btn btn-danger btn-sm" onclick="deleteLabel('${lb.id}')">🗑</button></div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
+}
+
+function toggleLabelVisibility(id) {
+  const lb = DB.labels.find(x => x.id === id);
+  if (!lb) return;
+  lb.visibleInChat = lb.visibleInChat === false ? true : false;
+  saveDB(); renderLabels();
+  showToast(lb.visibleInChat ? 'Etiqueta visible en el chat.' : 'Etiqueta oculta del chat.');
 }
 
 function openLabelModal(id = null) {
@@ -1217,14 +1252,18 @@ function openLabelModal(id = null) {
   if (id) {
     const lb = DB.labels.find(x => x.id === id);
     document.getElementById('ml-name').value = lb.name;
+    document.getElementById('ml-icon').value = lb.icon || '';
     document.getElementById('ml-color').value = lb.color;
+    document.getElementById('ml-subtitle').value = lb.subtitle || '';
     document.getElementById('ml-flow').value = lb.flow;
     document.getElementById('ml-welcome').value = lb.welcome || '';
     document.getElementById('ml-cta-text').value = lb.ctaText || '';
     document.getElementById('ml-cta-url').value = lb.ctaUrl || '';
   } else {
     document.getElementById('ml-name').value = '';
+    document.getElementById('ml-icon').value = '';
     document.getElementById('ml-color').value = '#10b981';
+    document.getElementById('ml-subtitle').value = '';
     document.getElementById('ml-flow').value = 'free';
     ['ml-welcome','ml-cta-text','ml-cta-url'].forEach(id => document.getElementById(id).value = '');
   }
@@ -1234,9 +1273,9 @@ function openLabelModal(id = null) {
 function saveLabel() {
   const name = document.getElementById('ml-name').value.trim().toUpperCase();
   if (!name) { showToast('El nombre es requerido.','err'); return; }
-  const data = {name, color: document.getElementById('ml-color').value, flow: document.getElementById('ml-flow').value, welcome: document.getElementById('ml-welcome').value.trim(), ctaText: document.getElementById('ml-cta-text').value.trim(), ctaUrl: document.getElementById('ml-cta-url').value.trim()};
+  const data = {name, icon: document.getElementById('ml-icon').value.trim(), color: document.getElementById('ml-color').value, subtitle: document.getElementById('ml-subtitle').value.trim(), flow: document.getElementById('ml-flow').value, welcome: document.getElementById('ml-welcome').value.trim(), ctaText: document.getElementById('ml-cta-text').value.trim(), ctaUrl: document.getElementById('ml-cta-url').value.trim()};
   if (editLabelId) { const idx = DB.labels.findIndex(x => x.id === editLabelId); DB.labels[idx] = {...DB.labels[idx], ...data}; showToast('Etiqueta actualizada.'); }
-  else { DB.labels.push({id: uid(), ...data}); showToast('Etiqueta creada.'); }
+  else { DB.labels.push({id: uid(), visibleInChat: true, ...data}); showToast('Etiqueta creada.'); }
   saveDB(); renderLabels(); closeModal('modal-label');
 }
 
@@ -1262,6 +1301,7 @@ function saveSettings() {
   DB.settings.adUrl = document.getElementById('s-ad-url').value.trim();
   DB.settings.adBtn = document.getElementById('s-ad-btn').value.trim();
   DB.settings.noMatchMsg = document.getElementById('s-nomatch').value.trim();
+  DB.settings.hideQuickReplies = document.getElementById('s-hide-qr').checked;
   DB.settings.intentMode = document.getElementById('s-intent-mode').value || 'show';
   DB.settings.consentText = document.getElementById('s-consent').value.trim() || 'Acepto recibir mensajes y recursos de GOKUCELL';
   saveDB();
