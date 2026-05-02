@@ -328,6 +328,8 @@ tr:hover td{background:var(--s2)}
               <option>YouTube</option><option>WhatsApp</option><option>Google</option>
               <option>Recomendación</option><option>Otro</option>
             </select>
+            <button class="btn btn-secondary btn-sm" onclick="downloadCSV()">📊 Exportar CSV</button>
+            <button class="btn btn-secondary btn-sm" onclick="printLeads()">🖨️ Imprimir/PDF</button>
             <button class="btn btn-danger btn-sm" onclick="clearLeads()">🗑 Limpiar</button>
           </div>
         </div>
@@ -473,6 +475,27 @@ tr:hover td{background:var(--s2)}
           <div class="form-group"><label class="form-label">Después de las 3 preguntas, el bot envía este mensaje final con el botón CTA de Expercenter.</label><textarea class="form-textarea" id="af-sfinal" style="min-height:80px"></textarea></div>
         </div>
         <div class="autoflow-card">
+          <h3>⏱️ Seguimiento automático (pausa)</h3>
+          <div class="form-hint" style="margin-bottom:12px">Si el prospecto <strong>no responde</strong> después del tiempo configurado, el bot le enviará este mensaje automáticamente.</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.88rem">
+              <input type="checkbox" id="af-followup-enabled" style="width:18px;height:18px;cursor:pointer;accent-color:var(--p)">
+              <span>Activar seguimiento automático</span>
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:200px 1fr;gap:12px">
+            <div class="form-group">
+              <label class="form-label">Tiempo de espera (minutos)</label>
+              <input class="form-input" id="af-followup-delay" type="number" min="1" max="1440" placeholder="30">
+              <div class="form-hint">Ej: 30 = media hora sin respuesta</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mensaje de seguimiento <span style="color:var(--muted);font-weight:400">(usa [nombre])</span></label>
+              <textarea class="form-textarea" id="af-followup-msg" placeholder="Hola [nombre], ¿tienes alguna duda en la que te pueda ayudar? Estoy aquí 😊" style="min-height:70px"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="autoflow-card">
           <h3>🔘 Botones rápidos (Quick Replies)</h3>
           <div class="form-hint" style="margin-bottom:12px">Presiona <strong>Enter</strong> o <strong>,</strong> para agregar. Clic en × para eliminar.</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
@@ -525,7 +548,7 @@ tr:hover td{background:var(--s2)}
     <div class="modal-header"><h2>💬 Historial de conversación</h2><button class="modal-close" onclick="closeModal('modal-history')">×</button></div>
     <div class="modal-body">
       <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Contacto: <strong id="mh-name"></strong> · <span id="mh-phone"></span></div>
-      <div id="mh-messages" style="display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:14px"></div>
+      <div id="mh-messages" style="display:flex;flex-direction:column;gap:2px;max-height:55vh;overflow-y:auto;background:var(--bg);border-radius:10px;padding:14px"></div>
       <div id="mh-empty" style="text-align:center;color:var(--muted);padding:30px;display:none">Sin historial guardado aún</div>
     </div>
     <div class="modal-body" style="padding-top:0">
@@ -570,6 +593,13 @@ tr:hover td{background:var(--s2)}
           <label class="type-option"><input type="radio" name="mt-type" value="sales"><div class="type-card"><div class="tc-icon">🚀</div><div class="tc-name">Expercenter</div><div class="tc-desc">Cursos/Mentorías</div></div></label>
           <label class="type-option"><input type="radio" name="mt-type" value="repair"><div class="type-card"><div class="tc-icon">🔧</div><div class="tc-name">ReparaXcell</div><div class="tc-desc">Reparaciones</div></div></label>
         </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🏷️ Etiquetar automáticamente al activar <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+        <select class="form-select" id="mt-assign-label">
+          <option value="">Sin etiqueta automática</option>
+        </select>
+        <div class="form-hint">Cuando el prospecto active este disparador (por keyword o botón), su etiqueta cambiará automáticamente a la seleccionada.</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -710,7 +740,7 @@ let DB = {
 const DEFAULT_TOPICS = [
   {id:'t1',title:'Fuente de alimentación',keywords:['fuente de alimentación','fuente','power supply','voltaje','amperaje'],response:'¡Claro! La fuente es clave en el diagnóstico. En la comunidad gratuita tenemos guías completas sobre lecturas de voltaje y amperaje.',ctaText:'🎁 Ver guías',ctaUrl:'',videoUrl:'',type:'free'},
   {id:'t2',title:'No carga / No enciende',keywords:['no carga','no enciende','pantalla negra','muerto','sin imagen','no prende'],response:'Ese diagnóstico tiene un protocolo: primero el conector, luego la línea de carga, el PMIC y circuitos de arranque. Tenemos el protocolo completo en la comunidad.',ctaText:'🎁 Ver protocolo',ctaUrl:'',videoUrl:'',type:'free'},
-  {id:'t3',title:'Curso completo / Capacitación',keywords:['curso','capacitación','capacitar','formación','aprender completo','certificado'],response:'¡Excelente decisión! En Expercenter tienes el programa más completo: diagnóstico a nivel de placa, microfusión avanzada y casos reales. ¿Cuál es tu nivel actual?',ctaText:'🚀 Ver Expercenter',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
+  {id:'t3',title:'Curso completo / Capacitación',keywords:['curso','capacitación','capacitar','formación','aprender completo','certificado','quiero info del curso','info del curso'],response:'¡Excelente decisión invertir en ti mismo! En Expercenter tenemos el programa más completo para llevar tus habilidades al siguiente nivel. Desde diagnóstico básico hasta microfusión avanzada con casos reales.',ctaText:'🚀 Ver Expercenter',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
   {id:'t4',title:'Mentoría personalizada',keywords:['mentoría','mentor','asesoría','acompañamiento','uno a uno'],response:'Las mentorías son sesiones uno a uno donde trabajamos tus casos específicos. Es la forma más rápida de avanzar. ¿En qué área te quieres enfocar?',ctaText:'🚀 Solicitar Mentoría',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
   {id:'t5',title:'Precio del curso',keywords:['precio','costo','cuánto cuesta','inversión','pago','cuotas','mensualidad'],response:'La inversión en Expercenter está diseñada para recuperarla rápido. Desde $17/mes con acceso completo. ¿Te cuento los detalles?',ctaText:'🚀 Ver planes',ctaUrl:'https://expercenter.com/',videoUrl:'',type:'sales'},
   {id:'t6',title:'Cotizar reparación',keywords:['cotizar','reparar','reparación','cuánto cuesta reparar','servicio técnico','pantalla rota','dañado'],response:'¡Con gusto! En ReparaXcell somos expertos en reparación. Contáctanos y en minutos te damos presupuesto.',ctaText:'🔧 Ir a ReparaXcell',ctaUrl:'',videoUrl:'',type:'repair'},
@@ -737,6 +767,16 @@ async function loadConfigFromFirebase() {
       if (data.labels && data.labels.length) DB.labels = data.labels;
       if (data.flows) DB.flows = data.flows;
       if (data.flowPositions) DB.flowPositions = data.flowPositions;
+      // Migración: limpiar pregunta hardcodeada del topic t3 antiguo
+      let migrated = false;
+      DB.topics = DB.topics.map(t => {
+        if (t.response && t.response.includes('¿Cuál es tu nivel actual?')) {
+          migrated = true;
+          return {...t, response: t.response.replace(/\s*¿Cuál es tu nivel actual\?/g, '').trim()};
+        }
+        return t;
+      });
+      if (migrated) pushConfigToFirebase();
       localStorage.setItem(KEY, JSON.stringify(DB));
     } else {
       // First time — push defaults to Firebase
@@ -937,6 +977,13 @@ function renderTopics() {
 function openTopicModal(id = null) {
   editTopicId = id; kwTags = [];
   document.getElementById('mt-title').textContent = id ? 'Editar Disparador' : 'Nuevo Disparador';
+  // Populate label select
+  const lblSel = document.getElementById('mt-assign-label');
+  lblSel.innerHTML = '<option value="">Sin etiqueta automática</option>';
+  DB.labels.forEach(lb => {
+    const o = document.createElement('option'); o.value = lb.name; o.textContent = lb.name;
+    lblSel.appendChild(o);
+  });
   if (id) {
     const t = DB.topics.find(x => x.id === id);
     document.getElementById('mt-name').value = t.title;
@@ -945,10 +992,12 @@ function openTopicModal(id = null) {
     document.getElementById('mt-cta-url').value = t.ctaUrl || '';
     document.getElementById('mt-video-url').value = t.videoUrl || '';
     document.querySelector(`input[name="mt-type"][value="${t.type}"]`).checked = true;
+    lblSel.value = t.assignLabel || '';
     kwTags = [...t.keywords];
   } else {
     ['mt-name','mt-response','mt-cta-text','mt-cta-url','mt-video-url'].forEach(id => document.getElementById(id).value = '');
     document.querySelector('input[name="mt-type"][value="free"]').checked = true;
+    lblSel.value = '';
   }
   renderKwTags(); openModal('modal-topic');
 }
@@ -992,12 +1041,13 @@ function saveTopic() {
   const val = document.getElementById('kw-input').value.trim().replace(/,/g,'').toLowerCase();
   if (val) kwTags.push(val);
   if (!title || !response || kwTags.length === 0) { showToast('Completa título, keywords y respuesta.', 'err'); return; }
+  const assignLabel = document.getElementById('mt-assign-label').value;
   if (editTopicId) {
     const idx = DB.topics.findIndex(t => t.id === editTopicId);
-    DB.topics[idx] = {...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type};
+    DB.topics[idx] = {...DB.topics[idx], title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type, assignLabel};
     showToast('Disparador actualizado.');
   } else {
-    DB.topics.push({id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type});
+    DB.topics.push({id: uid(), title, keywords: kwTags, response, ctaText, ctaUrl, videoUrl, type, assignLabel});
     showToast('Disparador creado.');
   }
   saveDB(); renderTopics(); renderDashboard(); closeModal('modal-topic');
@@ -1201,19 +1251,25 @@ async function viewHistory(leadId, name, cleanPhone) {
     return;
   }
 
-  container.innerHTML = messages.map(m => {
-    const isBot = m.role === 'bot';
+  const roleLabel = {bot:'🔧 Bot', admin:'👨‍💼 Admin', user:'👤 Usuario'};
+  container.innerHTML = `<div style="text-align:center;font-size:.72rem;color:var(--muted);margin-bottom:10px">${messages.length} mensajes en total</div>` +
+  messages.map(m => {
+    const isUser = m.role === 'user';
     const timeStr = m.ts ? new Date(m.ts).toLocaleString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
     const safeText = esc(m.text||'').replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
     const videoHtml = m.videoUrl ? `<div style="font-size:.72rem;color:var(--cyan);margin-top:4px">🎬 ${esc(m.videoUrl)}</div>` : '';
-    return `<div class="hist-msg-row ${isBot?'':'user'}">
-      <div class="hist-av ${isBot?'':'user'}">${isBot?'🔧':'👤'}</div>
+    const roleIcon = roleLabel[m.role] || '💬';
+    return `<div class="hist-msg-row ${isUser?'user':''}">
+      <div class="hist-av ${isUser?'user':''}">${isUser?'👤':(m.role==='admin'?'👨‍💼':'🔧')}</div>
       <div>
-        <div class="hist-bubble ${m.role}">${safeText}${videoHtml}</div>
+        <div style="font-size:.65rem;color:var(--muted);margin-bottom:2px">${roleIcon}</div>
+        <div class="hist-bubble ${isUser?'user':'bot'}">${safeText}${videoHtml}</div>
         <div class="hist-time">${timeStr}</div>
       </div>
     </div>`;
   }).join('');
+  // Scroll al final para ver el mensaje más reciente
+  setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
 }
 
 function deleteLead(id) {
@@ -1231,6 +1287,64 @@ function clearLeads() {
   localStorage.setItem(KEY, JSON.stringify(DB));
   selectedLeads.clear();
   renderLeads(); renderDashboard(); showToast('Contactos eliminados.');
+}
+
+function downloadCSV() {
+  if (!DB.leads.length) { showToast('No hay contactos para exportar.', 'err'); return; }
+  const headers = ['Nombre','WhatsApp','País','Origen','Intención','Etiqueta','Nota','Fecha registro'];
+  const rows = DB.leads.map(l => [
+    l.name||'',
+    (l.countryCode||'')+' '+(l.phone||''),
+    l.countryName||l.countryCode||'',
+    l.source||'',
+    l.intent||'',
+    l.label||'',
+    (l.note||'').replace(/\n/g,' '),
+    formatDate(l.ts)
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'contactos_gokucell_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('CSV exportado correctamente (' + DB.leads.length + ' contactos).');
+}
+
+function printLeads() {
+  if (!DB.leads.length) { showToast('No hay contactos para imprimir.', 'err'); return; }
+  const rows = DB.leads.map(l => `<tr>
+    <td>${esc(l.name||'')}</td>
+    <td>${esc((l.countryCode||'')+' '+(l.phone||''))}</td>
+    <td>${esc(l.countryName||l.countryCode||'')}</td>
+    <td>${esc(l.source||'—')}</td>
+    <td>${esc(l.intent||'')}</td>
+    <td><span style="background:${labelColor(l.label)}22;color:${labelColor(l.label)};padding:2px 8px;border-radius:10px;font-weight:700">${esc(l.label||'')}</span></td>
+    <td style="max-width:160px;font-size:10px">${esc(l.note||'')}</td>
+    <td style="white-space:nowrap">${formatDate(l.ts)}</td>
+  </tr>`).join('');
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Contactos GOKUCELL</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;font-size:11px;color:#1e293b;padding:20px}
+    h2{font-size:16px;margin-bottom:4px}
+    .meta{font-size:11px;color:#64748b;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse}
+    th{background:#f1f5f9;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0}
+    td{padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+    tr:hover td{background:#fafafa}
+    .btn-print{background:#7c3aed;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;margin-bottom:16px}
+    @media print{.btn-print{display:none}th{background:#f1f5f9!important;-webkit-print-color-adjust:exact}}
+  </style></head><body>
+  <h2>📋 Contactos GOKUCELL</h2>
+  <div class="meta">Exportado el ${new Date().toLocaleDateString('es',{day:'2-digit',month:'long',year:'numeric'})} · Total: <strong>${DB.leads.length}</strong> contactos</div>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
+  <table>
+    <thead><tr><th>Nombre</th><th>WhatsApp</th><th>País</th><th>Origen</th><th>Intención</th><th>Etiqueta</th><th>Nota</th><th>Fecha</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  </body></html>`);
+  win.document.close();
 }
 
 // ── BULK SELECTION ──
@@ -1500,18 +1614,36 @@ async function sendAdminMsg() {
 }
 
 // ── AUTOFLOW ──
+const DEFAULT_SQ = ['¿Cuánto tiempo llevas en el mundo de la reparación?','¿Ya estás generando ingresos con reparaciones, o buscas empezar desde cero?','¿Hay alguna marca o tipo de falla en la que te quieras especializar?'];
+const DEFAULT_SB = ['Con eso en mente, el programa de Expercenter tiene exactamente el nivel que necesitas. 💪','Muchos de nuestros alumnos empezaron igual que tú y hoy resuelven fallas que antes rechazaban.','Con Expercenter dominas diagnóstico a nivel de placa, lectura de esquemáticos y técnicas de soldadura.'];
+const DEFAULT_SF = 'Genial, **[nombre]**. Con todo lo que me cuentas, Expercenter es exactamente lo que necesitas para avanzar más rápido. Tenemos alumnos que en pocas semanas resuelven fallas que antes les costaban horas. 🚀';
+const DEFAULT_QR_FREE = ['Tengo una duda técnica','Quiero aprender más','¿Qué hay en la comunidad?'];
+const DEFAULT_QR_SALES = ['Soy principiante','Tengo experiencia básica','Ya trabajo reparando'];
+const DEFAULT_QR_RET = ['Tengo una duda técnica','Quiero info del curso','Otra consulta'];
+const DEFAULT_QR_NM = ['Tengo una duda técnica','Quiero un curso','Cotizar una reparación'];
+
 const QR_SETS = {free:[],sales:[],ret:[],nomatch:[]};
 function renderAutoflow() {
   const s = DB.settings;
-  document.getElementById('af-sq1').value = (s.salesQuestions||[])[0]||'';
-  document.getElementById('af-sq2').value = (s.salesQuestions||[])[1]||'';
-  document.getElementById('af-sq3').value = (s.salesQuestions||[])[2]||'';
-  document.getElementById('af-sb1').value = (s.salesBridges||[])[0]||'';
-  document.getElementById('af-sb2').value = (s.salesBridges||[])[1]||'';
-  document.getElementById('af-sb3').value = (s.salesBridges||[])[2]||'';
-  document.getElementById('af-sfinal').value = s.salesFinalMsg||'';
-  QR_SETS.free=[...(s.quickRepliesFree||[])]; QR_SETS.sales=[...(s.quickRepliesSales||[])];
-  QR_SETS.ret=[...(s.quickRepliesReturning||[])]; QR_SETS.nomatch=[...(s.quickRepliesNoMatch||[])];
+  // Usa defaults si los valores están vacíos (primera vez o no guardados aún)
+  const sq = (s.salesQuestions && s.salesQuestions.length) ? s.salesQuestions : DEFAULT_SQ;
+  const sb = (s.salesBridges && s.salesBridges.length) ? s.salesBridges : DEFAULT_SB;
+  document.getElementById('af-sq1').value = sq[0]||DEFAULT_SQ[0];
+  document.getElementById('af-sq2').value = sq[1]||DEFAULT_SQ[1];
+  document.getElementById('af-sq3').value = sq[2]||DEFAULT_SQ[2];
+  document.getElementById('af-sb1').value = sb[0]||DEFAULT_SB[0];
+  document.getElementById('af-sb2').value = sb[1]||DEFAULT_SB[1];
+  document.getElementById('af-sb3').value = sb[2]||DEFAULT_SB[2];
+  document.getElementById('af-sfinal').value = s.salesFinalMsg||DEFAULT_SF;
+  // Follow-up
+  document.getElementById('af-followup-enabled').checked = s.followUpEnabled || false;
+  document.getElementById('af-followup-delay').value = s.followUpDelay || 30;
+  document.getElementById('af-followup-msg').value = s.followUpMsg || '';
+  // Quick replies con defaults si vacíos
+  QR_SETS.free=[...((s.quickRepliesFree&&s.quickRepliesFree.length)?s.quickRepliesFree:DEFAULT_QR_FREE)];
+  QR_SETS.sales=[...((s.quickRepliesSales&&s.quickRepliesSales.length)?s.quickRepliesSales:DEFAULT_QR_SALES)];
+  QR_SETS.ret=[...((s.quickRepliesReturning&&s.quickRepliesReturning.length)?s.quickRepliesReturning:DEFAULT_QR_RET)];
+  QR_SETS.nomatch=[...((s.quickRepliesNoMatch&&s.quickRepliesNoMatch.length)?s.quickRepliesNoMatch:DEFAULT_QR_NM)];
   renderQRSet('qr-free','free'); renderQRSet('qr-sales','sales');
   renderQRSet('qr-return','ret'); renderQRSet('qr-nomatch','nomatch');
 }
@@ -1533,6 +1665,9 @@ function saveAutoflow(){
   DB.settings.salesQuestions=[document.getElementById('af-sq1').value.trim(),document.getElementById('af-sq2').value.trim(),document.getElementById('af-sq3').value.trim()].filter(Boolean);
   DB.settings.salesBridges=[document.getElementById('af-sb1').value.trim(),document.getElementById('af-sb2').value.trim(),document.getElementById('af-sb3').value.trim()].filter(Boolean);
   DB.settings.salesFinalMsg=document.getElementById('af-sfinal').value.trim();
+  DB.settings.followUpEnabled=document.getElementById('af-followup-enabled').checked;
+  DB.settings.followUpDelay=parseInt(document.getElementById('af-followup-delay').value)||30;
+  DB.settings.followUpMsg=document.getElementById('af-followup-msg').value.trim();
   DB.settings.quickRepliesFree=[...QR_SETS.free]; DB.settings.quickRepliesSales=[...QR_SETS.sales];
   DB.settings.quickRepliesReturning=[...QR_SETS.ret]; DB.settings.quickRepliesNoMatch=[...QR_SETS.nomatch];
   saveDB(); showToast('Flujo automático guardado y sincronizado.');

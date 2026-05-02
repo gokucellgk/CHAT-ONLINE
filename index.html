@@ -139,9 +139,9 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;di
         <input class="reg-input phone-input" id="reg-phone" placeholder="Número" type="tel" maxlength="15">
       </div>
 
-      <div class="reg-sec-title">¿Cómo nos encontraste?</div>
+      <div class="reg-sec-title">¿Cómo nos encontraste? <span style="color:var(--muted);font-size:.65rem;font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></div>
       <select class="reg-input" id="reg-source" style="cursor:pointer">
-        <option value="">Selecciona una opción</option>
+        <option value="">— Puedes dejarlo en blanco —</option>
         <option>Instagram</option><option>TikTok</option><option>Facebook</option>
         <option>YouTube</option><option>WhatsApp</option><option>Google</option>
         <option>Recomendación</option><option>Otro</option>
@@ -214,6 +214,7 @@ let DB = { settings:{}, topics:[], labels:[], flows:[], leads:[] };
 let configUnsubscribe = null;
 let userName='', userPhone='', userCountry='', userCountryName='', userIntent='', userLabel='', userSource='', userLabelId=null;
 let botState='idle', salesStepCount=0, msgCount=0, adminMsgStart=0;
+let followUpTimer = null;
 let profilePhoto='https://jhonatanherrera.com/wp-content/uploads/2025/07/foto-clase.jpeg';
 
 const COUNTRIES = [
@@ -516,6 +517,27 @@ const SALES_BRIDGES = [
   'Con Expercenter dominas diagnóstico a nivel de placa, lectura de esquemáticos y técnicas de soldadura.'
 ];
 
+// Actualiza la etiqueta del lead en tiempo real (desde chat)
+function updateLeadLabel(labelName) {
+  if (!labelName || !userPhone) return;
+  const ph = cleanPhone(userPhone);
+  if (!ph) return;
+  userLabel = labelName;
+  if (db) {
+    db.collection('gkc_leads').doc(ph).update({label: labelName, updatedAt: Date.now()}).catch(e => {});
+  }
+  const raw = localStorage.getItem(KEY);
+  if (raw) {
+    try {
+      const localDB = JSON.parse(raw);
+      if (localDB.leads) {
+        const idx = localDB.leads.findIndex(x => cleanPhone(x.phone||'') === ph);
+        if (idx >= 0) { localDB.leads[idx].label = labelName; localStorage.setItem(KEY, JSON.stringify(localDB)); }
+      }
+    } catch(e) {}
+  }
+}
+
 function matchTopic(text) {
   const t = text.toLowerCase();
   let best=null, bestScore=0;
@@ -552,15 +574,20 @@ function botReply(userText) {
     if (topic) {
       botState = topic.type==='sales' ? 'sales_follow' : topic.type==='repair' ? 'repair_done' : 'free_chat';
       salesStepCount = 0;
+      // Auto-etiquetar al activar el disparador
+      if (topic.assignLabel) updateLeadLabel(topic.assignLabel);
       const extras = {};
-      if (topic.ctaText) extras.cta = {text:topic.ctaText, url:topic.ctaUrl||'#', type:topic.type};
+      if (topic.ctaText) extras.cta = {text:topic.ctaText, url:topic.ctaUrl||'#', type:topic.type, assignLabel: topic.ctaAssignLabel||null};
       if (topic.videoUrl) extras.videoUrl = topic.videoUrl;
       if (topic.type==='sales') extras.qr = ['¿Cómo me inscribo?','¿Cuánto cuesta?','Tengo otra pregunta'];
       else if (topic.type==='free') extras.qr = ['Tengo otra duda','Quiero el curso completo','¿Dónde es la comunidad?'];
       else extras.qr = ['Más información','Tengo otra consulta'];
       addMsg('bot', humanize(topic.response, userName), extras);
-    } else if (botState==='sales_q1' || botState==='sales_follow') {
+    } else if (botState==='sales_q1') {
       handleSalesFlow();
+    } else if (botState==='sales_follow') {
+      // Después de un tema de ventas, no reiniciar el flujo de preguntas — mostrar opciones de ayuda
+      addMsg('bot', `¿En qué más te puedo ayudar, **${userName}**? 😊`, {qr:['¿Cómo me inscribo?','¿Cuánto cuesta?','Tengo otra pregunta']});
     } else {
       const noMatch = (DB.settings.noMatchMsg||'').replace(/\[nombre\]/gi, userName) ||
         `Para poder ayudarte mejor, **${userName}**, intenta escribir tu consulta así:\n\n*"¿Cómo diagnostico un celular que no carga?"*\n*"¿Qué necesito para empezar en reparación?"*\n\nO si prefieres, únete a nuestra comunidad gratuita donde más de **1.200 técnicos** están activos. 👇`;
@@ -660,6 +687,7 @@ function addMsg(role, text, extras={}, skipHistory=false) {
     const btn = document.createElement('a');
     btn.className=`cta-btn cta-${extras.cta.type||'free'}`;
     btn.textContent=extras.cta.text; btn.href=extras.cta.url||'#'; btn.target='_blank';
+    if (extras.cta.assignLabel) btn.addEventListener('click', () => updateLeadLabel(extras.cta.assignLabel));
     content.appendChild(btn);
   }
 
@@ -684,6 +712,17 @@ function addMsg(role, text, extras={}, skipHistory=false) {
   scrollBottom();
 
   if (!skipHistory) saveHistory(role, text, extras.videoUrl||null);
+
+  // Follow-up timer: si el bot envía mensaje y el usuario no responde en X minutos
+  if (!skipHistory && (role === 'bot' || role === 'admin') && DB.settings.followUpEnabled && DB.settings.followUpMsg) {
+    if (followUpTimer) clearTimeout(followUpTimer);
+    const delayMs = ((DB.settings.followUpDelay || 30)) * 60 * 1000;
+    const fMsg = DB.settings.followUpMsg.replace(/\[nombre\]/gi, userName);
+    followUpTimer = setTimeout(() => {
+      followUpTimer = null;
+      addMsg('bot', fMsg);
+    }, delayMs);
+  }
 }
 
 function formatText(t) {
@@ -699,8 +738,8 @@ function showTyping() {
   row.appendChild(av); row.appendChild(bubble); area.appendChild(row); scrollBottom();
 }
 function hideTyping(){const t=document.getElementById('typing-ind');if(t)t.remove();}
-function sendMsg(){const input=document.getElementById('user-input');const text=input.value.trim();if(!text)return;addMsg('user',text);input.value='';input.style.height='auto';botReply(text);}
-function sendQuick(text){addMsg('user',text);botReply(text);}
+function sendMsg(){const input=document.getElementById('user-input');const text=input.value.trim();if(!text)return;if(followUpTimer){clearTimeout(followUpTimer);followUpTimer=null;}addMsg('user',text);input.value='';input.style.height='auto';botReply(text);}
+function sendQuick(text){if(followUpTimer){clearTimeout(followUpTimer);followUpTimer=null;}addMsg('user',text);botReply(text);}
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 function scrollBottom(){const a=document.getElementById('chat-area');a.scrollTop=a.scrollHeight;}
